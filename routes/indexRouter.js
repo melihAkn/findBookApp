@@ -5,7 +5,7 @@ const indexRouter = Router();
 //page renders
 indexRouter.get('/',controller.mainPage);
 indexRouter.get('/books',controller.booksPage)
-
+indexRouter.get('/bookStores',controller.bookStoresPage)
 
 
 module.exports = indexRouter;

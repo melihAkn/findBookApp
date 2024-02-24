@@ -1,0 +1,135 @@
+.searchContainer {
+    margin: 20px auto;
+    width: fit-content;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchContainer input,
+.searchContainer select,
+.searchContainer button {
+    margin-right: 10px;
+}
+.searchInput{
+    width: 300px;
+}
+.cityList{
+    width: 100px;
+}
+
+
+
+
+
+
+
+  
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    align-items: center;
+  }
+  
+  .bookCard {
+    width: 1500px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+  }
+  
+  .leftSide {
+    width: 200px;
+    text-align: center;
+  }
+  
+  .leftSide img {
+    margin: 10px;
+    width: 200px;
+    height: 250px;
+  }
+  
+  .rightSide {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .topSide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .bookName {
+    font-weight: bold;
+    padding-left: 15px;
+  }
+  
+  .stockInfo {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  
+  .middleSide {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
+    justify-content: flex-end;
+  }
+  
+  .bookDescription {
+    width: 60%;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    max-height: 100px;
+  }
+  
+  .priceList {
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 25%;
+    max-height: 100px;
+    overflow-y: scroll;
+  }
+  
+  .priceList ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .priceList li {
+    margin-bottom: 5px;
+  }
+  
+  
+  .bottomSide {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .buttons input {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+  

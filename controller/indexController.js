@@ -5,12 +5,17 @@ const mainPage = (req,res) => {
 }
 const booksPage = (req,res) => {
 
-    res.render('./pages/booksPage.handlebars')
+    res.render('./pages/booksPage')
 
 }
 
+const bookStoresPage = (req,res) => {
+    
+    res.render('./pages/bookStoresPage')
+}
 
 module.exports = {
     mainPage,
-    booksPage
+    booksPage,
+    bookStoresPage
 }

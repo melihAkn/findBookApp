@@ -1,0 +1,40 @@
+.kirtasiyeKart {
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 10px;
+    justify-content: center;
+    width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .solTaraf {
+    width: 20%;
+    text-align: center;
+  }
+  
+  .ortaTaraf {
+    width: 60%;
+  }
+  
+  .sagTaraf {
+    width: 20%;
+  }
+  
+  .kirtasiyeKart h2 {
+    font-size: 18px;
+    margin-top: 0;
+  }
+  
+  .kirtasiyeKart p {
+    margin-bottom: 5px;
+  }
+  
+  .kirtasiyeKart ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .kirtasiyeKart ul li {
+    margin-bottom: 5px;
+  }
+  
