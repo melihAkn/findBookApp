@@ -1,0 +1,55 @@
+/* Genel stiller */
+body {
+   font-family:Arial, sans-serif;
+   margin: 20px;
+}
+
+/* Butonlar için stiller */
+.buttons {
+   text-align: center;
+}
+
+.buttons input[type="button"] {
+   background-color: #000;
+   color: #fff;
+   padding: 10px 20px;
+   margin: 5px;
+   border: none;
+   cursor: pointer;
+}
+
+.buttons input[type="button"]:hover {
+   background-color: #333;
+}
+
+/* Form için stiller */
+#loginForms form {
+   border: 1px solid #ccc;
+   padding: 20px;
+   width: 300px;
+   margin: 0 auto;
+}
+
+#loginForms label {
+   display: block;
+   margin-bottom: 10px;
+}
+
+#loginForms input[type="text"],
+#loginForms input[type="password"] {
+   border: 1px solid #ccc;
+   padding: 5px;
+   width: 100%;
+}
+
+#loginForms button {
+   background-color: #000;
+   color: #fff;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+}
+
+#loginForms button:hover {
+   background-color: #333;
+}

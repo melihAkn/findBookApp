@@ -45,5 +45,5 @@ const bookStore = new schema ({
     
 },{collection:'bookStores', timestamps: true});
 
-const bookStores = mongoose.model('Books', bookStore);
+const bookStores = mongoose.model('bookStores', bookStore);
 module.exports = bookStores;
