@@ -26,7 +26,7 @@ fetch('../frontendStuff/citys.json')
     citys.selectedIndex = 81
 })
 .catch(e => {
-    //if an error occured to getting cityy alert the user
+    //if an error occured to getting city alert the user
     //and ask them to refresh page if error alert the user please try again later
     //because this is a server error
     console.log(e)

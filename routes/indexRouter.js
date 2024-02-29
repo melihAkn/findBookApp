@@ -10,8 +10,13 @@ indexRouter.get('/contact',controller.contactPageRender)
 indexRouter.get('/login',controller.loginPage)
 indexRouter.get('/register',controller.registerPage)
 
-//post
+//post proccess
+//contact form
 indexRouter.post('/contact',controller.contactPost)
+//users and bookstores login
 indexRouter.post('/userLogin',controller.userLogin)
 indexRouter.post('/bookStoresLogin',controller.bookStoresLogin)
+// users and bookstores register
+indexRouter.post('/userRegister',controller.userRegister)
+indexRouter.post('/bookStoreRegister',controller.bookStoreRegister)
 module.exports = indexRouter;

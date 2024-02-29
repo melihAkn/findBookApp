@@ -50,5 +50,6 @@ const user = new schema ({
     
 },{collection:'users', timestamps: true});
 
+
 const users = mongoose.model('users', user);
 module.exports = users;

@@ -18,7 +18,6 @@ userLoginFormButton.addEventListener('click', _ => {
     
     `
     const userLoginForm = document.getElementById('userLoginForm')
-    console.log(userLoginForm)
     userLoginForm.addEventListener('submit', _ => {
         
         const userLoginFormData = new FormData(userLoginForm)
@@ -58,7 +57,6 @@ bookStoresLoginFormButton.addEventListener('click', _ => {
     
     `
     const bookStoresLoginForm = document.getElementById('bookStoresLoginForm')
-    console.log(bookStoresLoginForm)
     bookStoresLoginForm.addEventListener('submit', _ => {
 
     
