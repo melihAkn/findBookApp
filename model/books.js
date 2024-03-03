@@ -53,14 +53,13 @@ const book = new schema ({
         required : false,
         default : []
     },
-    stockInfo : {
-        type : [Object],
-        required : false,
-        default : [],
-
+    isValidBook : {
+        type : Boolean,
+        required : true,
+        default : false,
     }
     
 },{collection:'book', timestamps: true});
 
-const books = mongoose.model('Books', book);
+const books = mongoose.model('Books', book,'book');
 module.exports = books;

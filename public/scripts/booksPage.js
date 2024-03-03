@@ -10,28 +10,7 @@
       });
     });
 //get city for options
-const citys = document.getElementById('citys')
-fetch('../frontendStuff/citys.json')
-.then(response => response.json())
-.then(data => {
-    data.forEach(city => {
-        let option = document.createElement('option')
-        option.text = city
-        citys.add(option)
-    })
-})
-.then(data => {
-    //set default city by users location if user cannot give the 
-    //permission set the city ip control if fail set the city Istanbul or duzce
-    citys.selectedIndex = 81
-})
-.catch(e => {
-    //if an error occured to getting city alert the user
-    //and ask them to refresh page if error alert the user please try again later
-    //because this is a server error
-    console.log(e)
-})
-
+getCitys()
 //perform search
 const searchButton = document.getElementById('performSearch')
 const searchText = document.getElementById('searchInput')

@@ -23,5 +23,5 @@ const contact = new schema ({
     
 },{collection:'contact', timestamps: true});
 
-const contacts = mongoose.model('contacts', contact);
+const contacts = mongoose.model('contacts', contact,'contact');
 module.exports = contacts;

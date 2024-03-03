@@ -36,6 +36,11 @@ userLoginFormButton.addEventListener('click', _ => {
         .then(response => response.json())
         .then(data => {
             console.log(data)
+            if(data.loginAttemp){
+                window.location.href = "/"
+            }else{
+                alert(data.message)
+            }
         })
         .catch(e => console.log(e))
     })
@@ -76,9 +81,16 @@ bookStoresLoginFormButton.addEventListener('click', _ => {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data)
+        if(data.loginAttemp){
+            window.location.href = "/"
+        }else{
+            alert(data.message)
+        }
+        
     })
-    .catch(e => console.log(e))
+    .catch(e => {
+        console.log(e) 
+    })
 })
 
 })

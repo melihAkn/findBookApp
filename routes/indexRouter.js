@@ -2,6 +2,7 @@ const {Router} = require('express');
 const controller = require('../controller/indexController');
 const indexRouter = Router();
 //const tokenAuthForRoutes = require('../middleware/tokenAuthForRoutes')
+
 //page renders
 indexRouter.get('/',controller.mainPage);
 indexRouter.get('/books',controller.booksPage)
@@ -10,7 +11,11 @@ indexRouter.get('/contact',controller.contactPageRender)
 indexRouter.get('/login',controller.loginPage)
 indexRouter.get('/register',controller.registerPage)
 
-//post proccess
+//get requests
+indexRouter.get('/logout',controller.logout)
+
+
+//post requests
 //contact form
 indexRouter.post('/contact',controller.contactPost)
 //users and bookstores login

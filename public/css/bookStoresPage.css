@@ -1,4 +1,4 @@
-.kirtasiyeKart {
+.bookStoresCard {
     display: flex;
     border: 1px solid #ccc;
     padding: 10px;
@@ -7,34 +7,33 @@
     margin: 0 auto;
   }
   
-  .solTaraf {
+  .leftSide {
     width: 20%;
     text-align: center;
   }
   
-  .ortaTaraf {
+  .midSide {
     width: 60%;
   }
   
-  .sagTaraf {
+  .rightSide {
     width: 20%;
   }
   
-  .kirtasiyeKart h2 {
+  .bookStoresCard h2 {
     font-size: 18px;
     margin-top: 0;
   }
   
-  .kirtasiyeKart p {
+  .bookStoresCard p {
     margin-bottom: 5px;
   }
   
-  .kirtasiyeKart ul {
+  .bookStoresCard ul {
     list-style-type: none;
     padding: 0;
   }
   
-  .kirtasiyeKart ul li {
+  .bookStoresCard ul li {
     margin-bottom: 5px;
   }
-  

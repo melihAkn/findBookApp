@@ -1,41 +1,42 @@
 const contactModel = require('../model/contacts')
 const booksModel = require('../model/books')
-const bookStoresModel = require('../model/bookStores')
-const usersModel = require('../model/users')
+const {bookStoresBookModel,bookStoresModel} = require('../model/bookStores')
+const {usersModel} = require('../model/users')
 const {compare,hash} = require('bcrypt')
 const {sign,verify} = require('jsonwebtoken')
 const userSecretKey = process.env.JWT_USER_SECRET_KEY;
 const bookStoresSecretKey = process.env.JWT_BOOKSTORES_SECRET_KEY;
 const mainPage = (req,res) => {
-
-    res.render('./pages/indexPages/mainPage')
+  
+    res.render('./pages/indexPages/mainPage',{layout : req.layout})
 }
 const booksPage = (req,res) => {
-
-    res.render('./pages/indexPages/booksPage')
+    console.log("layout")
+    console.log(req.layout)
+    res.render('./pages/indexPages/booksPage',{layout : req.layout})
 
 }
 
 const bookStoresPage = (req,res) => {
     
-    res.render('./pages/indexPages/bookStoresPage')
+    res.render('./pages/indexPages/bookStoresPage',{layout : req.layout})
 }
 
 const loginPage = (req,res) => {
 
-    res.render('./pages/indexPages/loginPage')
+    res.render('./pages/indexPages/loginPage',{layout : req.layout})
 
 }
 
 const registerPage = (req,res) => {
 
-    res.render('./pages/indexPages/registerPage')
+    res.render('./pages/indexPages/registerPage',{layout : req.layout})
 
 
 }
 
 const contactPageRender = (req,res) => {
-    res.render('./pages/indexPages/contactPage')
+    res.render('./pages/indexPages/contactPage',{layout : req.layout})
 }
 const contactPost = async (req,res) => {
     try {
@@ -55,13 +56,14 @@ const userLogin = async (req,res) => {
         const findUser = await usersModel.findOne({username : req.body.username})
         compare(req.body.password,findUser.password)
               .then(async data => {
-                console.log(data)
                 if(data == true){
                     
-                    const token = sign(findUser.id,userSecretKey)
+                    const userToken = sign(findUser.id,userSecretKey)
+                    console.log(userToken)
                     res.cookie('userToken',userToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
+                    res.status(200).send({message : "successfull login",loginAttemp : true})
                 }else{
-                    res.status(401).send({message : "username or password wrong"})
+                    res.status(401).send({message : "username or password wrong",loginAttemp : false})
                 }
     
     
@@ -81,10 +83,12 @@ const bookStoresLogin = async (req,res) => {
               .then(async data => {
                 console.log(data)
                 if(data == true){
-                    const token = sign(findBookStores.id,userSecretKey)
-                    res.cookie('bookStoresToken',userToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
+                    const bookStoreToken = sign(findBookStores.id,userSecretKey)
+                    res.cookie('bookStoresToken',bookStoreToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
+                    res.status(200).send({message : "successfull login",loginAttemp : true})
+
                 }else{
-                    res.status(401).send({message : "username or password wrong"})
+                    res.status(401).send({message : "username or password wrong",loginAttemp : false})
                 }
     
     
@@ -141,6 +145,26 @@ const bookStoreRegister = async (req,res) => {
             res.status(500).send({error : e,registered : false})
         })
 }
+const logout = async (req,res) => {
+    try {
+        if(req.cookies.bookStoresToken){
+            res.clearCookie('bookStoresToken',{path : '/'})
+            res.status(200).send({message : "token deleted" , tokenDeleted : true})
+        }else if(req.cookies.userToken){
+            res.clearCookie('userToken',{path : '/'});
+            res.status(200).send({message : "token deleted" , tokenDeleted : true})
+        }else if(req.cookies.bookStoresToken && req.cookies.userToken){
+            res.clearCookie('bookStoresToken',{path : '/'})
+            res.clearCookie('userToken',{path : '/'})
+            res.status(200).send({message : "token deleted" , tokenDeleted : true})
+        }else{
+            res.status(400).send({message : "there is no token",tokenDeleted : false })
+        }
+    
+    } catch (error) {
+        console.log(error);
+    }
+}
 module.exports = {
     mainPage,
     booksPage,
@@ -152,5 +176,6 @@ module.exports = {
     userLogin,
     bookStoresLogin,
     userRegister,
-    bookStoreRegister
+    bookStoreRegister,
+    logout
 }

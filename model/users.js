@@ -50,6 +50,44 @@ const user = new schema ({
     
 },{collection:'users', timestamps: true});
 
+const userShoppingCard = new schema ({
+    userId : {
+        type : String,
+        required : true
+        
+    },
+    bookId : {
+        type : String,
+        required : true
+    },
+    bookStoreId : {
+        type : String,
+        required : true,
+    },
+    
+},{collection:'userShoppingCard', timestamps: true});
 
-const users = mongoose.model('users', user);
-module.exports = users;
+const userFavoritedBooks = new schema ({
+    userId : {
+        type : String,
+        required : true
+        
+    },
+    bookId : {
+        type : String,
+        required : true
+    }
+    
+},{collection:'userFavoritedBooks', timestamps: true});
+
+
+const userFavBooksModel = mongoose.model('userFavBooks', userFavoritedBooks,'userFavoritedBooks');
+const userCartModel = mongoose.model('userShoppingCard', userShoppingCard,'userShoppingCard');
+const usersModel = mongoose.model('users', user,'users');
+
+
+module.exports = {
+    userFavBooksModel,
+    userCartModel,
+    usersModel
+};

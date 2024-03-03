@@ -40,10 +40,43 @@ const bookStore = new schema ({
     physcialAddress : {
         type : String,
         required : true,
-        
+    },
+    bookStoreImages : {
+        type : [Object],
+        default : [],
+        required : false
     }
     
 },{collection:'bookStores', timestamps: true});
 
-const bookStores = mongoose.model('bookStores', bookStore);
-module.exports = bookStores;
+const bookStoresBook = new schema ({
+    bookStoreId : {
+        type : String,
+        required : true,
+    },
+    bookId : {
+        type : String,
+        required : true
+    },
+    stockInfo : {
+        type : Number,
+        maxlength : 3,
+        default : 0
+    },
+    price : {
+        type : Number,
+        default : 0.00
+    },
+
+    
+},{collection:'bookStoresBook', timestamps: true});
+
+const bookStoresBookModel = mongoose.model('bookStoresBook', bookStoresBook,'bookStoresBook');
+const bookStoresModel = mongoose.model('bookStores', bookStore,'bookStores');
+
+
+
+module.exports = {
+    bookStoresBookModel,
+    bookStoresModel
+};

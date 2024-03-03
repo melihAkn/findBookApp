@@ -1,0 +1,21 @@
+.topContainer{
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: 1500px;
+}
+.userAction {
+    width: 15%;
+    border-style: dotted;
+    border-color: white;
+}
+.userAction ul li {
+    cursor: pointer;
+}
+.results {
+    width: 85%;
+    border-style: dotted;
+    border-color: white;
+    max-height: 800px;
+    overflow-y: scroll;
+}
