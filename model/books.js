@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const book = new schema ({
+const books = new schema ({
     name :{
         type : String,
         required : true,
         maxLength : 255,
-        minLength : 1
+        minLength : 1,
     },
     description : {
         type : String,
@@ -20,7 +20,7 @@ const book = new schema ({
         minValue : 1,
         required : true,
     },
-    genre : {
+    category : {
         type : String,
         required : true,
         maxLength : 256,
@@ -47,6 +47,7 @@ const book = new schema ({
         maxLength : 13,
         minLength : 11,
         required : true,
+        unique : true
     },
     images : {
         type : [Array],
@@ -59,7 +60,10 @@ const book = new schema ({
         default : false,
     }
     
-},{collection:'book', timestamps: true});
+},{collection:'books', timestamps: true});
 
-const books = mongoose.model('Books', book,'book');
-module.exports = books;
+const bookModel = mongoose.model('books', books,'books');
+module.exports = {
+    bookModel
+
+};

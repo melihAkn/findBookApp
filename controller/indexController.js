@@ -54,6 +54,11 @@ const userLogin = async (req,res) => {
         console.log("user login")
         console.log(req.body)
         const findUser = await usersModel.findOne({username : req.body.username})
+        if(!findUser){
+            res.status(401).send({message : "username or password wrong",loginAttemp : false})
+        }else{
+
+        
         compare(req.body.password,findUser.password)
               .then(async data => {
                 if(data == true){
@@ -68,6 +73,7 @@ const userLogin = async (req,res) => {
     
     
               })
+            }
     } catch (error) {
         res.status(500).send({error})
     }
@@ -76,9 +82,13 @@ const userLogin = async (req,res) => {
 
 const bookStoresLogin = async (req,res) => {
     try {
-        console.log("user login")
         console.log(req.body)
         const findBookStores = await bookStoresModel.findOne({username : req.body.username})
+        console.log(findBookStores)
+        if(!findBookStores){
+            res.status(401).send({message : "username or password wrong",loginAttemp : false})
+        }else{
+
         compare(req.body.password,findBookStores.password)
               .then(async data => {
                 console.log(data)
@@ -86,13 +96,11 @@ const bookStoresLogin = async (req,res) => {
                     const bookStoreToken = sign(findBookStores.id,userSecretKey)
                     res.cookie('bookStoresToken',bookStoreToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
                     res.status(200).send({message : "successfull login",loginAttemp : true})
-
                 }else{
-                    res.status(401).send({message : "username or password wrong",loginAttemp : false})
+                    res.status(401).send({message : "username or password wrong",loginAttemp : false}) 
                 }
-    
-    
               })
+            }
     } catch (error) {
         res.status(500).send({error})
     }

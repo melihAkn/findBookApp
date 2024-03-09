@@ -37,6 +37,23 @@ function getCitys(city = undefined) {
 
 }
 
+function getBookCategories() {
+    const bookCategories = document.getElementById('categoryList')
+    fetch('../frontendStuff/bookCategories.json')
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(categories => {
+            let option = document.createElement('option')
+            option.text = categories
+            bookCategories.add(option)
+        })
+    })
+    .catch(e => {
+        console.error(e)
+    })
+
+
+}
 function logout(){
         fetch("/logout")
         .then(response => response.json())
@@ -54,3 +71,4 @@ function logoutEventListener(){
     const logoutLink = document.getElementById('logout')
     logoutLink.addEventListener('click',logout)
 }
+

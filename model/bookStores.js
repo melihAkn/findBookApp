@@ -52,11 +52,12 @@ const bookStore = new schema ({
 const bookStoresBook = new schema ({
     bookStoreId : {
         type : String,
-        required : true,
+        required : true
     },
     bookId : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     stockInfo : {
         type : Number,

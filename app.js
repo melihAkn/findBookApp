@@ -1,9 +1,10 @@
 //necessary packages
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
-const expHbs = require('express-handlebars');
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const mongoose = require('mongoose')
+const expHbs = require('express-handlebars')
 require('dotenv').config();
+const virusTotalApiKey = process.env.VIRUS_TOTAL_API_KEY
 //middlewares
 const layoutSetForAllRoutes = require('./middleware/ifTokenValidSetLyout')
 

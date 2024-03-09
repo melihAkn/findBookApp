@@ -20,9 +20,6 @@ fetch(getUserInfosURL)
 
 })
 .then(data => {
-  console.log(data)
-//inner html
-console.log(updateUserInfosButton)
     updateUserInfosButton.addEventListener('click', _ => {
         userActionsResult.innerHTML = `
         <iframe name="noPageReload" style="display:none;"></iframe>
@@ -89,7 +86,6 @@ console.log(updateUserInfosButton)
 
   updateForm.addEventListener('submit', _ => {
     const updateFormData = new FormData(updateForm)
-    console.log(updateFormData)
     const newPasswordValue = newPasswordInput.value;
     const newPasswordAgainValue = newPasswordAgainInput.value;
 
@@ -121,7 +117,6 @@ console.log(updateUserInfosButton)
         })
         .then(response => response.json())
         .then(data => {
-          console.log(data)
           if(data.updated == false){
             alert(data.message)
           }else{
@@ -139,6 +134,113 @@ console.log(updateUserInfosButton)
 
 
 })
+
+addBooksButton.addEventListener('click', _ => {
+  userActionsResult.innerHTML = `
+  <iframe name="noPageReload" style="display:none;"></iframe>
+  <form id="updateForm" target = "noPageReload" action="/bookStores/addBook" method="post" enctype="multipart/form-data" >
+
+
+  <input type="file" name="images" multiple accept="image/*">
+
+  <label for="bookname"><p>book name: </p></label>
+  <input type="text" name="bookName" id="bookName" class="input" placeholder="book name"      value="deneme123"  required ><br>
+
+  <label for="bookDescription"><p>book description: </p></label>
+  <input type="text" name="bookDescription" id="bookDescription" class="input" placeholder="book description"      value="deneme123" required><br>
+            
+  <label for="book page count"><p>book page count: * </p></label>
+  <input type="text" name="bookPageCount" id="bookPageCount" class="input"     value="544" required><br>
+            <br>
+  <select class="categoryList" id="categoryList" name="category">
+    <option>select</option>
+  </select><br><br>
+
+  <label for="bookAverageRating"><p>book average rating: </p></label>
+  <input type="text" name="bookAverageRating" id="bookAverageRating"    value="5" class="input" ><br>
+
+  <label for="bookPublicationDate"><p>book publication date: </p></label>
+  <input type="date" name="bookPublicationDate" id="bookPublicationDate" class="input"  required><br>
+       
+  <label for="bookAuthor"><p>book author: </p></label>
+  <input type="text" name="bookAuthor" id="bookAuthor" class="input"  value="deneme123"  required><br>
+
+  <label for="bookISBN"><p>book ISBN: </p></label>
+  <input type="text" name="bookISBN" id="bookISBN" class="input" value="12345678912"  required><br>
+
+  <label for="stockInfo"><p>stock info: </p></label>
+  <input type="text" name="stockInfo" id="stockInfo" class="input" value="2"  required><br>
+
+  <label for="price"><p>price: </p></label>
+  <input type="text" name="price" id="price" class="input" value="252"  required><br>
+  <button class="button" id="updateButton"> UPDATE INFOS</button>
+      </form>
+  
+  
+  `
+  getBookCategories()
+    function validateForm() {
+      var files = document.querySelector('input[type="file"]').files;
+      for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          if (!file.type.startsWith('image/')) {
+              document.querySelector('input[type="file"]').value = '';
+              return false;
+          }
+      }
+      return true;
+  }
+  const updateForm = document.getElementById('updateForm')
+  updateForm.addEventListener('submit', e =>{
+    event.preventDefault()
+    const validateImages = validateForm()
+
+    const updateFormData = new FormData(updateForm)
+    const updateFormDataJSON = {
+      bookImages : updateFormData.getAll('images'),
+      bookName : updateFormData.get('bookName'),
+      bookDescription : updateFormData.get('bookDescription'),
+      bookPageCount : updateFormData.get('bookPageCount'),
+      category : updateFormData.get('category'),
+      bookAverageRating : updateFormData.get('bookAverageRating'),
+      bookPublicationDate : updateFormData.get('bookPublicationDate'),
+      bookAuthor : updateFormData.get('bookAuthor'),
+      bookISBN : updateFormData.get('bookISBN'),
+
+    }
+    console.log(updateFormData)
+    
+    if(validateImages){
+      const addBookURL = "/bookStores/addBook"
+      fetch(addBookURL,{
+        method : "POST",
+        body : updateFormData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+
+
+
+
+
+      })
+      .catch(e => console.error(e))
+
+
+
+
+    }else{
+      alert('you can upload only image files')
+    }
+
+
+  })
+
+
+})
+
+
 })
 
 
