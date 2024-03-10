@@ -2,7 +2,7 @@ const {bookStoresBookModel,bookStoresModel} = require('../model/bookStores')
 const {bookModel} = require('../model/books')
 const {compare,hash} = require('bcrypt')
 const fs = require('fs')
-
+const path = require('path')
 const profilePage = (req,res) => {
 
     res.render('./pages/bookStorePages/bookStoreProfilePage',{layout : req.layout})
@@ -32,9 +32,9 @@ const updateInfos = async (req,res) => {
             if(req.body.newPassword){
                 req.body.password = req.body.newPassword
                 await hash(req.body.password, 10).then(async function(hash) {
-                    console.log(hash);
-                    req.body.password = hash;
-                });
+                    console.log(hash)
+                    req.body.password = hash
+                })
                 const updateData = {
                     name : req.body.name,
                     username : req.body.username,
@@ -82,6 +82,30 @@ const addBook = async (req,res) => {
                 price : req.body.price
             }
         
+            const targetDirectory = path.join(__dirname, '..', 'uploads')
+            console.log(targetDirectory)
+
+            fs.readdir(targetDirectory, (err, fileList) => {
+
+                if (err) {
+                    console.error('Hata:', err)
+                    return
+             }
+
+            fileList.forEach((file) => {
+            const filePath = path.join(targetDirectory, file)
+
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error('Hata:', err)
+                    return
+            }
+
+            console.log(`${file} başarıyla silindi.`)
+        })
+    })
+})
+
             const addBookToBookStoresBook = new bookStoresBookModel(bookStoresBookData)
             await addBookToBookStoresBook.save() 
             res.status(200).send({message : "book addes successfully", error : false})
@@ -91,8 +115,10 @@ const addBook = async (req,res) => {
                 //11000 error code is duplicate key in mongodb
                 //409 conflict
                 res.status(409).send({message : "This book already exists among your added books" , error : true})
+            }else{
+                res.status(500).send({error})
             }
-            res.status(500).send({error})
+            
         }
        
     }else{
@@ -125,18 +151,18 @@ const addBook = async (req,res) => {
                 const bookImagePath = `public/uploads/${bookImagesPath}/${bookImageNumber}.${e.mimetype.split('/')[1]}`
                 fs.mkdir(imageDIR, { recursive: true }, function(err) {
                     if (err) {
-                      console.error('Error creating directory:', err);
+                      console.error('Error creating directory:', err)
                     }
                 })
                 fs.rename(e.path,bookImagePath,(err) => {
                     if (err) {
-                        console.error('file move error:', err);
-                        return;
+                        console.error('file move error:', err)
+                        return
                       }
                 })
                 imagePaths.push({imageNumber : bookImageNumber , imagePath : bookImagePath})
             bookImageNumber++
-            });
+            })
             
             const bookData = {
                 name : req.body.bookName,

@@ -1,5 +1,5 @@
 const contactModel = require('../model/contacts')
-const booksModel = require('../model/books')
+const {bookModel} = require('../model/books')
 const {bookStoresBookModel,bookStoresModel} = require('../model/bookStores')
 const {usersModel} = require('../model/users')
 const {compare,hash} = require('bcrypt')
@@ -52,7 +52,6 @@ const contactPost = async (req,res) => {
 const userLogin = async (req,res) => {
     try {
         console.log("user login")
-        console.log(req.body)
         const findUser = await usersModel.findOne({username : req.body.username})
         if(!findUser){
             res.status(401).send({message : "username or password wrong",loginAttemp : false})
@@ -82,16 +81,13 @@ const userLogin = async (req,res) => {
 
 const bookStoresLogin = async (req,res) => {
     try {
-        console.log(req.body)
         const findBookStores = await bookStoresModel.findOne({username : req.body.username})
-        console.log(findBookStores)
         if(!findBookStores){
             res.status(401).send({message : "username or password wrong",loginAttemp : false})
         }else{
 
         compare(req.body.password,findBookStores.password)
               .then(async data => {
-                console.log(data)
                 if(data == true){
                     const bookStoreToken = sign(findBookStores.id,userSecretKey)
                     res.cookie('bookStoresToken',bookStoreToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
@@ -173,6 +169,68 @@ const logout = async (req,res) => {
         console.log(error);
     }
 }
+
+const performSearch = async (req,res) => {
+    //verilen isim bilgisine gore kitapların bulunup sonrasında o verilen şehire gore  o kitaba sahip olan kırtasiye o kitapla ilgili
+    //bilgilerinin gonderilmesi
+    console.log(req.body)
+    try {
+        let books = []
+    const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
+    const findAllBooks = await bookModel.find({ name: bookNameRegex })
+    
+    const findBookStoresInSearchedCity = await bookStoresModel.find({ city: req.body.searchedCity })
+    
+    for (const bookStore of findBookStoresInSearchedCity) {
+        const bookStoresBooks = await bookStoresBookModel.find({ bookStoreId: bookStore._id })
+    
+        for (const bookStoresBook of bookStoresBooks) {
+            const foundBook = findAllBooks.find(book => book._id.toString() === bookStoresBook.bookId.toString())
+    
+            if (foundBook) {
+                const existingBookIndex = books.findIndex(book => book._id.toString() === foundBook._id.toString())
+                if (existingBookIndex !== -1) {
+                    books[existingBookIndex].bookStoreInfos.push({
+                        bookStoreId: bookStore._id,
+                        stockInfo: bookStoresBook.stockInfo,
+                        price: bookStoresBook.price
+                    })
+                } else {
+                    books.push({
+                        _id: foundBook._id,
+                        name: foundBook.name,
+                        description: foundBook.description,
+                        pageCount: foundBook.pageCount,
+                        category: foundBook.category,
+                        averageRating: foundBook.averageRating,
+                        publicationDate: foundBook.publicationDate,
+                        author: foundBook.author,
+                        ISBN: foundBook.ISBN,
+                        images: foundBook.images,
+                        isValidBook: foundBook.isValidBook,
+                        bookStoreInfos: [{
+                            bookStoreId: bookStore._id,
+                            stockInfo: bookStoresBook.stockInfo,
+                            price: bookStoresBook.price
+                        }]
+                    })
+                }
+            }
+        }
+    }
+    if(books.length == 0){
+        res.status(200).send({findAllBooks,message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false})
+        console.log("kitap bulunamadi")
+    }else{
+        res.status(200).send({books ,bookFound : true})
+    }
+    
+    } catch (error) {
+        res.status(500).send({message : "databese error",error})
+    }
+
+    
+}
 module.exports = {
     mainPage,
     booksPage,
@@ -185,5 +243,6 @@ module.exports = {
     bookStoresLogin,
     userRegister,
     bookStoreRegister,
-    logout
+    logout,
+    performSearch
 }

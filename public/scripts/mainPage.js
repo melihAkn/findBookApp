@@ -1,6 +1,6 @@
-function getCitys(city = undefined) {
+async function getCitys(city = undefined) {
     const citys = document.getElementById('citys')
-    fetch('../frontendStuff/citys.json')
+   await fetch('../frontendStuff/citys.json')
     .then(response => response.json())
     .then(data => {
         data.forEach(city => {

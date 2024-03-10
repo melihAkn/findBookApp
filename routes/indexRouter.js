@@ -24,4 +24,13 @@ indexRouter.post('/bookStoresLogin',controller.bookStoresLogin)
 // users and bookstores register
 indexRouter.post('/userRegister',controller.userRegister)
 indexRouter.post('/bookStoreRegister',controller.bookStoreRegister)
+//searching books by city and name in req.body
+indexRouter.post('/performSearch',controller.performSearch)
+
+
+
+
+
+
+
 module.exports = indexRouter;

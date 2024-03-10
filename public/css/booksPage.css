@@ -125,3 +125,28 @@ body {
     cursor: pointer;
   }
   
+
+  .card {
+    width: 220px;
+    height: 350px;
+    border: 1px solid #ccc;
+    text-align: center;
+    float: left;
+    margin: 10px;
+}
+.card img {
+    width: 220px;
+    height: 220px;
+}
+.add-to-cart-button {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    position: static;
+    display: block;
+    width: 100px;
+    margin: 10px auto;
+
+}

@@ -3,7 +3,7 @@ const userActionsResult = document.getElementById('userActionResults')
 const updateUserInfosButton = document.querySelector('#bookStoreUpdateInfos');
 const getBookStoresBooksButton = document.getElementById('bookStoreGetBooks')
 const addBooksButton = document.getElementById('bookStoreAddBooks')
-
+const getBooksButton = document.getElementById('bookStoreGetBooks')
 //fetch the user ınfos
 const getUserInfosURL = "/bookStores/getUserInfos"
 fetch(getUserInfosURL)
@@ -196,19 +196,7 @@ addBooksButton.addEventListener('click', _ => {
     const validateImages = validateForm()
 
     const updateFormData = new FormData(updateForm)
-    const updateFormDataJSON = {
-      bookImages : updateFormData.getAll('images'),
-      bookName : updateFormData.get('bookName'),
-      bookDescription : updateFormData.get('bookDescription'),
-      bookPageCount : updateFormData.get('bookPageCount'),
-      category : updateFormData.get('category'),
-      bookAverageRating : updateFormData.get('bookAverageRating'),
-      bookPublicationDate : updateFormData.get('bookPublicationDate'),
-      bookAuthor : updateFormData.get('bookAuthor'),
-      bookISBN : updateFormData.get('bookISBN'),
 
-    }
-    console.log(updateFormData)
     
     if(validateImages){
       const addBookURL = "/bookStores/addBook"
@@ -219,6 +207,7 @@ addBooksButton.addEventListener('click', _ => {
       .then(response => response.json())
       .then(data => {
         console.log(data)
+        alert(data.message)
 
 
 
@@ -238,6 +227,20 @@ addBooksButton.addEventListener('click', _ => {
   })
 
 
+})
+
+getBooksButton.addEventListener('click', _ => {
+  userActionsResult.innerHTML = `
+  <div class="card">
+    <img src="../uploads/deneme123/1.jpeg" alt="Ürün Resmi">
+    <p>book name </p>
+    <p>Price: $50</p>
+    <input type="button" class="add-to-cart-button" value = "add to cart" >
+</div>
+
+
+  `
+ 
 })
 
 
