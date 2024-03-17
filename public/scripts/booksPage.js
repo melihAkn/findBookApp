@@ -120,9 +120,19 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
             },
             body : JSON.stringify(shoppingCard)
           })
-          .then(response => response.json())
+          .then(response => {
+            console.log(response)
+            if(response.redirected == true){
+              alert("please login you are redirected in 3 seconds")
+              setTimeout(() => {
+                window.location.href = "/login"
+              }, 3000);
+            }else{
+              return response.json()
+            }
+          })
           .then(data => {
-            console.log(data)
+            alert(data.message)
 
 
           }).catch(e => console.error(e))

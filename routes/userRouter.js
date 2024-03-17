@@ -4,7 +4,11 @@ const tokenAuth = require('../middleware/tokenAuthForRoutes')
 const userRouter = Router()
 userRouter.use(tokenAuth)
 //page renders
-userRouter.get('/',controller.get)
+
+//get request
+userRouter.get('/userOrBookStoresGetCardDetails',controller.userOrBookStoresGetCardDetails)
+
+
 //post requests
 userRouter.post('/userAndBookStoresAddToCart',controller.userAndBookStoresAddToCart)
 

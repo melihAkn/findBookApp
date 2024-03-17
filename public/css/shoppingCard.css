@@ -3,17 +3,21 @@
     justify-content: center;
     margin: auto;
     width: 1200px;
-    position: relative; /* Diğer öğeleri göreceli konumlandırmak için */
+    position: relative;
 }
 
 .products {
     width: 70%;
     height: 800px;
+    overflow-y: auto;
+    max-height: 800px;
     border: dotted;
     margin-right: 1rem;
+    position: relative;
 }
 
 .orderDetails {
+    float: inline-end;
     width: 20%;
     height: 400px;
     border: dotted;
@@ -24,8 +28,9 @@
     margin-bottom: 1rem;
 }
 
-.totalPrices {
-    border: dotted;
+.bookList {
+    overflow-y: auto;
+    max-height: 300px;
     
 }
 
@@ -36,5 +41,33 @@
 
 .completeOrder,
 .continueShopping {
-    position: relative; /* .completeOrderOrContinueShoppingButtons'a göre konumlandırmak için */
+    position: relative;
 }
+
+.books {
+    position: relative;
+    height: 180px;
+    border: 1px solid gray;
+}
+
+.book-IMG {
+    width: 150px;
+    height: 150px;
+    float: left;
+    margin-right: 10px;
+}
+
+
+.bookPriceAndCount {
+    float: right;
+    display: flex;
+    margin-inline-end: 1rem;
+}
+
+.bookQuantity {
+    margin-right: 10px;
+    width: 35px;
+    height: 35px;
+}
+
+

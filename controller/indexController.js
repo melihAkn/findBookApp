@@ -181,9 +181,10 @@ const logout = async (req,res) => {
 }
 
 const performSearch = async (req,res) => {
-    //verilen isim bilgisine gore kitapların bulunup sonrasında o verilen şehire gore  o kitaba sahip olan kırtasiye o kitapla ilgili
-    //bilgilerinin gonderilmesi
-    console.log(req.body)
+    //Based on the given book name,
+    //the stationery store that owns that book according to the given city should be found,
+    //and information about that book and the stationery store related to that book should be sent.
+    // console.log(req.body)
     try {
         let books = []
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
