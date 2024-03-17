@@ -7,16 +7,13 @@ const {sign,verify} = require('jsonwebtoken')
 const userSecretKey = process.env.JWT_USER_SECRET_KEY;
 const bookStoresSecretKey = process.env.JWT_BOOKSTORES_SECRET_KEY;
 const mainPage = (req,res) => {
-  
     res.render('./pages/indexPages/mainPage',{layout : req.layout})
 }
 const booksPage = (req,res) => {
-    console.log("layout")
-    console.log(req.layout)
+
     res.render('./pages/indexPages/booksPage',{layout : req.layout})
 
 }
-
 const bookStoresPage = (req,res) => {
     
     res.render('./pages/indexPages/bookStoresPage',{layout : req.layout})
@@ -31,13 +28,26 @@ const loginPage = (req,res) => {
 const registerPage = (req,res) => {
 
     res.render('./pages/indexPages/registerPage',{layout : req.layout})
-
-
 }
 
 const contactPageRender = (req,res) => {
+    
     res.render('./pages/indexPages/contactPage',{layout : req.layout})
 }
+
+const shoppingCardPageRender = (req,res) => {
+
+    res.render('./pages/indexPages/shoppingCard',{layout : req.layout})
+}
+
+
+
+const fullBookDetails = (req,res) => {
+
+
+    res.send()
+}
+
 const contactPost = async (req,res) => {
     try {
         const contactInfo = new contactModel(req.body)
@@ -232,10 +242,13 @@ const performSearch = async (req,res) => {
     
 }
 module.exports = {
+    //page renders
     mainPage,
     booksPage,
     bookStoresPage,
     contactPageRender,
+    shoppingCardPageRender,
+    //post get or other things
     contactPost,
     loginPage,
     registerPage,
@@ -244,5 +257,6 @@ module.exports = {
     userRegister,
     bookStoreRegister,
     logout,
-    performSearch
+    performSearch,
+    fullBookDetails,
 }

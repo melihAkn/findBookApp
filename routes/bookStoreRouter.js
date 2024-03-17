@@ -29,7 +29,7 @@ bookStoreRouter.get('/getUserInfos',controller.getUserInfos)
 //post requests
 bookStoreRouter.post('/updateInfos',controller.updateInfos)
 bookStoreRouter.post('/addBook',upload.array('images',10),controller.addBook)
-
+bookStoreRouter.post('/addToCard',controller.addToCart)
 
 
 

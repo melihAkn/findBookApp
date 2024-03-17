@@ -1,19 +1,19 @@
-const {Router} = require('express');
-const controller = require('../controller/indexController');
-const indexRouter = Router();
-//const tokenAuthForRoutes = require('../middleware/tokenAuthForRoutes')
+const {Router} = require('express')
+const controller = require('../controller/indexController')
+const tokenAuth = require('../middleware/tokenAuthForRoutes')
+const indexRouter = Router()
 
 //page renders
-indexRouter.get('/',controller.mainPage);
+indexRouter.get('/',controller.mainPage)
 indexRouter.get('/books',controller.booksPage)
+indexRouter.get('/books/:bookId',controller.fullBookDetails)
 indexRouter.get('/bookStores',controller.bookStoresPage)
 indexRouter.get('/contact',controller.contactPageRender)
 indexRouter.get('/login',controller.loginPage)
 indexRouter.get('/register',controller.registerPage)
-
+indexRouter.get('/shoppingCard',controller.shoppingCardPageRender)
 //get requests
 indexRouter.get('/logout',controller.logout)
-
 
 //post requests
 //contact form
@@ -33,4 +33,4 @@ indexRouter.post('/performSearch',controller.performSearch)
 
 
 
-module.exports = indexRouter;
+module.exports = indexRouter

@@ -1,4 +1,4 @@
-const {bookStoresBookModel,bookStoresModel} = require('../model/bookStores')
+const {bookStoresBookModel,bookStoresModel,bookStoreCartModel,bookStoreOrdersModel} = require('../model/bookStores')
 const {bookModel} = require('../model/books')
 const {compare,hash} = require('bcrypt')
 const fs = require('fs')
@@ -83,12 +83,11 @@ const addBook = async (req,res) => {
             }
         
             const targetDirectory = path.join(__dirname, '..', 'uploads')
-            console.log(targetDirectory)
 
             fs.readdir(targetDirectory, (err, fileList) => {
 
                 if (err) {
-                    console.error('Hata:', err)
+                    console.error('error:', err)
                     return
              }
 
@@ -97,11 +96,11 @@ const addBook = async (req,res) => {
 
             fs.unlink(filePath, (err) => {
                 if (err) {
-                    console.error('Hata:', err)
+                    console.error('error:', err)
                     return
             }
 
-            console.log(`${file} başarıyla silindi.`)
+            console.log(`${file} deleted.`)
         })
     })
 })
@@ -118,11 +117,8 @@ const addBook = async (req,res) => {
             }else{
                 res.status(500).send({error})
             }
-            
         }
-       
     }else{
-
         try {
 
             let bookImageNumber = 1
@@ -147,8 +143,9 @@ const addBook = async (req,res) => {
             }
             //change the file directory and name uploaded by user
             req.files.forEach(e => {
-                const imageDIR = `public/uploads/${bookImagesPath}`
-                const bookImagePath = `public/uploads/${bookImagesPath}/${bookImageNumber}.${e.mimetype.split('/')[1]}`
+                const imageDIR = `public/uploads/bookImages/${bookImagesPath}`
+                const bookImagePath = `public/uploads/bookImages/${bookImagesPath}/${bookImageNumber}.${e.mimetype.split('/')[1]}`
+                console.log(imageDIR)
                 fs.mkdir(imageDIR, { recursive: true }, function(err) {
                     if (err) {
                       console.error('Error creating directory:', err)
@@ -205,10 +202,15 @@ const addBook = async (req,res) => {
     }
 }
 
+const addToCart = async (req,res) => {
 
+    console.log(req.body)
+    res.send()
+}
 module.exports = {
     profilePage,
     updateInfos,
     getUserInfos,
-    addBook
+    addBook,
+    addToCart
 }

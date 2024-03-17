@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const schema = mongoose.Schema
 
 const bookStore = new schema ({
     name :{
@@ -47,7 +47,7 @@ const bookStore = new schema ({
         required : false
     }
     
-},{collection:'bookStores', timestamps: true});
+},{collection:'bookStores', timestamps: true})
 
 const bookStoresBook = new schema ({
     bookStoreId : {
@@ -67,17 +67,99 @@ const bookStoresBook = new schema ({
     price : {
         type : Number,
         default : 0.00
-    },
+    }
 
     
-},{collection:'bookStoresBook', timestamps: true});
+},{collection:'bookStoresBook', timestamps: true})
 
-const bookStoresBookModel = mongoose.model('bookStoresBook', bookStoresBook,'bookStoresBook');
-const bookStoresModel = mongoose.model('bookStores', bookStore,'bookStores');
+const bookStoresOrder = new schema ({
+    orderNumber : {
+        type : String,
+        required : true,
+        unique :true
+    },
+    customerInfos: {
+        name: { type: String, required: true },
+        email: { type: String, required: true },
+        phoneNumber : {type : String, required : true},
+        address: { type: String, required: true },
+    },
+    items: [{
+        bookName: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true }
+    }],
+    totalAmount: {
+        type: Number,
+        required: true
+    },
+    orderStatus: {
+        type: String,
+        required : false,
+        default: 'Pending'
+    },
+    orderDate : {
+        type : Date,
+        required : false,
+        default : Date.now
+    },
+    paymentMethod: {
+        type: String,
+        required: true
+    },
+    orderRating : {
+        type : String,
+        required : false,
+        default : 0
+    },
+    customerNotes : {
+        type : String,
+        required : false,
+        default : ""
+    }
 
+},{collection:'bookStoresOrder', timestamps: true})
 
+const bookStoreCart = new schema({
+    purchasingBookstoreID : {
+        type : String,
+        required : true
+        
+    },
+    bookId : {
+        type : String,
+        required : true,
+        unique : true
+    },
+    sellerBookStoreId : {
+        type : String,
+        required : true,
+    },
+    bookPrice : {
+        type : String,
+        required : true
+    },
+    quantity : {
+        type : Number,
+        required : true,
+        default : 1
+    },
+    bookName : {
+        type : String,
+        required :true,
+        
+    }
+
+},{collection : "bookStoresCart",timestamps : true})
+
+const bookStoresBookModel = mongoose.model('bookStoresBook', bookStoresBook,'bookStoresBook')
+const bookStoresModel = mongoose.model('bookStores', bookStore,'bookStores')
+const bookStoreOrdersModel = mongoose.model('bookStoresOrder',bookStoresOrder,'bookStoresOrder')
+const bookStoreCartModel = mongoose.model('bookStoresCart',bookStoreCart,'bookStoreCart')
 
 module.exports = {
     bookStoresBookModel,
-    bookStoresModel
-};
+    bookStoresModel,
+    bookStoreOrdersModel,
+    bookStoreCartModel
+}

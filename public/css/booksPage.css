@@ -137,8 +137,12 @@ body {
 .card img {
     width: 220px;
     height: 220px;
+    cursor: pointer;
 }
-.add-to-cart-button {
+.bookName {
+  cursor: pointer;
+}
+.add-to-cart-button,.add-to-wishlist-button {
     background-color: #4CAF50;
     color: white;
     text-align: center;

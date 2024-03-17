@@ -58,12 +58,27 @@ const userShoppingCard = new schema ({
     },
     bookId : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     bookStoreId : {
         type : String,
         required : true,
     },
+    bookPrice : {
+        type : String,
+        required : true
+    },
+    quantity : {
+        type : Number,
+        required : true,
+        default : 1
+    },
+    bookName : {
+        type : String,
+        required :true,
+
+    }
     
 },{collection:'userShoppingCard', timestamps: true});
 

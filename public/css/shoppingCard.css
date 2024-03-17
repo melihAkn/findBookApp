@@ -1,0 +1,40 @@
+.shoppingCard {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: 1200px;
+    position: relative; /* Diğer öğeleri göreceli konumlandırmak için */
+}
+
+.products {
+    width: 70%;
+    height: 800px;
+    border: dotted;
+    margin-right: 1rem;
+}
+
+.orderDetails {
+    width: 20%;
+    height: 400px;
+    border: dotted;
+    position: relative;
+}
+
+.productsCount {
+    margin-bottom: 1rem;
+}
+
+.totalPrices {
+    border: dotted;
+    
+}
+
+.completeOrderOrContinueShoppingButtons {
+    position: absolute;
+    bottom: 0;
+}
+
+.completeOrder,
+.continueShopping {
+    position: relative; /* .completeOrderOrContinueShoppingButtons'a göre konumlandırmak için */
+}
