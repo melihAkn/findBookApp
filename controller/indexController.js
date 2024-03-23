@@ -122,6 +122,7 @@ const userRegister = async (req,res) => {
                 username : req.body.username,
                 email : req.body.email,
                 password : hash,
+                city : req.body.city,
                 phoneNumber : req.body.phoneNumber
             }
             const user = new usersModel(userRegisterInfos);

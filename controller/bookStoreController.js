@@ -11,8 +11,8 @@ const profilePage = (req,res) => {
 
 const getUserInfos = async (req,res) => {
     try {
-        const getBookStoreInfos = await bookStoresModel.findOne({_id : req.userId}).select("-_id -password -createdAt -updatedAt -__v")
-        const getBookStoresBooks = await bookStoresBookModel.findOne({_id : req.userId}).select("-createdAt -updatedAt -__v")
+        const getBookStoreInfos = await bookStoresModel.findOne({_id : req.userId.tokenIsValid}).select("-_id -password -createdAt -updatedAt -__v")
+        const getBookStoresBooks = await bookStoresBookModel.findOne({_id : req.userId.tokenIsValid}).select("-createdAt -updatedAt -__v")
         res.status(200).send({getBookStoreInfos,getBookStoresBooks})
     } catch (error) {
         res.status(500).send({error})
@@ -76,7 +76,7 @@ const addBook = async (req,res) => {
     if(bookIsAddedToDatabase.length > 0){
         try {
             const bookStoresBookData = {
-                bookStoreId : req.userId,
+                bookStoreId : req.userId.tokenIsValid,
                 bookId : bookIsAddedToDatabase[0]._id,
                 stockInfo : req.body.stockInfo,
                 price : req.body.price
@@ -104,10 +104,17 @@ const addBook = async (req,res) => {
         })
     })
 })
-
-            const addBookToBookStoresBook = new bookStoresBookModel(bookStoresBookData)
-            await addBookToBookStoresBook.save() 
-            res.status(200).send({message : "book addes successfully", error : false})
+            const thisBookAlreadyAdded = await bookStoresBookModel.find({bookStoreId : req.userId.tokenIsValid , bookId : bookStoresBookData.bookId})
+            console.log(thisBookAlreadyAdded)
+            if(thisBookAlreadyAdded.length > 0){
+                res.status(409).send({message : "this book already added to your book list"})
+            }else{
+                const addBookToBookStoresBook = new bookStoresBookModel(bookStoresBookData)
+                await addBookToBookStoresBook.save()
+                res.status(200).send({message : "book addes successfully", error : false})
+            }
+            
+            
         } catch (error) {
             console.error(error)
             if(error.code == 11000){
@@ -185,7 +192,7 @@ const addBook = async (req,res) => {
         
         
             const bookStoresBookData = {
-                bookStoreId : req.userId,
+                bookStoreId : req.userId.tokenIsValid,
                 bookId : addBookToDatabase._id,
                 stockInfo : req.body.stockInfo,
                 price : req.body.price
@@ -194,7 +201,7 @@ const addBook = async (req,res) => {
             const addBookToBookStoresBook = new bookStoresBookModel(bookStoresBookData)
             await addBookToBookStoresBook.save()
             
-            
+            res.send({message : "book added successfully",error : false})
         } catch (error) {
             console.error(error)
             res.status(500).send({error})

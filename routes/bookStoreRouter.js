@@ -1,9 +1,11 @@
-const {Router} = require('express');
+const {Router} = require('express')
 const controller = require('../controller/bookStoreController')
 const tokenAuth = require('../middleware/tokenAuthForRoutes')
-const bookStoreRouter = Router();
+const validBookStores = require('../middleware/tokenOwnerIsBookstore')
+const bookStoreRouter = Router()
 bookStoreRouter.use(tokenAuth)
-const multer = require('multer');
+bookStoreRouter.use(validBookStores)
+const multer = require('multer')
 const fs = require('fs');
 //multer set
 const storage = multer.diskStorage({

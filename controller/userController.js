@@ -1,18 +1,16 @@
 const {usersModel,userCartModel,userFavBooksModel} = require('../model/users')
 const {bookModel} = require('../model/books')
-
-// I think this is not belong here
-//bookstores variables should be defined here
-const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel} = require('../model/bookStores')
+// I think this is not belong here so bookstores variables should be defined here
+const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresBookModel} = require('../model/bookStores')
 //code replication in here 
 const userAndBookStoresAddToCart = async (req,res) => {
     console.log(req.body)
+    let userShoppingCardJSON
     try {
         if(req.userId.ownerOfToken === "user"){
             const findThisBook = await userCartModel.findOne({userId : req.userId.tokenIsValid,bookId : req.body.bookId})
-            console.log(findThisBook)
             if(!findThisBook){
-                const userShoppingCardJSON = {
+                 userShoppingCardJSON = {
                     userId : req.userId.tokenIsValid,
                     bookId : req.body.bookId,
                     bookStoreId : req.body.sellerBookStoreInfos.bookStoreId,
@@ -22,8 +20,9 @@ const userAndBookStoresAddToCart = async (req,res) => {
                 }
                 //save to userCart
                 const userShoppingCard = new userCartModel(userShoppingCardJSON)
-                console.log(await userShoppingCard.save())
+                await userShoppingCard.save()
             }else{
+                userCartModel.findOneAndUpdate(userShoppingCardJSON)
                findThisBook.quantity +=1
                await findThisBook.save()
             }
@@ -31,7 +30,6 @@ const userAndBookStoresAddToCart = async (req,res) => {
     
         }else if(req.userId.ownerOfToken == "bookStore"){
             const findThisBook = await bookStoreCartModel.findOne({purchasingBookstoreID : req.userId.tokenIsValid,bookId : req.body.bookId})
-            console.log(findThisBook)
             if(!findThisBook){
                 const bookStoreShoppingCardJSON = {
                     purchasingBookstoreID : req.userId.tokenIsValid,
@@ -41,17 +39,15 @@ const userAndBookStoresAddToCart = async (req,res) => {
                     quantity : req.body.quantity,
                     bookName : req.body.bookName
                 }
-                console.log("burasi")
                 //save to userCart
                 const bookStoreShoppingCard = new bookStoreCartModel(bookStoreShoppingCardJSON)
-                console.log(await bookStoreShoppingCard.save())
+                await bookStoreShoppingCard.save()
             }else{
                findThisBook.quantity +=1
                await findThisBook.save()
             }
             res.status(200).send({message : "book successfully added to cart"})
         }else{
-            console.log("login")
             res.staus(401).send({message : "please login add to cart this book"})
         }
     } catch (error) {
@@ -61,43 +57,66 @@ const userAndBookStoresAddToCart = async (req,res) => {
 }
 
 const userOrBookStoresGetCardDetails = async(req,res) => {
-    console.log(req.body)
     try {
         if(req.userId.ownerOfToken === "user"){
-
-            console.log("asd")
             const shoppingListJSON = []
             const userShoppingList =  await userCartModel.find({userId : req.userId.tokenIsValid})
-            //foreach olmalı burada
-            console.log(userShoppingList)
+            const findUser = await usersModel.findById(req.userId.tokenIsValid)
             for(item in userShoppingList){
-                console.log(item)
                 const findBook = await bookModel.findById(userShoppingList[item].bookId)
                 const findBookStore = await bookStoresModel.findById(userShoppingList[item].bookStoreId)
                 shoppingListJSON.push(
                     {
                         bookName : findBook.name,
                         bookStoreName : findBookStore.name,
+                        bookStoreId : findBookStore.id,
                         quantity : userShoppingList[item].quantity,
                         bookImages : findBook.images,
-                        bookPrice : userShoppingList[item].bookPrice
-        
+                        bookPrice : userShoppingList[item].bookPrice,
+                        otherBookStores : []
                     }
                 )
+                    const findOtherSellersOfThisBook = await bookStoresBookModel.find({bookId : findBook.id })
+                    for(let index in findOtherSellersOfThisBook){
+                        const findOtherBookStores = await bookStoresModel.findOne({_id : findOtherSellersOfThisBook[index].bookStoreId , city : findUser.city})
+                        if(findOtherBookStores.id != findBookStore.id && !shoppingListJSON[item].otherBookStores.find(store => store.id === findOtherBookStores.id && store.id == findBookStore.id)) {
+                            shoppingListJSON[item].otherBookStores.push(findOtherBookStores)
+                        }
+                    }
             }
-            
-            console.log(shoppingListJSON)
             res.status(200).send(shoppingListJSON)
         }else if(req.userId.ownerOfToken == "bookStore"){
            console.log("qwda")
         }
     } catch (error) {
         console.error(error)
-        res.status(500).send({message : "Book couldn't be added to the cart",error})
+        res.status(500).send({message : "error retrieving your shopping card data",error})
     }
+}
 
+const userOrBookStoresUpdateCardInfos = async (req,res) => {
+    res.send()
+}
+
+const userOrBookStoresDeleteItem = async (req,res) => {
+    res.send()
+}
+
+
+
+
+const userAndBookStoresCopmleteOrder = async (req,res) => {
+    let findUser
+    if(req.userId.ownerOfToken === "user"){
+        findUser = await usersModel.findById(req.userId.tokenIsValid)
+    }else if(req.userId.ownerOfToken === "bookStore"){
+        findUser = await bookStoresModel.findById(req.userId.tokenIsValid)
+    }
+//ilk once order oluşturulacak sonra req bodysindeki bookstoreid ile kayıt aranacak ve itemlar o şekilde eklenecek
+res.send()
 }
 module.exports = {
     userAndBookStoresAddToCart,
-    userOrBookStoresGetCardDetails
+    userOrBookStoresGetCardDetails,
+    userAndBookStoresCopmleteOrder
 }

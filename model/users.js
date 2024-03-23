@@ -37,10 +37,9 @@ const user = new schema ({
         default : [],
         required : false
     },
-    cart : {
-        type : [Object],
-        required : false,
-        default : []
+    city : {
+        type : String,
+        required : true
     },
     physcialAddress : {
         type : String,

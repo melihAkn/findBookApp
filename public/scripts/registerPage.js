@@ -25,6 +25,11 @@ userRegisterFormButton.addEventListener('click', _ => {
           <label for="passwordAgain">password again :</label>
         <input type="password" id="passwordAgain" name="passwordAgain" required>
         <br>
+        <label for="city">city:</label>
+        <select class="cityList" id="citys" name="city">
+            <option>select</option>
+        </select>
+        <br>
         <label for="phoneNumber">phone number:</label>
         <input type="text" id="phoneNumber" name="phoneNumber" required>
         <br>
@@ -32,6 +37,7 @@ userRegisterFormButton.addEventListener('click', _ => {
     </form>
     
     `
+    getCitys()
     const userRegisterForm = document.getElementById('userRegisterForm')
     userRegisterForm.addEventListener('submit', _ => {
         
@@ -42,6 +48,7 @@ userRegisterFormButton.addEventListener('click', _ => {
             username : userRegisterFormData.get('username'),
             email : userRegisterFormData.get('email'),
             password : userRegisterFormData.get('password'),
+            city : userRegisterFormData.get('city'),
             phoneNumber : userRegisterFormData.get('phoneNumber')
         }
         console.log(userRegisterInfos)
@@ -91,8 +98,8 @@ bookStoresRegisterFormButton.addEventListener('click', _ => {
         <br>
         <label for="city">city:</label>
         <select class="cityList" id="citys" name="city">
-        <option>select</option>
-    </select>
+            <option>select</option>
+        </select>
         <br>
         <label for="physcialAddress">physcial address:</label>
         <input type="text" id="physcialAddress" name="physcialAddress">

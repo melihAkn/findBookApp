@@ -11,7 +11,7 @@ userRouter.get('/userOrBookStoresGetCardDetails',controller.userOrBookStoresGetC
 
 //post requests
 userRouter.post('/userAndBookStoresAddToCart',controller.userAndBookStoresAddToCart)
-
+userRouter.post('/userAndBookStoresCompleteOrder',controller.userAndBookStoresCopmleteOrder)
 
 
 

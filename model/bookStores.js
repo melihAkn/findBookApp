@@ -57,7 +57,6 @@ const bookStoresBook = new schema ({
     bookId : {
         type : String,
         required : true,
-        unique : true
     },
     stockInfo : {
         type : Number,
@@ -73,10 +72,18 @@ const bookStoresBook = new schema ({
 },{collection:'bookStoresBook', timestamps: true})
 
 const bookStoresOrder = new schema ({
-    orderNumber : {
+    
+    bookStoreId : {
         type : String,
         required : true,
-        unique :true
+        unique : false
+    },
+    orderNumber : {
+        type : Number,
+        required : true,
+        unique :true,
+        default :1
+        
     },
     customerInfos: {
         name: { type: String, required: true },
@@ -91,7 +98,8 @@ const bookStoresOrder = new schema ({
     }],
     totalAmount: {
         type: Number,
-        required: true
+        required: false,
+        default : 0
     },
     orderStatus: {
         type: String,
@@ -151,6 +159,13 @@ const bookStoreCart = new schema({
     }
 
 },{collection : "bookStoresCart",timestamps : true})
+
+bookStoresOrder.pre('save', function (next) {
+    const doc = this
+    doc.orderNumber += 1
+    next()
+  })
+
 
 const bookStoresBookModel = mongoose.model('bookStoresBook', bookStoresBook,'bookStoresBook')
 const bookStoresModel = mongoose.model('bookStores', bookStore,'bookStores')
