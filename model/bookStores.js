@@ -78,6 +78,11 @@ const bookStoresOrder = new schema ({
         required : true,
         unique : false
     },
+    purchasingUserId : {
+        type : String,
+        required : true,
+        unique : false
+    },
     orderNumber : {
         type : Number,
         required : true,

@@ -56,7 +56,7 @@ fetch(getUsersOrBookStoresCardDetails)
         if(data[index].otherBookStores.length > 0){
             data[index].otherBookStores.forEach(others => {
                 otherBookStores.innerHTML += `
-                <label for="otherBookStore${others.name}">${others.name}</label>
+                <label for="otherBookStore${others.name}">${others.name} ${others.price},00 tl</label>
                 <input type="checkbox" class="otherBookStore" id="otherBookStore${index}_${count}">
                 `
                 count++
@@ -69,7 +69,15 @@ fetch(getUsersOrBookStoresCardDetails)
         totalPricesElement.textContent = "total book prices " + totalPrices + ",00 tl"
         booksCountP.textContent = "Books count : " + booksCount
 
-      
+      const bookStoresGroup = document.querySelectorAll('.otherBookStore')
+      console.log(bookStoresGroup)
+      bookStoresGroup.forEach(checkbox => {
+        checkbox.addEventListener('change', e => {
+            if(e.target.checked){
+                console.log("cek")
+            }
+        })
+      })
         
     
 
@@ -80,46 +88,85 @@ fetch(getUsersOrBookStoresCardDetails)
         const booksQuantity = document.querySelectorAll('.bookQuantity')
         const updateCardButton = document.getElementById('updateCard')
         booksQuantity.forEach(inputs => {
-            inputs.addEventListener('input', e => {
+            inputs.addEventListener('change', e => {
                 updateCardButton.hidden = false
-                console.log(e.originalTarget.parentElement.parentElement.parentElement.children[0].children[1].textContent.trim())
+              
                 for(let item in data){
                     if(data[item].bookName == e.originalTarget.parentElement.parentElement.parentElement.children[0].children[1].textContent.trim() ){
                         data[item].quantity = e.originalTarget.value
-                        console.log(data)
-                        if(data[item].quantity == 0){
-                            
-                        }
+                            const deleteItemUrl = "/user/userOrBookStoresDeleteItem"
+                            fetch(deleteItemUrl,{
+                                method : "POST",
+                                headers : {
+                                    "Content-Type": "application/json"
+                                },
+                                body : JSON.stringify(data[item])
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if(data.deleted){
+                                    alert("book deleted")
+                                    setTimeout(() => {
+                                        location.reload()
+                                    }, 1000);
+                                    
+                                }else if(data.updated){
+                                    alert("book updated")
+                                    setTimeout(() => {
+                                        location.reload()
+                                    }, 1000);
+                                }
+                            })
+                            .catch(e => {
+                                console.error(e)
+                            })
                     }
                 }
                
             })
+     
         })
-        
         
         updateCard.addEventListener('click', _ => {
             console.log(data)
+
+
+
+
+
         })
-
-
 
 
         completeOrderButton.addEventListener('click', _ => {
-            console.log(data)
-            const completeOrderURL = "/user/userAndBookStoresCompleteOrder"
-            fetch(completeOrderURL,{
-                method : "POST",
-                headers : {
-                    "Content-Type": "application/json"
-                },
-                body : JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-            })
-        })
+                let falseCount = 0
+                for(let i = 0; i < data.length; i++){
+                    for(let k = i + 1; k <= data.length - 1; k++){
+                        if(data[i].bookStoreName != data[k].bookStoreName){
+                            falseCount += 1
+                        }
+                        console.log(`[${i}] [${k}]`)
+                    }
+                }
+                if(falseCount == 0) {
+                    const userAndBookStoresCompleteOrderURL = "/user/userAndBookStoresCompleteOrder"
+                    fetch(userAndBookStoresCompleteOrderURL,{
+                        method : "POST",
+                        headers : {
+                            "Content-Type": "application/json"
+                        },
+                        body : JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        alert(data.message)
+                    })
+                    .catch(e => console.error(e))
 
+                }else{
+                    alert("You can only order books from one bookstore at a time.")
+                }
+        })
         continueShoppingButton.addEventListener('click', _ => {
             window.location.href = "/books"
         })

@@ -21,7 +21,7 @@ const getUserInfos = async (req,res) => {
 
 
 const updateInfos = async (req,res) => {
-    const userId = req.userId
+    const userId = req.userId.tokenIsValid
     console.log(userId)
     try {
         const findUser = await bookStoresModel.findById(userId)

@@ -7,12 +7,14 @@ userRouter.use(tokenAuth)
 
 //get request
 userRouter.get('/userOrBookStoresGetCardDetails',controller.userOrBookStoresGetCardDetails)
-
-
+userRouter.get('/profile',controller.userProfilePageRender)
+userRouter.get('/getUserInfos',controller.getUserInfos)
+userRouter.get('/getUserOrders',controller.getUserOrders)
 //post requests
+userRouter.post('/UpdateInfos',controller.updateInfos)
 userRouter.post('/userAndBookStoresAddToCart',controller.userAndBookStoresAddToCart)
 userRouter.post('/userAndBookStoresCompleteOrder',controller.userAndBookStoresCopmleteOrder)
-
+userRouter.post('/userOrBookStoresDeleteItem',controller.userOrBookStoresDeleteItem)
 
 
 
