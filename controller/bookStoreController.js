@@ -1,4 +1,5 @@
 const {bookStoresBookModel,bookStoresModel,bookStoreCartModel,bookStoreOrdersModel} = require('../model/bookStores')
+const {usersModel} = require('../model/users')
 const {bookModel} = require('../model/books')
 const {compare,hash} = require('bcrypt')
 const fs = require('fs')
@@ -209,6 +210,60 @@ const addBook = async (req,res) => {
     }
 }
 
+const getOrders = async (req,res) => {
+    try {
+        
+  
+    const getOrders = await bookStoreOrdersModel.find({bookStoreId : req.userId.tokenIsValid})
+    const bookStoreOrder = []
+    for(let item in getOrders){
+        bookStoreOrder.push({
+            userInfos : {
+                userFullName : getOrders[item].customerInfos.name,
+                deliverAddress : getOrders[item].customerInfos.address,
+                userPhoneNumber : getOrders[item].customerInfos.phoneNumber,
+                userEmail : getOrders[item].customerInfos.email,
+            },
+            orderItems : [],
+            orderDetails : {
+                paymentMethod : getOrders[item].paymentMethod,
+                totalAmount : getOrders[item].totalAmount,
+                totalPrice : 0,
+                orderStatus : getOrders[item].orderStatus,
+                orderId : getOrders[item].id
+            }
+        })
+        for(let book in getOrders[item].items){
+            bookStoreOrder[item].orderItems.push({
+                bookName : getOrders[item].items[book].bookName,
+                quantity : getOrders[item].items[book].quantity,
+                price : getOrders[item].items[book].price,
+                bookISBN : getOrders[item].items[book].bookISBN
+            })
+        }
+    }
+    console.log(bookStoreOrder)
+    res.status(200).send({bookStoreOrder})
+} catch (error) {
+    console.error(error)
+        res.status(500).send({error})
+}
+}
+
+const updateOrderStatus = async (req,res) => {
+
+    try {
+    console.log(req.body)
+    const updateOrderStatus = await bookStoreOrdersModel.findByIdAndUpdate(req.body.orderId, {$set : {orderStatus : req.body.orderStatus}}, {
+        new: true
+      })
+    res.status(200).send({message : "order status was updated",updated : true})
+    } catch (error) {
+        console.error(error)
+        res.status(500).send({updated : false, error})
+    }
+}
+
 const addToCart = async (req,res) => {
 
     console.log(req.body)
@@ -219,5 +274,7 @@ module.exports = {
     updateInfos,
     getUserInfos,
     addBook,
-    addToCart
+    addToCart,
+    getOrders,
+    updateOrderStatus
 }

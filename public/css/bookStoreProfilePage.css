@@ -20,4 +20,28 @@
     overflow-y: scroll;
 }
 
+.orders {
+    width: 800px;
+    position: relative;
+    display: flex;
+    margin : auto;
 
+}
+
+.userInfos {
+    width: 33%;
+    max-height: 300px;
+}
+
+.orderItems {
+    width: 33%;
+    margin: auto;
+    justify-content: center;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.orderDetails {
+    width: 33%;
+    max-height: 300px;
+}

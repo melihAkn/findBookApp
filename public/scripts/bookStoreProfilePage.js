@@ -1,9 +1,10 @@
 //html elements
 const userActionsResult = document.getElementById('userActionResults')
-const updateUserInfosButton = document.querySelector('#bookStoreUpdateInfos');
+const updateUserInfosButton = document.querySelector('#bookStoreUpdateInfos')
 const getBookStoresBooksButton = document.getElementById('bookStoreGetBooks')
 const addBooksButton = document.getElementById('bookStoreAddBooks')
 const getBooksButton = document.getElementById('bookStoreGetBooks')
+const getOrdersButton = document.getElementById('bookStoreGetOrders')
 //fetch the user ınfos
 const getUserInfosURL = "/bookStores/getUserInfos"
 fetch(getUserInfosURL)
@@ -240,6 +241,131 @@ getBooksButton.addEventListener('click', _ => {
 
 
   `
+ 
+})
+
+getOrdersButton.addEventListener('click', _ => {
+  const getBookStoreOrdersURL = "/bookstores/getOrders"
+
+  fetch(getBookStoreOrdersURL)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+    data.bookStoreOrder.forEach(allInfos=> {
+      userActionsResult.innerHTML = ""
+      userActionsResult.innerHTML += `
+      <div id="orders" class = "orders"> 
+      
+        <div id="userInfos">
+        <p> user infos </p>
+          <p> user full name : ${allInfos.userInfos.userFullName}</p>
+          <p> deliver adress : ${allInfos.userInfos.deliverAddress}</p>
+          <p> user phone number : ${allInfos.userInfos.userPhoneNumber}</p>
+          <p> user email : ${allInfos.userInfos.userEmail}</p>
+        </div>
+        <div id="orderItems" class = "orderItems">
+        <p class="orderItemsTitle"> order items </p>
+          <p> book name : ${allInfos.orderItems.bookName} </p>
+          <p> book ISBN : ${allInfos.orderItems.bookISBN} </p>
+          <p> quantity : ${allInfos.orderItems.quantity} </p>
+          <p> price : ${allInfos.orderItems.price} </p>
+        </div>
+        <div id = "orderDetails" class = "orderDetails"> 
+        <p> order details </p>
+          <p> payment : ${allInfos.orderDetails.paymentMethod} </p>
+          <p> total amount : ${allInfos.orderDetails.totalAmount} </p>
+          <p id="totalPrice"> ${allInfos.orderDetails.totalPrice} </p>
+          <p id="orderId" hidden = "true"> ${allInfos.orderDetails.orderId} </p>
+          <select id="orderStatus" >
+            <option> Pending </option>
+            <option> Preparing </option>
+            <option> On delivery </option>
+            <option> Delivered to user </option>
+          </select>
+          <input type = "button" id="updateOrderStatus" value = "update order" hidden ="true">
+       </div>
+      
+      </div>
+      <br>
+      
+      `
+      let totalPrice = 0
+      const totalPriceP = document.getElementById('totalPrice')
+      const orderItems = document.getElementById('orderItems')
+      allInfos.orderItems.forEach(item => {
+        orderItems.innerHTML = `
+        <p> book name : ${item.bookName} </p>
+        <p> book ISBN : ${item.bookISBN} </p>
+        <p> quantity : ${item.quantity} </p>
+        <p> price : ${item.price} </p>
+        <br>
+        
+        `
+        totalPrice += item.price
+      })
+      totalPriceP.textContent = "total price : " + totalPrice
+      const orderStatusSelect = document.getElementById('orderStatus')
+      const orderStatusOptions = orderStatusSelect.querySelectorAll('option')
+      let count = 0
+      orderStatusOptions.forEach(option => {
+          if(allInfos.orderDetails.orderStatus === option.value){
+              orderStatusSelect.selectedIndex = count
+          }
+          count++
+      })
+    })
+  })
+  .then( _ => {
+    const orderStatusSelect = document.querySelectorAll('#orderStatus')
+    const updateOrderStatusButton = document.getElementById('updateOrderStatus')
+    orderStatusSelect.forEach(select => {
+      let firstSelectedIndex  = select.selectedIndex
+      console.log(select.selectedIndex)
+      select.addEventListener('change', _ => {
+        updateOrderStatusButton.hidden = false
+        if(firstSelectedIndex == select.selectedIndex){
+          updateOrderStatusButton.hidden = true
+        }
+      })
+    })
+    updateOrderStatusButton.addEventListener('click', _ => {
+      const updateOrderStatus = {
+        orderId : updateOrderStatusButton.parentElement.children[4].textContent.trim(),
+        orderStatus : updateOrderStatusButton.parentElement.children[5].value.trim()
+      }
+      console.log(updateOrderStatus)
+      const updateOrderStatusURL = "/bookstores/updateOrderStatus"
+      fetch(updateOrderStatusURL,{
+        method : "POST",
+        headers : {
+          "Content-Type": "application/json"
+        },
+        body : JSON.stringify(updateOrderStatus)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        if(data.updated){
+          alert(data.message)
+        }
+        setTimeout(() => {
+          location.reload()
+        }, 500);
+        
+      })
+      .catch(e => console.error(e))
+
+
+
+
+    })
+
+
+
+
+  })
+  .catch(e => console.error(e))
+
  
 })
 

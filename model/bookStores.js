@@ -83,13 +83,6 @@ const bookStoresOrder = new schema ({
         required : true,
         unique : false
     },
-    orderNumber : {
-        type : Number,
-        required : true,
-        unique :true,
-        default :1
-        
-    },
     customerInfos: {
         name: { type: String, required: true },
         email: { type: String, required: true },
@@ -99,7 +92,8 @@ const bookStoresOrder = new schema ({
     items: [{
         bookName: { type: String, required: true },
         quantity: { type: Number, required: true },
-        price: { type: Number, required: true }
+        price: { type: Number, required: true },
+        bookISBN: { type: String, required: true }
     }],
     totalAmount: {
         type: Number,
@@ -165,11 +159,7 @@ const bookStoreCart = new schema({
 
 },{collection : "bookStoresCart",timestamps : true})
 
-bookStoresOrder.pre('save', function (next) {
-    const doc = this
-    doc.orderNumber += 1
-    next()
-  })
+
 
 
 const bookStoresBookModel = mongoose.model('bookStoresBook', bookStoresBook,'bookStoresBook')

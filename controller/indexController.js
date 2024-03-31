@@ -231,7 +231,8 @@ const performSearch = async (req,res) => {
         }
     }
     if(books.length == 0){
-        res.status(200).send({findAllBooks,message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false})
+        books = findAllBooks
+        res.status(200).send({books,message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false})
         console.log("kitap bulunamadi")
     }else{
         res.status(200).send({books ,bookFound : true})

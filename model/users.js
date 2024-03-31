@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const schema = mongoose.Schema
 
 const user = new schema ({
     nameAndSurname :{
@@ -47,7 +47,7 @@ const user = new schema ({
         default : ""
     }
     
-},{collection:'users', timestamps: true});
+},{collection:'users', timestamps: true})
 
 const userShoppingCard = new schema ({
     userId : {
@@ -79,7 +79,7 @@ const userShoppingCard = new schema ({
 
     }
     
-},{collection:'userShoppingCard', timestamps: true});
+},{collection:'userShoppingCard', timestamps: true})
 
 const userFavoritedBooks = new schema ({
     userId : {
@@ -92,16 +92,58 @@ const userFavoritedBooks = new schema ({
         required : true
     }
     
-},{collection:'userFavoritedBooks', timestamps: true});
+},{collection:'userFavoritedBooks', timestamps: true})
 
+const userBuyLaterList = new schema ({
+    userId : {
+        type : String,
+        required : true,
+        unique : false
+    },
+    quantity : {
+        type : Number,
+        required : true,
+        unique : false
+    },
+    bookId : {
+        type : String,
+        required : true,
+        unique : true
+    }
+},{collection:'userBuyLaterList', timestamps: true})
 
-const userFavBooksModel = mongoose.model('userFavBooks', userFavoritedBooks,'userFavoritedBooks');
-const userCartModel = mongoose.model('userShoppingCard', userShoppingCard,'userShoppingCard');
-const usersModel = mongoose.model('users', user,'users');
+const userWishList = new schema ({
 
+    userIds : {
+        type : [String],
+        required : true,
+        default : []
+    },
+    quantity : {
+        type : Number,
+        required : true,
+        unique : false
+    },
+    bookId : {
+        type : String,
+        required : true,
+        unique : true
+    },
+    bookName : {
+        type : String,
+        required : true,
 
+    }
+},{collection:'userWishList', timestamps: true})
+const userFavBooksModel = mongoose.model('userFavBooks', userFavoritedBooks,'userFavoritedBooks')
+const userCartModel = mongoose.model('userShoppingCard', userShoppingCard,'userShoppingCard')
+const usersModel = mongoose.model('users', user,'users')
+const userBuyLaterModel = mongoose.model('userBuyLater',userBuyLaterList,'userBuyLaterList')
+const userWishListModel = mongoose.model('userWishList',userWishList,'userWishList')
 module.exports = {
     userFavBooksModel,
     userCartModel,
-    usersModel
-};
+    usersModel,
+    userBuyLaterModel,
+    userWishListModel
+}

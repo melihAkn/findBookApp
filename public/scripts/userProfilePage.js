@@ -156,16 +156,34 @@ getUserOrdersButton.addEventListener('click' , _ => {
   fetch(getUserOrdersURL)
   .then(response => response.json())
   .then(data => {
-    console.log(data)
-
-
-
-
-
-
-
-
-
+    let totalPrice = 0
+    
+    data.forEach(e => {
+      for(let item in e.items){
+        totalPrice += e.items[item].price
+      }
+      userActionsResult.innerHTML = ""
+      userActionsResult.innerHTML += `
+      <div id="userOrders">
+      <p>seller bookstore name : ${e.bookstoreName}</p>
+      <p>bought items </p>
+      <div id="itemsList">
+      
+      </div>
+      
+      <p>order status : ${e.orderStatus}</p>
+      <p>total price : ${totalPrice}</p>
+      </div>
+      
+      `
+      const itemsList = document.getElementById('itemsList')
+      for(let item in e.items){
+        itemsList.innerHTML += `
+        <p> book name : ${e.items[item].bookName} price : ${e.items[item].price}</p>
+        
+        `
+      }
+    });
     
   })
   .catch(e => console.error(e))

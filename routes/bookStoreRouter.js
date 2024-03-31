@@ -27,11 +27,12 @@ bookStoreRouter.get('/profile',controller.profilePage)
 
 //get requests
 bookStoreRouter.get('/getUserInfos',controller.getUserInfos)
-
+bookStoreRouter.get('/getOrders',controller.getOrders)
 //post requests
 bookStoreRouter.post('/updateInfos',controller.updateInfos)
 bookStoreRouter.post('/addBook',upload.array('images',10),controller.addBook)
 bookStoreRouter.post('/addToCard',controller.addToCart)
+bookStoreRouter.post('/updateOrderStatus',controller.updateOrderStatus)
 
 
 

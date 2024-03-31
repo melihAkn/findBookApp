@@ -37,6 +37,7 @@ fetch(getUsersOrBookStoresCardDetails)
                 <div class="bookPriceAndCount">
                     <input type="number" class="bookQuantity" value="${e.quantity}" min="0" max="100">
                     <p class="bookPrice">${e.bookPrice},00</p>
+                    <input type="button" id="buyLater" value = "buy later">
                 </div>
                 <div class = "otherBookStores${index} otherBookStoresGroup" id="otherBookStores${index}">
             </div>
@@ -65,6 +66,7 @@ fetch(getUsersOrBookStoresCardDetails)
 
         count = 1
 
+       
         })
         totalPricesElement.textContent = "total book prices " + totalPrices + ",00 tl"
         booksCountP.textContent = "Books count : " + booksCount
@@ -73,9 +75,8 @@ fetch(getUsersOrBookStoresCardDetails)
       console.log(bookStoresGroup)
       bookStoresGroup.forEach(checkbox => {
         checkbox.addEventListener('change', e => {
-            if(e.target.checked){
-                console.log("cek")
-            }
+        
+
         })
       })
         
@@ -94,32 +95,8 @@ fetch(getUsersOrBookStoresCardDetails)
                 for(let item in data){
                     if(data[item].bookName == e.originalTarget.parentElement.parentElement.parentElement.children[0].children[1].textContent.trim() ){
                         data[item].quantity = e.originalTarget.value
-                            const deleteItemUrl = "/user/userOrBookStoresDeleteItem"
-                            fetch(deleteItemUrl,{
-                                method : "POST",
-                                headers : {
-                                    "Content-Type": "application/json"
-                                },
-                                body : JSON.stringify(data[item])
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if(data.deleted){
-                                    alert("book deleted")
-                                    setTimeout(() => {
-                                        location.reload()
-                                    }, 1000);
-                                    
-                                }else if(data.updated){
-                                    alert("book updated")
-                                    setTimeout(() => {
-                                        location.reload()
-                                    }, 1000);
-                                }
-                            })
-                            .catch(e => {
-                                console.error(e)
-                            })
+                        console.log(data[item])
+                            
                     }
                 }
                
@@ -128,15 +105,75 @@ fetch(getUsersOrBookStoresCardDetails)
         })
         
         updateCard.addEventListener('click', _ => {
-            console.log(data)
 
+            console.log(data)
+            const deleteItemUrl = "/user/userOrBookStoresUpdateOrDeleteItem"
+            fetch(deleteItemUrl,{
+                method : "POST",
+                headers : {
+                    "Content-Type": "application/json"
+                },
+                body : JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(!data.error){
+                    alert(data.message)
+                    setTimeout(() => {
+                    location.reload()
+                    }, 1000)
+                }else{
+                    alert(data.error)
+                }
+                 
+                                    
+            })
+            .catch(e => {
+                console.error(e)
+            })
 
 
 
 
         })
 
+        const buyLaterButtons = document.querySelectorAll('#buyLater')
+        buyLaterButtons.forEach(buyLaterButton => {
+            buyLaterButton.addEventListener('click', _ => {
+                const buyLaterURL = "/user/buyLaterThisBook"
+                console.log(buyLaterButton.parentElement.parentElement.children[1].textContent.trim())
+                console.log(buyLaterButton.parentElement.parentElement.children[2].textContent.split(':')[1].trim())
+                for(let item in data){
+                    if(data[item].bookName == buyLaterButton.parentElement.parentElement.children[1].textContent.trim() && data[item].bookStoreName == buyLaterButton.parentElement.parentElement.children[2].textContent.split(':')[1].trim() ){
+                        console.log(data[item])
+                        fetch(buyLaterURL,{
+                            method : "POST",
+                            headers : {
+                                "Content-Type": "application/json"
+                            },
+                            body : JSON.stringify(data[item])
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message)
+                            setTimeout(() => {
+                                location.reload()
+                            }, 1000);
+                            console.log(data)
+                        })
+                        .catch(e => console.error(e))
+                    }
+                }
 
+                
+                /*
+                
+    
+    */
+    
+            })
+        })
+   
         completeOrderButton.addEventListener('click', _ => {
                 let falseCount = 0
                 for(let i = 0; i < data.length; i++){

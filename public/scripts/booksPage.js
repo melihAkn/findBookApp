@@ -20,7 +20,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
   if(data.bookFound == false){
     alert(data.message)
     bookSection.innerHTML=""
-    data.findAllBooks.forEach(e => {
+    data.books.forEach(e => {
       
       bookSection.innerHTML += `
 
@@ -58,6 +58,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
     return data
 })
 .then(returnedData => {
+  console.log(returnedData)
   //button action
   const addToCartButton = document.querySelectorAll('.add-to-cart-button')
   const addToWishListButton = document.querySelectorAll('.add-to-wishlist-button')
@@ -72,9 +73,12 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
       if(books.name == bookName){
         returnedArray.push({bookId : books._id})
         bookId = books._id
-        books.bookStoreInfos.forEach(e => {
-          bookStoreInfosArray.push(e)
-        })
+        if(books.bookStoreInfos){
+          books.bookStoreInfos.forEach(e => {
+            bookStoreInfosArray.push(e)
+          })
+        }
+       
       }
 
     })
@@ -139,21 +143,45 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
         
       })
     })
-
+    //code replication in here
   addToWishListButton.forEach(addToWishList => {
     addToWishList.addEventListener('click',_=>{
+      const bookName = addToWishList.parentElement.children[1].textContent.trim()
+      const shoppingCard = {
+        bookId : findBookId(bookName).bookId,
+        quantity : 1,
+        bookName
 
+      }
+          //add to user wishlist
+          const addToWishListURL = "/user/userAndBookStoresWishList"
+          fetch(addToWishListURL,{
+            method : "POST",
+            headers : {
+              "Content-Type": "application/json"
+            },
+            body : JSON.stringify(shoppingCard)
+          })
+          .then(response => {
+            console.log(response)
+            if(response.redirected == true){
+              alert("please login you are redirected in 3 seconds")
+              setTimeout(() => {
+                window.location.href = "/login"
+              }, 3000);
+            }else{
+              return response.json()
+            }
+          })
+          .then(data => {
+            alert(data.message)
+
+
+          }).catch(e => console.error(e))
     })
   })
-
-
-
-
 })
 .catch(e => console.log(e))
-
-
-
 
 }
 

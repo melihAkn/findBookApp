@@ -12,9 +12,11 @@ userRouter.get('/getUserInfos',controller.getUserInfos)
 userRouter.get('/getUserOrders',controller.getUserOrders)
 //post requests
 userRouter.post('/UpdateInfos',controller.updateInfos)
+userRouter.post('/buyLaterThisBook',controller.buyLaterThisBook)
+userRouter.post('/userAndBookStoresWishList',controller.addToWishList)
 userRouter.post('/userAndBookStoresAddToCart',controller.userAndBookStoresAddToCart)
 userRouter.post('/userAndBookStoresCompleteOrder',controller.userAndBookStoresCopmleteOrder)
-userRouter.post('/userOrBookStoresDeleteItem',controller.userOrBookStoresDeleteItem)
+userRouter.post('/userOrBookStoresUpdateOrDeleteItem',controller.userOrBookStoresUpdateOrDeleteItem)
 
 
 

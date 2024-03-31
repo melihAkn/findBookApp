@@ -1,4 +1,4 @@
-const {usersModel,userCartModel,userFavBooksModel} = require('../model/users')
+const {usersModel,userCartModel,userFavBooksModel,userBuyLaterModel,userWishListModel} = require('../model/users')
 const {bookModel} = require('../model/books')
 const {hash,compare} = require('bcrypt')
 const userProfilePageRender = (req,res) => {
@@ -62,8 +62,78 @@ const updateInfos = async (req,res) => {
     }
 }
 
+const buyLaterThisBook = async (req,res) => {
+    try {
+        console.log(req.body)
+        findThisBook = await userCartModel.findOne({bookName : req.body.bookName,bookStoreId : req.body.bookStoreId, bookPrice : req.body.bookPrice , quantity : req.body.quantity , userId : req.userId.tokenIsValid})
+        console.log(findThisBook)
+        const buyLaterJSON = {
+            userId : req.userId.tokenIsValid,
+            quantity : findThisBook.quantity,
+            bookId : findThisBook.bookId
 
+        }
+        console.log(buyLaterJSON)
+        const userBuyLater = new userBuyLaterModel(buyLaterJSON)
+        await userBuyLater.save()
+        await userCartModel.deleteOne(findThisBook)
+        res.status(200).send({message : "success"})
+    } catch (error) {
+        console.error(error)
+        res.status(409).send({message : "this book already in your later list",error})
+    }
+    
+    
+}
 
+const addToWishList = async (req,res) => {
+    console.log(req.body)
+    try {
+        const findWishlistBook = await userWishListModel.findOne({bookId : req.body.bookId , bookName : req.body.bookName , quantity : req.body.quantity})
+        console.log(findWishlistBook)
+        if(findWishlistBook){
+            console.log(findWishlistBook)
+            console.log(findWishlistBook.userIds)
+            let thisIdIsInDatabase = false
+            for(let item in findWishlistBook.userIds){
+                if(findWishlistBook.userIds[item] == req.userId.tokenIsValid){
+                    thisIdIsInDatabase = true
+                }
+            }
+            if(thisIdIsInDatabase){
+                throw new Error("this book already in your wishlist")
+            }else{
+                findWishlistBook.userIds.push(req.userId.tokenIsValid)
+                await findWishlistBook.save()
+            }
+           
+        }else{
+            const wishlistJSON = {
+                userIds : [req.userId.tokenIsValid],
+                quantity : req.body.quantity,
+                bookId : req.body.bookId,
+                bookName : req.body.bookName
+            }
+            const saveWishlist = new userWishListModel(wishlistJSON)
+            await saveWishlist.save()
+
+        }
+        res.status(200).send({message : "book was added to a wishlist if any bookstore was added this book, you get notification"})
+    } catch (error) {
+        console.error(error)
+        if(error.code == 11000){
+            res.status(409).send({message : "this book already in your wishlist",error})
+        }else{
+
+        
+        res.status(500).send({message : error.message,error})
+        }
+        
+    }   
+// bu kitap zaten istek listesinde bulunuyorsa userids alanına kullanıcı id si eklenir ve eğer bu kitap sisteme eklenirse buradaki kullanıcılara bildirim gider
+    res.send()
+
+}
 
 // I think this is not belong here so bookstores variables should be defined here
 const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresBookModel} = require('../model/bookStores')
@@ -131,6 +201,7 @@ const userOrBookStoresGetCardDetails = async(req,res) => {
                 const findBookStore = await bookStoresModel.findById(userShoppingList[item].bookStoreId)
                 shoppingListJSON.push(
                     {
+                        bookId : findBook.id,
                         bookName : findBook.name,
                         bookStoreName : findBookStore.name,
                         bookStoreId : findBookStore.id,
@@ -163,21 +234,23 @@ const userOrBookStoresGetCardDetails = async(req,res) => {
     }
 }
 //bookstore update
-const userOrBookStoresUpdateCardInfos = async (req,res) => {
-    res.send()
-}
+
 //quantity update
-const userOrBookStoresDeleteItem = async (req,res) => {
+const userOrBookStoresUpdateOrDeleteItem = async (req,res) => {
+    console.log(req.body)
     try {
-        if(req.body.quantity == 0){
-            await userCartModel.findOneAndDelete({bookName : req.body.bookName , bookStoreId : req.body.bookStoreId , bookPrice : req.body.bookPrice , userId : req.userId.tokenIsValid})
-            res.status(200).send({message : "this book was deleted" , deleted : true}) 
-        }else{
-            await userCartModel.findOneAndUpdate({bookName : req.body.bookName , bookStoreId : req.body.bookStoreId , bookPrice : req.body.bookPrice , userId : req.userId.tokenIsValid} , {$set : {quantity : parseInt(req.body.quantity)}}, { new: true })
-            res.status(200).send({message : "this book was updated" , updated : true})
+        for(let item in req.body){
+            if(parseInt(req.body[item].quantity) == 0){
+                await userCartModel.findOneAndDelete({bookName : req.body[item].bookName , bookStoreId : req.body[item].bookStoreId , bookPrice : req.body[item].bookPrice , userId : req.userId.tokenIsValid})
+            }else{
+                //if req.body book quantity is bigger than bookstores stock set the quantity bookstores book quantity
+                await userCartModel.findOneAndUpdate({bookName : req.body[item].bookName , bookStoreId : req.body[item].bookStoreId , bookPrice : req.body[item].bookPrice , userId : req.userId.tokenIsValid} , {$set : {quantity : parseInt(req.body[item].quantity)}}, { new: true })
+            }
+
         }
+        res.status(200).send({message : "cart was updated successfully"})
     } catch (error) {
-        res.status(500).send({error , deleted : false , updated : false})
+        res.status(500).send({error})
     }
    
 }
@@ -190,7 +263,7 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
     try {
         if(req.userId.ownerOfToken === "user"){
             findUser = await usersModel.findById(req.userId.tokenIsValid)
-            //console.log(req.body)
+            console.log(req.body)
             //get total Amount
             let totalAmount = 0
             for(const item in req.body){
@@ -207,20 +280,23 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
                 },
                 items : [],
                 totalAmount,
-                paymentMethod : "cash on delivery"
+                paymentMethod : "cash on delivery",
             }
             for (const item in req.body){
+                const findBook = await bookModel.findById(req.body[item].bookId)
+                console.log(findBook)
                 customerOrder.items.push({
                     bookName : req.body[item].bookName,
                     quantity : req.body[item].quantity,
-                    price : req.body[item].bookPrice
+                    price : req.body[item].bookPrice,
+                    bookISBN : findBook.ISBN               
                 })
 
             }
             console.log(customerOrder)
             const createOrder = new bookStoreOrdersModel(customerOrder)
             await createOrder.save()
-            console.log(createOrder)
+            //console.log(createOrder)
             const deleteUserShoppingCard = await userCartModel.deleteMany({userId : req.userId.tokenIsValid})
 
             res.status(200).send({message : "order created successfully you can show order infos profile page"})
@@ -270,11 +346,13 @@ module.exports = {
     userProfilePageRender,
     getUserInfos,
     updateInfos,
+    addToWishList,
     //bookstores and user routes maybe not belong here I dont know
     userAndBookStoresAddToCart,
     userOrBookStoresGetCardDetails,
     userAndBookStoresCopmleteOrder,
-    userOrBookStoresDeleteItem,
-    getUserOrders
+    userOrBookStoresUpdateOrDeleteItem,
+    getUserOrders,
+    buyLaterThisBook
     
 }
