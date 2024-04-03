@@ -143,7 +143,8 @@ const userAndBookStoresAddToCart = async (req,res) => {
     let userShoppingCardJSON
     try {
         if(req.userId.ownerOfToken === "user"){
-            const findThisBook = await userCartModel.findOne({userId : req.userId.tokenIsValid,bookId : req.body.bookId})
+            const findThisBook = await userCartModel.findOne({userId : req.userId.tokenIsValid,bookId : req.body.bookId ,bookStoreId : req.body.sellerBookStoreInfos.bookStoreId})
+            console.log(findThisBook)
             if(!findThisBook){
                  userShoppingCardJSON = {
                     userId : req.userId.tokenIsValid,
@@ -190,6 +191,21 @@ const userAndBookStoresAddToCart = async (req,res) => {
     }
 }
 
+const userAndBookStoresAddToFavorite = async (req,res) => {
+    try {
+        const favoriteBook = {
+            userId : req.userId.tokenIsValid,
+            bookId : req.body.bookId
+        }
+        const addToFavorite = new userFavBooksModel(favoriteBook)
+        await addToFavorite.save()
+        res.status(200).send({message : "this book added to a favorite"})
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send({message : "there was an error" , error})
+    }
+}
 const userOrBookStoresGetCardDetails = async(req,res) => {
     try {
         if(req.userId.ownerOfToken === "user"){
@@ -235,7 +251,6 @@ const userOrBookStoresGetCardDetails = async(req,res) => {
 }
 //bookstore update
 
-//quantity update
 const userOrBookStoresUpdateOrDeleteItem = async (req,res) => {
     console.log(req.body)
     try {
@@ -349,6 +364,7 @@ module.exports = {
     addToWishList,
     //bookstores and user routes maybe not belong here I dont know
     userAndBookStoresAddToCart,
+    userAndBookStoresAddToFavorite,
     userOrBookStoresGetCardDetails,
     userAndBookStoresCopmleteOrder,
     userOrBookStoresUpdateOrDeleteItem,

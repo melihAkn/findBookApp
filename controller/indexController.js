@@ -43,10 +43,10 @@ const shoppingCardPageRender = (req,res) => {
 
 
 const fullBookDetails = (req,res) => {
+    res.render('./pages/indexPages/detailedBooksPage')
 
-
-    res.send()
 }
+
 
 const contactPost = async (req,res) => {
     try {
@@ -188,6 +188,10 @@ const performSearch = async (req,res) => {
     // console.log(req.body)
     try {
         let books = []
+    // using a regular expression created from the 'bookName' value in the request body.
+    // If 'bookName' is not empty, a case-insensitive regular expression is created to match 'bookName' value.
+    // If 'bookName' is empty, the regular expression '/./' is used to match any character.
+    
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
     const findAllBooks = await bookModel.find({ name: bookNameRegex })
     
@@ -204,6 +208,7 @@ const performSearch = async (req,res) => {
                 if (existingBookIndex !== -1) {
                     books[existingBookIndex].bookStoreInfos.push({
                         bookStoreId: bookStore._id,
+                        bookStoreName : bookStore.name,
                         stockInfo: bookStoresBook.stockInfo,
                         price: bookStoresBook.price
                     })
@@ -222,6 +227,7 @@ const performSearch = async (req,res) => {
                         isValidBook: foundBook.isValidBook,
                         bookStoreInfos: [{
                             bookStoreId: bookStore._id,
+                            bookStoreName : bookStore.name,
                             stockInfo: bookStoresBook.stockInfo,
                             price: bookStoresBook.price
                         }]
@@ -239,6 +245,7 @@ const performSearch = async (req,res) => {
     }
     
     } catch (error) {
+        console.error(error)
         res.status(500).send({message : "databese error",error})
     }
 

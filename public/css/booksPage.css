@@ -154,3 +154,137 @@ body {
     margin: 10px auto;
 
 }
+
+
+
+/* detailed books page css */
+
+
+.goBackButton{
+  position: relative;
+  display: flex;
+  margin: auto;
+}
+
+.container {
+  width: 1000px;
+  border: gray;
+  border-style: solid;
+  position: relative;
+  display: flex;
+  margin : auto;
+}
+
+.imagesSlider {
+  width: 25%;
+}
+
+.bookInfos {
+  margin: 1rem;
+  margin-top: 1rem;
+  width: 50%;
+}
+
+.otherBookInfos {
+  margin-top: 1rem;
+  width: 20%;
+}
+
+.bookBuy {
+  margin: 1rem;
+  margin-top: 1rem;
+  width: 25%;
+}
+
+
+/* comment section */
+.commentSection {
+  justify-content: center;
+  margin: auto;
+  text-align: center;
+}
+
+.commentTitle {
+  margin-bottom: 20px;
+  width: 1000px;
+  justify-content: center;
+  margin: auto;
+}
+.newCommentText{
+  font-size: 10px;
+  padding: 10px;
+  width: 50%;
+  box-sizing: border-box;
+}
+.commentTitle h2 {
+  margin-bottom: 10px;
+}
+
+.addComment {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.addComment:hover {
+  background-color: #0056b3;
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comment {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 80%;
+  max-width: 600px;
+  text-align: left;
+}
+
+.commentOwner {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.username {
+  font-weight: bold;
+  
+}
+
+.commentİnteract {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.yesButton,
+.noButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.yesButton:hover,
+.noButton:hover {
+  background-color: #0056b3;
+}
+
+.otherBookStores {
+  border: 1px solid #ddd;
+  height: 300px;
+  max-height: 300px;
+  overflow-y: scroll;
+}

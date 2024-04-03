@@ -58,7 +58,6 @@ const userShoppingCard = new schema ({
     bookId : {
         type : String,
         required : true,
-        unique : true
     },
     bookStoreId : {
         type : String,

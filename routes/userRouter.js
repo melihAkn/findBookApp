@@ -15,6 +15,7 @@ userRouter.post('/UpdateInfos',controller.updateInfos)
 userRouter.post('/buyLaterThisBook',controller.buyLaterThisBook)
 userRouter.post('/userAndBookStoresWishList',controller.addToWishList)
 userRouter.post('/userAndBookStoresAddToCart',controller.userAndBookStoresAddToCart)
+userRouter.post('/userAndBookStoresAddFavorite',controller.userAndBookStoresAddToFavorite)
 userRouter.post('/userAndBookStoresCompleteOrder',controller.userAndBookStoresCopmleteOrder)
 userRouter.post('/userOrBookStoresUpdateOrDeleteItem',controller.userOrBookStoresUpdateOrDeleteItem)
 
