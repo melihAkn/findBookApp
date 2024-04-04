@@ -56,27 +56,14 @@ async function placeDetailedBook(bookObject) {
        </div>
     
        <br>
-       <div class="commentsList">
-           <div class="comment">
-               <div class="commentOwner">
-                   <p class="username">kitapkurdu2779</p>
-                   <p class="commentDate">22 Şubat 2024</p>
-               </div>
-               <p class="commentText">
-                   yorum yorum yorum yorum
-               </p>
-               <div class="commentİnteract">
-                   <p>Do you agree with this comment?</p>
-                   <button type="button" class="yesButton" id="yesButton">yes (0)</button>
-                   <button type="button" class="noButton" id="noButton">no (0)</button>
-               </div>
-           </div>
+       <div class="commentsList" id = "commentsList">
+           
        </div>
 </div>
 
    
    `
- 
+
 
 
 
@@ -104,7 +91,6 @@ async function placeDetailedBook(bookObject) {
        })
      })
    })
-   console.log(checkboxes)
    //finish html adding so event listeners should be above this line
    const addToCartButton = document.getElementById('addToCart')
    const addToFavoriteButton = document.getElementById('addToFavorite')
@@ -118,7 +104,6 @@ async function placeDetailedBook(bookObject) {
     }
     checkboxes.forEach(checkbox => {
       if(checkbox.checked == true){
-        console.log(checkbox)
         const getSelectedBookStoreInfos = bookObject.bookStoreInfos.find(e => e.bookStoreId === checkbox.value)
         if(getSelectedBookStoreInfos){
           shoppingCard.sellerBookStoreInfos = getSelectedBookStoreInfos
@@ -183,15 +168,83 @@ async function placeDetailedBook(bookObject) {
 
 
     })
-   
+
+    const commentLists = document.getElementById('commentsList')
+    const getCommentsForThisBook = "/getComments"
+    const bookInfos = {
+     bookId : bookObject._id
+    }
+   fetch(getCommentsForThisBook,{
+       method : "POST",
+       headers : {
+         "Content-Type": "application/json"
+       },
+       body : JSON.stringify(bookInfos)
+   })
+   .then(response => response.json())
+   .then(data => {
+    data.findBookComments.forEach(e => {
+      commentLists.innerHTML += `
+      <div class="comment">
+      <div class="commentOwner">
+          <p class="username">${e.commentOwnerUsername}</p>
+          <p class="commentDate">${e.createdAt}</p>
+      </div>
+      <p class="commentText">
+          ${e.commentText}
+      </p>
+      <div class="commentİnteract">
+          <p>Do you agree with this comment?</p>
+          <button type="button" class="yesButton" id="yesButton">yes ${e.yesCount}</button>
+          <button type="button" class="noButton" id="noButton">no ${e.noCount}</button>
+      </div>
+  </div>
+      `
+    })
      
+   })
+   .catch(e => console.error(e))
    //commnet section add comment 
    const newCommentText = document.getElementById('newCommentText')
    const addCommnet = document.getElementById('addComment')
+   
    const yesButton = document.getElementById('yesButton')
    const noButton = document.getElementById('noButton')
    addCommnet.addEventListener('click', asyc_ => {
-
+    const comment = {
+      commentText : newCommentText.value,
+      bookId : bookObject._id
+    }
+    const addCommentBookURL = "/user/addComment"
+    fetch(addCommentBookURL , {
+      method : "POST",
+      headers : {
+        "Content-Type": "application/json"
+      },
+      body : JSON.stringify(comment)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      alert(data.message)
+      commentLists.innerHTML += `
+      <div class="comment">
+               <div class="commentOwner">
+                   <p class="username">${data.newComment.commentOwnerUsername}</p>
+                   <p class="commentDate">${data.newComment.createdAt}</p>
+               </div>
+               <p class="commentText">
+                   ${data.newComment.commentText}
+               </p>
+               <div class="commentİnteract">
+                   <p>Do you agree with this comment?</p>
+                   <button type="button" class="yesButton" id="yesButton">yes ${data.newComment.yesCount}</button>
+                   <button type="button" class="noButton" id="noButton">no ${data.newComment.noCount}</button>
+               </div>
+           </div>
+      `
+    })
+    .catch(e => console.error(e))
 
 
    })
@@ -278,7 +331,6 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
   }
 
 
-  console.log(bookSection)
   bookNameP.forEach(bookNames => {
     bookNames.addEventListener('click' ,_ => {
       const bookName =bookNames.parentElement.children[1].textContent.trim()

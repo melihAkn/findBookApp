@@ -1,5 +1,5 @@
 const {usersModel,userCartModel,userFavBooksModel,userBuyLaterModel,userWishListModel} = require('../model/users')
-const {bookModel} = require('../model/books')
+const {bookModel,bookCommentsModel} = require('../model/books')
 const {hash,compare} = require('bcrypt')
 const userProfilePageRender = (req,res) => {
     res.render('./pages/userPages/userProfilePage',{layout : req.layout})
@@ -133,6 +133,38 @@ const addToWishList = async (req,res) => {
 // bu kitap zaten istek listesinde bulunuyorsa userids alanına kullanıcı id si eklenir ve eğer bu kitap sisteme eklenirse buradaki kullanıcılara bildirim gider
     res.send()
 
+}
+
+
+
+const addComment = async (req,res) => {
+    try {
+        // users cannot add comment more than 1 to books
+        if(req.userId.ownerOfToken === "user"){
+            const findUser = await usersModel.findById(req.userId.tokenIsValid)
+            if(!findUser){
+                res.status(401).send({message : "please login add a comment for books"})
+            }else{
+                console.log(req.body)
+                const comment = {
+                    bookId : req.body.bookId,
+                    commentOwnerId : findUser.id,
+                    commentOwnerUsername : findUser.username,
+                    commentText : req.body.commentText
+                }
+                const newComment = new bookCommentsModel(comment)
+                await newComment.save()
+                console.log(newComment)
+                res.status(200).send({message : "comment added succesfully",newComment})
+            }
+        
+        }else{
+            res.status(401).send({message : "only users can add comment books"})
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).send({error})
+    }
 }
 
 // I think this is not belong here so bookstores variables should be defined here
@@ -362,6 +394,7 @@ module.exports = {
     getUserInfos,
     updateInfos,
     addToWishList,
+    addComment,
     //bookstores and user routes maybe not belong here I dont know
     userAndBookStoresAddToCart,
     userAndBookStoresAddToFavorite,

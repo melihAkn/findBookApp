@@ -26,7 +26,8 @@ indexRouter.post('/userRegister',controller.userRegister)
 indexRouter.post('/bookStoreRegister',controller.bookStoreRegister)
 //searching books by city and name in req.body
 indexRouter.post('/performSearch',controller.performSearch)
-
+//get comments for books
+indexRouter.post('/getComments',controller.getComments)
 
 
 

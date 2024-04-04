@@ -1,5 +1,5 @@
 const contactModel = require('../model/contacts')
-const {bookModel} = require('../model/books')
+const {bookModel,bookCommentsModel} = require('../model/books')
 const {bookStoresBookModel,bookStoresModel} = require('../model/bookStores')
 const {usersModel} = require('../model/users')
 const {compare,hash} = require('bcrypt')
@@ -251,6 +251,19 @@ const performSearch = async (req,res) => {
 
     
 }
+
+
+
+const getComments = async (req,res) => {
+    try {
+        const findBookComments = await bookCommentsModel.find({bookId : req.body.bookId})
+        console.log(findBookComments)
+        res.status(200).send({findBookComments})
+    } catch (error) {
+        console.error(error)
+        res.status(500).send({error})
+    }
+}
 module.exports = {
     //page renders
     mainPage,
@@ -269,4 +282,5 @@ module.exports = {
     logout,
     performSearch,
     fullBookDetails,
+    getComments
 }

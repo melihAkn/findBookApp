@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const schema = mongoose.Schema
 
 const books = new schema ({
     name :{
@@ -60,10 +60,44 @@ const books = new schema ({
         default : false,
     }
     
-},{collection:'books', timestamps: true});
+},{collection:'books', timestamps: true})
 
-const bookModel = mongoose.model('books', books,'books');
+
+const bookComments = new schema ({
+    bookId : {
+        type : String,
+        required : true,
+        unique : false
+    },
+    commentOwnerId : {
+        type : String,
+        required : true,
+        unique : false
+    },
+    commentOwnerUsername : {
+        type : String,
+        required : true,
+        unique : false
+    },
+    commentText : {
+        type : String,
+        required : true
+    },
+    yesCount : {
+      type : Number,
+      required : false,
+      default : 0,  
+    },
+    noCount : {
+        type : Number,
+        required : false,
+        default : 0,
+    },
+
+},{collection : 'bookComments' , timestamps : true})
+const bookModel = mongoose.model('books', books,'books')
+const bookCommentsModel = mongoose.model('bookComments',bookComments,'bookComments')
 module.exports = {
-    bookModel
-
-};
+    bookModel,
+    bookCommentsModel
+}
