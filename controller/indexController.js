@@ -42,10 +42,7 @@ const shoppingCardPageRender = (req,res) => {
 
 
 
-const fullBookDetails = (req,res) => {
-    res.render('./pages/indexPages/detailedBooksPage')
 
-}
 
 
 const contactPost = async (req,res) => {
@@ -73,7 +70,6 @@ const userLogin = async (req,res) => {
                 if(data == true){
                     
                     const userToken = sign(findUser.id,userSecretKey)
-                    console.log(userToken)
                     res.cookie('userToken',userToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
                     res.status(200).send({message : "successfull login",loginAttemp : true})
                 }else{
@@ -99,7 +95,7 @@ const bookStoresLogin = async (req,res) => {
         compare(req.body.password,findBookStores.password)
               .then(async data => {
                 if(data == true){
-                    const bookStoreToken = sign(findBookStores.id,userSecretKey)
+                    const bookStoreToken = sign(findBookStores.id,bookStoresSecretKey)
                     res.cookie('bookStoresToken',bookStoreToken,{maxAge : 3600000,httpOnly: true, path: '/',secure : false});
                     res.status(200).send({message : "successfull login",loginAttemp : true})
                 }else{
@@ -113,10 +109,8 @@ const bookStoresLogin = async (req,res) => {
 
 }
 const userRegister = async (req,res) => {
-    console.log(req.body)
     const password = req.body.password
           hash(password, 10).then(async function(hash) {
-            console.log(hash);
             const userRegisterInfos = {
                 nameAndSurname : req.body.name + " " + req.body.surname,
                 username : req.body.username,
@@ -137,10 +131,8 @@ const userRegister = async (req,res) => {
 }
 
 const bookStoreRegister = async (req,res) => {
-    console.log(req.body)
     const password = req.body.password
           hash(password, 10).then(async function(hash) {
-            console.log(hash);
             const bookStoresRegisterInfos = {
                 name : req.body.name,
                 username : req.body.username,
@@ -177,7 +169,7 @@ const logout = async (req,res) => {
         }
     
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -191,7 +183,6 @@ const performSearch = async (req,res) => {
     // using a regular expression created from the 'bookName' value in the request body.
     // If 'bookName' is not empty, a case-insensitive regular expression is created to match 'bookName' value.
     // If 'bookName' is empty, the regular expression '/./' is used to match any character.
-    
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
     const findAllBooks = await bookModel.find({ name: bookNameRegex })
     
@@ -257,7 +248,6 @@ const performSearch = async (req,res) => {
 const getComments = async (req,res) => {
     try {
         const findBookComments = await bookCommentsModel.find({bookId : req.body.bookId})
-        console.log(findBookComments)
         res.status(200).send({findBookComments})
     } catch (error) {
         console.error(error)
@@ -281,6 +271,5 @@ module.exports = {
     bookStoreRegister,
     logout,
     performSearch,
-    fullBookDetails,
     getComments
 }

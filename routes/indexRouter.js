@@ -6,7 +6,6 @@ const indexRouter = Router()
 //page renders
 indexRouter.get('/',controller.mainPage)
 indexRouter.get('/books',controller.booksPage)
-indexRouter.get('/books/:bookId',controller.fullBookDetails)
 indexRouter.get('/bookStores',controller.bookStoresPage)
 indexRouter.get('/contact',controller.contactPageRender)
 indexRouter.get('/login',controller.loginPage)

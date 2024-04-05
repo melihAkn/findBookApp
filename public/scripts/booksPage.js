@@ -4,7 +4,7 @@ const searchText = document.getElementById('searchInput')
 const citySelectOption = document.getElementById('citys')
 const bookSection = document.getElementById('booksSection')
 const searchContainer = document.getElementById('searchContainer')
-async function placeDetailedBook(bookObject) {
+async function placeDetailedBook(bookObject,returnedData) {
   let bookSectionInnerHtmlBackup = bookSection.innerHTML
 
 
@@ -63,11 +63,6 @@ async function placeDetailedBook(bookObject) {
 
    
    `
-
-
-
-
-
    const otherBookStores = document.getElementById('otherBookStores')
    bookObject.bookStoreInfos.forEach(bookStore => {
    
@@ -250,67 +245,12 @@ async function placeDetailedBook(bookObject) {
    })
   const goBackButton = document.getElementById('goBackButton')
   goBackButton.addEventListener('click',async _ => {
-    await performSearch()
+    bookSection.innerHTML = bookSectionInnerHtmlBackup
+    await addEventListenersForBooks(returnedData)
     searchContainer.style.display = ""
   })
-
  }
-
-async function performSearch(city = citySelectOption.value,bookName = ""){
-  const searchParameters = {
-    bookName,
-    searchedCity : city
-}
-  fetch('/performSearch',{
-    method : "POST",
-    headers : {
-      "Content-Type": "application/json"
-    },
-    body : JSON.stringify(searchParameters)
-})
-.then(response => response.json())
-.then(data => {
-  if(data.bookFound == false){
-    alert(data.message)
-    bookSection.innerHTML=""
-    data.books.forEach(e => {
-      
-      bookSection.innerHTML += `
-
-      <div class="card">
-        <img src="${e.images[0][0].path.replace('public/','../')}" alt="book image">
-        <p>${e.name} </p>
-        <p>0.00 tl</p>
-        <input type="button" class="add-to-wishlist-button" value = "add to wishList"  id = "addToWishlist">
-      </div>
-      
-      `
-    })
-   
-  }else if(data.bookFound == true){
-
-    bookSection.innerHTML=""
-    data.books.forEach(e => {
-      bookSection.innerHTML += `
-
-      <div class="card">
-        <img src="${e.images[0][0].path.replace('public/','../')}" alt="book image" class="bookIMG">
-        <p class="bookName">${e.name} </p>
-        <p>${e.bookStoreInfos[0].price}.00 tl</p>
-        <input type="button" class="add-to-cart-button" value = "add to cart"  id = "addToCart">
-      </div>
-      
-      `
-    })
-  }
-
-
-
-
-    
-    return data
-})
-.then(returnedData => {
+async function addEventListenersForBooks (returnedData) {
   console.log(returnedData)
   //button action
   const addToCartButton = document.querySelectorAll('.add-to-cart-button')
@@ -336,7 +276,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
       const bookName =bookNames.parentElement.children[1].textContent.trim()
       const returnedBookData = findBookId(bookName)[0]
       searchContainer.style.display = "none"
-      placeDetailedBook(returnedBookData)
+      placeDetailedBook(returnedBookData,returnedData)
     })
   })
 
@@ -345,7 +285,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
       const bookName = bookImg.parentElement.children[1].textContent.trim()
       const returnedBookData = findBookId(bookName)[0]
       searchContainer.style.display = "none"
-      placeDetailedBook(returnedBookData)
+      placeDetailedBook(returnedBookData,returnedData)
       
     })
 
@@ -426,6 +366,63 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
           }).catch(e => console.error(e))
     })
   })
+}
+async function performSearch(city = citySelectOption.value,bookName = ""){
+  const searchParameters = {
+    bookName,
+    searchedCity : city
+}
+  fetch('/performSearch',{
+    method : "POST",
+    headers : {
+      "Content-Type": "application/json"
+    },
+    body : JSON.stringify(searchParameters)
+})
+.then(response => response.json())
+.then(data => {
+  if(data.bookFound == false){
+    alert(data.message)
+    bookSection.innerHTML=""
+    data.books.forEach(e => {
+      
+      bookSection.innerHTML += `
+
+      <div class="card">
+        <img src="${e.images[0][0].path.replace('public/','../')}" alt="book image">
+        <p>${e.name} </p>
+        <p>0.00 tl</p>
+        <input type="button" class="add-to-wishlist-button" value = "add to wishList"  id = "addToWishlist">
+      </div>
+      
+      `
+    })
+   
+  }else if(data.bookFound == true){
+
+    bookSection.innerHTML=""
+    data.books.forEach(e => {
+      bookSection.innerHTML += `
+
+      <div class="card">
+        <img src="${e.images[0][0].path.replace('public/','../')}" alt="book image" class="bookIMG">
+        <p class="bookName">${e.name} </p>
+        <p>${e.bookStoreInfos[0].price}.00 tl</p>
+        <input type="button" class="add-to-cart-button" value = "add to cart"  id = "addToCart">
+      </div>
+      
+      `
+    })
+  }
+
+
+
+
+    
+    return data
+})
+.then(async returnedData => {
+  await addEventListenersForBooks(returnedData)
 })
 .catch(e => console.log(e))
 

@@ -124,14 +124,9 @@ const addToWishList = async (req,res) => {
         if(error.code == 11000){
             res.status(409).send({message : "this book already in your wishlist",error})
         }else{
-
-        
         res.status(500).send({message : error.message,error})
         }
-        
     }   
-// bu kitap zaten istek listesinde bulunuyorsa userids alanına kullanıcı id si eklenir ve eğer bu kitap sisteme eklenirse buradaki kullanıcılara bildirim gider
-    res.send()
 
 }
 
