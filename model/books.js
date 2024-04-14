@@ -45,7 +45,7 @@ const books = new schema ({
     ISBN : {
         type : String,
         maxLength : 13,
-        minLength : 11,
+        minLength : 10,
         required : true,
         unique : true
     },

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const schema = mongoose.Schema
 
 const contact = new schema ({
     name : {
@@ -21,7 +21,9 @@ const contact = new schema ({
         maxlength : 256
     }
     
-},{collection:'contact', timestamps: true});
+},{collection:'contact', timestamps: true})
 
-const contacts = mongoose.model('contacts', contact,'contact');
-module.exports = contacts;
+const contactsModel = mongoose.model('contacts', contact,'contact')
+module.exports = {
+    contactsModel
+}

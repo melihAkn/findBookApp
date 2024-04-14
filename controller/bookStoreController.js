@@ -179,16 +179,16 @@ const addBook = async (req,res) => {
                 author : req.body.bookAuthor,
                 ISBN : req.body.bookISBN,
                 isValidBook : false,
-                images : []
             }
            
-            imagePaths.forEach(e => {
-        
-                bookData.images.push({index : e.imageNumber , path : e.imagePath})
-        
-            })
+            
             //database insert
             const addBookToDatabase = new bookModel(bookData)
+            imagePaths.forEach(e => {
+        
+                addBookToDatabase.images.push({index : e.imageNumber , path : e.imagePath})
+        
+            })
             await addBookToDatabase.save()
         
         

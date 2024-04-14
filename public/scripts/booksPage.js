@@ -6,15 +6,12 @@ const bookSection = document.getElementById('booksSection')
 const searchContainer = document.getElementById('searchContainer')
 async function placeDetailedBook(bookObject,returnedData) {
   let bookSectionInnerHtmlBackup = bookSection.innerHTML
-
-
-
    bookSection.innerHTML = `
    
 <input type="button" value="go back to books page" class="goBackButton" id="goBackButton">
 <div class="container">
    <div id="imagesSlider">
-       <img src="${bookObject.images[0][0].path.replace('public/','../')}" width="350px" height="500px">
+       <img src="${bookObject.images[0][0].replace('public/','../')}" width="350px" height="500px">
    </div>
 
 
@@ -63,6 +60,7 @@ async function placeDetailedBook(bookObject,returnedData) {
 
    
    `
+   
    const otherBookStores = document.getElementById('otherBookStores')
    bookObject.bookStoreInfos.forEach(bookStore => {
    
@@ -112,7 +110,6 @@ async function placeDetailedBook(bookObject,returnedData) {
            body : JSON.stringify(shoppingCard)
          })
          .then(response => {
-           console.log(response)
            if(response.redirected == true){
              alert("please login you are redirected in 3 seconds")
              setTimeout(() => {
@@ -146,7 +143,6 @@ async function placeDetailedBook(bookObject,returnedData) {
            body : JSON.stringify(favoriteCard)
          })
          .then(response => {
-           console.log(response)
            if(response.redirected == true){
              alert("please login you are redirected in 3 seconds")
              setTimeout(() => {
@@ -220,7 +216,6 @@ async function placeDetailedBook(bookObject,returnedData) {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data)
       alert(data.message)
       commentLists.innerHTML += `
       <div class="comment">
@@ -251,7 +246,6 @@ async function placeDetailedBook(bookObject,returnedData) {
   })
  }
 async function addEventListenersForBooks (returnedData) {
-  console.log(returnedData)
   //button action
   const addToCartButton = document.querySelectorAll('.add-to-cart-button')
   const addToWishListButton = document.querySelectorAll('.add-to-wishlist-button')
@@ -311,7 +305,6 @@ async function addEventListenersForBooks (returnedData) {
             body : JSON.stringify(shoppingCard)
           })
           .then(response => {
-            console.log(response)
             if(response.redirected == true){
               alert("please login you are redirected in 3 seconds")
               setTimeout(() => {
@@ -349,7 +342,6 @@ async function addEventListenersForBooks (returnedData) {
             body : JSON.stringify(shoppingCard)
           })
           .then(response => {
-            console.log(response)
             if(response.redirected == true){
               alert("please login you are redirected in 3 seconds")
               setTimeout(() => {
@@ -368,6 +360,7 @@ async function addEventListenersForBooks (returnedData) {
   })
 }
 async function performSearch(city = citySelectOption.value,bookName = ""){
+  console.time()
   const searchParameters = {
     bookName,
     searchedCity : city
@@ -381,6 +374,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
 })
 .then(response => response.json())
 .then(data => {
+  console.log(data)
   if(data.bookFound == false){
     alert(data.message)
     bookSection.innerHTML=""
@@ -389,7 +383,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
       bookSection.innerHTML += `
 
       <div class="card">
-        <img src="${e.images[0][0].path.replace('public/','../')}" alt="book image">
+        <img src="${e.images[0][0].replace('public/','../')}" alt="book image">
         <p>${e.name} </p>
         <p>0.00 tl</p>
         <input type="button" class="add-to-wishlist-button" value = "add to wishList"  id = "addToWishlist">
@@ -405,7 +399,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
       bookSection.innerHTML += `
 
       <div class="card">
-        <img src="${e.images[0][0].path.replace('public/','../')}" alt="book image" class="bookIMG">
+        <img src="${e.images[0][0].replace('public/','../')}" alt="book image" class="bookIMG">
         <p class="bookName">${e.name} </p>
         <p>${e.bookStoreInfos[0].price}.00 tl</p>
         <input type="button" class="add-to-cart-button" value = "add to cart"  id = "addToCart">
@@ -422,6 +416,7 @@ async function performSearch(city = citySelectOption.value,bookName = ""){
     return data
 })
 .then(async returnedData => {
+  console.timeEnd()
   await addEventListenersForBooks(returnedData)
 })
 .catch(e => console.log(e))

@@ -10,40 +10,27 @@ const mainPage = (req,res) => {
     res.render('./pages/indexPages/mainPage',{layout : req.layout})
 }
 const booksPage = (req,res) => {
-
     res.render('./pages/indexPages/booksPage',{layout : req.layout})
-
 }
+
 const bookStoresPage = (req,res) => {
-    
     res.render('./pages/indexPages/bookStoresPage',{layout : req.layout})
 }
 
 const loginPage = (req,res) => {
-
     res.render('./pages/indexPages/loginPage',{layout : req.layout})
-
 }
-
 const registerPage = (req,res) => {
-
     res.render('./pages/indexPages/registerPage',{layout : req.layout})
 }
 
 const contactPageRender = (req,res) => {
-    
     res.render('./pages/indexPages/contactPage',{layout : req.layout})
 }
 
 const shoppingCardPageRender = (req,res) => {
-
     res.render('./pages/indexPages/shoppingCard',{layout : req.layout})
 }
-
-
-
-
-
 
 const contactPost = async (req,res) => {
     try {
@@ -108,6 +95,7 @@ const bookStoresLogin = async (req,res) => {
     }
 
 }
+
 const userRegister = async (req,res) => {
     const password = req.body.password
           hash(password, 10).then(async function(hash) {
@@ -174,15 +162,17 @@ const logout = async (req,res) => {
 }
 
 const performSearch = async (req,res) => {
+    // getting all books in given city and name and find selling bookstore every book then send to the client side
     //Based on the given book name,
     //the stationery store that owns that book according to the given city should be found,
     //and information about that book and the stationery store related to that book should be sent.
-    // console.log(req.body)
     try {
+
         let books = []
     // using a regular expression created from the 'bookName' value in the request body.
     // If 'bookName' is not empty, a case-insensitive regular expression is created to match 'bookName' value.
     // If 'bookName' is empty, the regular expression '/./' is used to match any character.
+   
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
     const findAllBooks = await bookModel.find({ name: bookNameRegex })
     
@@ -196,6 +186,7 @@ const performSearch = async (req,res) => {
     
             if (foundBook) {
                 const existingBookIndex = books.findIndex(book => book._id.toString() === foundBook._id.toString())
+                // -1 mean book cannot be found
                 if (existingBookIndex !== -1) {
                     books[existingBookIndex].bookStoreInfos.push({
                         bookStoreId: bookStore._id,
@@ -225,6 +216,10 @@ const performSearch = async (req,res) => {
                     })
                 }
             }
+
+        }
+        for(index in books){
+            books[index].bookStoreInfos.sort((a,b) => a.price - b.price)
         }
     }
     if(books.length == 0){
@@ -242,8 +237,6 @@ const performSearch = async (req,res) => {
 
     
 }
-
-
 
 const getComments = async (req,res) => {
     try {
