@@ -44,15 +44,16 @@ findBookInMyCity.set('views', './views')
 findBookInMyCity.set('view options', { layout: 'main' })
 
 
-const port = 3000
+
 
 //database connect
 const connectionString = process.env.CONNECTION_STRING
 
-  mongoose.connect(connectionString).then(console.log('connection is success')).catch(e => console.log(e))
+mongoose.connect(connectionString).then(console.log('connection is success')).catch(e => console.log(e))
   
-  
-  
+const port = 3000
   findBookInMyCity.listen(port , _ => {
     console.log(`server running on ${port}`)
 })
+
+module.exports = findBookInMyCity

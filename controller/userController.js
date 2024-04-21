@@ -1,6 +1,7 @@
-const {usersModel,userCartModel,userFavBooksModel,userBuyLaterModel,userWishListModel} = require('../model/users')
-const {bookModel,bookCommentsModel} = require('../model/books')
-const {hash,compare} = require('bcrypt')
+const { usersModel,userCartModel,userFavBooksModel,userBuyLaterModel,userWishListModel } = require('../model/users')
+const { bookModel,bookCommentsModel } = require('../model/books')
+const { hash,compare } = require('bcrypt')
+const { createUser, getUser, modifyUser, removeUser } = require('../services/userService')
 const userProfilePageRender = (req,res) => {
     res.render('./pages/userPages/userProfilePage',{layout : req.layout})
 }
@@ -129,6 +130,7 @@ const addToWishList = async (req,res) => {
     }   
 
 }
+
 
 
 

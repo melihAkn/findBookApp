@@ -3,6 +3,7 @@ todo.md
 systemAnalyzeAndDesignPattern.md
 uploads/
 /public/uploads/
+rest.http
 # Logs
 logs
 *.log

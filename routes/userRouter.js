@@ -11,6 +11,7 @@ userRouter.get('/profile',controller.userProfilePageRender)
 userRouter.get('/getUserInfos',controller.getUserInfos)
 userRouter.get('/getUserOrders',controller.getUserOrders)
 //post requests
+
 userRouter.post('/UpdateInfos',controller.updateInfos)
 userRouter.post('/buyLaterThisBook',controller.buyLaterThisBook)
 userRouter.post('/userAndBookStoresWishList',controller.addToWishList)

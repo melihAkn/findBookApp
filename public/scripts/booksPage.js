@@ -174,7 +174,7 @@ async function placeDetailedBook(bookObject,returnedData) {
    })
    .then(response => response.json())
    .then(data => {
-    data.findBookComments.forEach(e => {
+    data.forEach(e => {
       commentLists.innerHTML += `
       <div class="comment">
       <div class="commentOwner">
