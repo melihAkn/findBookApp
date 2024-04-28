@@ -1,6 +1,6 @@
 const contactModel = require('../model/contacts')
 const { createUser, loginUser, loginBookStore, createBookStore } = require('../services/userService')
-const { searchedBookInfos , getBookComments } = require('../services/ProductService')
+const { searchedBookInfos , getBookComments , getCountBooks } = require('../services/ProductService')
 //page renders
 const mainPage = (req,res) => {
     res.render('./pages/indexPages/mainPage',{layout : req.layout})
@@ -129,8 +129,9 @@ const performSearch = async (req,res,next) => {
         err.code = 400
         return next(err)
     }
+    console.log(req.body)
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
-    const searchForBooks =  await searchedBookInfos({name : bookNameRegex , city : req.body.searchedCity})
+    const searchForBooks =  await searchedBookInfos({name : bookNameRegex , city : req.body.searchedCity ,skip : req.body.skip,limit : req.body.limit})
     res.status(200).send(searchForBooks)
     
 }
@@ -138,6 +139,11 @@ const performSearch = async (req,res,next) => {
 const getComments = async (req,res,next) => {
     const bookComments = await getBookComments({bookId : req.body.bookId})
     res.status(200).send(bookComments)
+}
+
+const getBooksCount = async (req,res,next) => {
+    const getBc = await getCountBooks()
+    res.status(200).send({bookC : getBc})
 }
 module.exports = {
     //page renders
@@ -156,5 +162,6 @@ module.exports = {
     bookStoreRegister,
     logout,
     performSearch,
-    getComments
+    getComments,
+    getBooksCount
 }

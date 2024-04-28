@@ -288,3 +288,36 @@ body {
   max-height: 300px;
   overflow-y: scroll;
 }
+.booksSection {
+  float: none;
+}
+.booksSection:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+  .pagingSection {
+    display: flex;
+    justify-content: center;
+    float : none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+
+.pagingSection a {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border: 1px solid #ddd;
+}
+
+.pagingSection a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+.pagingSection .active {
+  background-color: #007bff;
+  color: white;
+}

@@ -1,167 +1,43 @@
 const { usersModel,userCartModel,userFavBooksModel,userBuyLaterModel,userWishListModel } = require('../model/users')
 const { bookModel,bookCommentsModel } = require('../model/books')
 const { hash,compare } = require('bcrypt')
-const { createUser, getUser, modifyUser, removeUser } = require('../services/userService')
+const { userInfos , updateUserInfos, buyLaterBook, addWishList, addCommentToBooks } = require('../services/userService')
 const userProfilePageRender = (req,res) => {
     res.render('./pages/userPages/userProfilePage',{layout : req.layout})
 }
 const getUserInfos = async (req,res) => {
-    try {
-        const getUserInfos = await usersModel.findOne({_id : req.userId.tokenIsValid}).select("-_id -password -createdAt -updatedAt -__v")
-        res.status(200).send(getUserInfos)
-    } catch (error) {
-        res.status(500).send({error})
-    }
+    const getUserInfos = await userInfos({_id : req.userId.tokenIsValid})
+    console.log(getUserInfos)
+    res.status(200).send(getUserInfos[0])
 }
 const updateInfos = async (req,res) => {
-    const userId = req.userId.tokenIsValid
-    console.log(userId)
-    try {
-        const findUser = await usersModel.findById(userId)
-        console.log(findUser)
-        const compareUserPassword = await compare(req.body.password , findUser.password)
-        if(compareUserPassword){
-            //update
-            if(req.body.newPassword){
-                req.body.password = req.body.newPassword
-                await hash(req.body.password, 10).then(async function(hash) {
-                    console.log(hash)
-                    req.body.password = hash
-                })
-                const updateData = {
-                    name : req.body.name,
-                    username : req.body.username,
-                    password : req.body.password,
-                    email : req.body.email,
-                    phoneNumber : req.body.phoneNumber,
-                    physcialAddress : req.body.physcialAddress
-                }
-                //update here
-                const updateUserInfos = await usersModel.updateOne({_id : userId},updateData)
-            }else{
-                //direct update
-                const updateData = {
-                    name : req.body.name,
-                    username : req.body.username,
-                    email : req.body.email,
-                    phoneNumber : req.body.phoneNumber,
-                    physcialAddress : req.body.physcialAddress
-                }
-                //update here
-                const updateUserInfos = await usersModel.updateOne({_id : userId},updateData)
-            }
-            res.status(200).send({message : "infos updated successfully", updated : true})
-        }
-        else{
-            res.status(400).send({message : "wrong password" , updated : compareUserPassword})
-        }
-        
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({error})
-    }
+    const update = await updateUserInfos({userId : req.userId.tokenIsValid , body : req.body})
+    res.status(200).send(update)
 }
 
 const buyLaterThisBook = async (req,res) => {
-    try {
-        console.log(req.body)
-        findThisBook = await userCartModel.findOne({bookName : req.body.bookName,bookStoreId : req.body.bookStoreId, bookPrice : req.body.bookPrice , quantity : req.body.quantity , userId : req.userId.tokenIsValid})
-        console.log(findThisBook)
-        const buyLaterJSON = {
-            userId : req.userId.tokenIsValid,
-            quantity : findThisBook.quantity,
-            bookId : findThisBook.bookId
-
-        }
-        console.log(buyLaterJSON)
-        const userBuyLater = new userBuyLaterModel(buyLaterJSON)
-        await userBuyLater.save()
-        await userCartModel.deleteOne(findThisBook)
-        res.status(200).send({message : "success"})
-    } catch (error) {
-        console.error(error)
-        res.status(409).send({message : "this book already in your later list",error})
-    }
+    const buyLaterFunc = await buyLaterBook({id : req.userId.tokenIsValid , body : req.body})
+    res.status(200).send(buyLaterFunc)
     
     
 }
 
 const addToWishList = async (req,res) => {
-    console.log(req.body)
-    try {
-        const findWishlistBook = await userWishListModel.findOne({bookId : req.body.bookId , bookName : req.body.bookName , quantity : req.body.quantity})
-        console.log(findWishlistBook)
-        if(findWishlistBook){
-            console.log(findWishlistBook)
-            console.log(findWishlistBook.userIds)
-            let thisIdIsInDatabase = false
-            for(let item in findWishlistBook.userIds){
-                if(findWishlistBook.userIds[item] == req.userId.tokenIsValid){
-                    thisIdIsInDatabase = true
-                }
-            }
-            if(thisIdIsInDatabase){
-                throw new Error("this book already in your wishlist")
-            }else{
-                findWishlistBook.userIds.push(req.userId.tokenIsValid)
-                await findWishlistBook.save()
-            }
-           
-        }else{
-            const wishlistJSON = {
-                userIds : [req.userId.tokenIsValid],
-                quantity : req.body.quantity,
-                bookId : req.body.bookId,
-                bookName : req.body.bookName
-            }
-            const saveWishlist = new userWishListModel(wishlistJSON)
-            await saveWishlist.save()
 
-        }
-        res.status(200).send({message : "book was added to a wishlist if any bookstore was added this book, you get notification"})
-    } catch (error) {
-        console.error(error)
-        if(error.code == 11000){
-            res.status(409).send({message : "this book already in your wishlist",error})
-        }else{
-        res.status(500).send({message : error.message,error})
-        }
-    }   
+    console.log(req.body)
+    const addWishListFunc = await addWishList({id : req.userId.tokenIsValid , body : req.body})
+    res.status(200).send(addWishListFunc)
 
 }
 
-
-
-
 const addComment = async (req,res) => {
-    try {
         // users cannot add comment more than 1 to books
         if(req.userId.ownerOfToken === "user"){
-            const findUser = await usersModel.findById(req.userId.tokenIsValid)
-            if(!findUser){
-                res.status(401).send({message : "please login add a comment for books"})
-            }else{
-                console.log(req.body)
-                const comment = {
-                    bookId : req.body.bookId,
-                    commentOwnerId : findUser.id,
-                    commentOwnerUsername : findUser.username,
-                    commentText : req.body.commentText
-                }
-                const newComment = new bookCommentsModel(comment)
-                await newComment.save()
-                console.log(newComment)
-                res.status(200).send({message : "comment added succesfully",newComment})
-            }
-        
+            const addCommentFunc = await addCommentToBooks({id : req.userId.tokenIsValid, body : req.body})
+            res.status(200).send(addCommentFunc)
         }else{
             res.status(401).send({message : "only users can add comment books"})
         }
-    } catch (error) {
-        console.error(error)
-        res.status(500).send({error})
-    }
 }
 
 // I think this is not belong here so bookstores variables should be defined here

@@ -11,15 +11,22 @@ async function addBook(bookData) {
    
 }
 
-async function searchBookByFieldName(bookData){
-    const getBooksByName = await bookModel.find(bookData)
+async function searchBookByFieldName(bookData,limitData){
+    console.log(limitData)
+    const getBooksByName = await bookModel.find(bookData).skip(limitData.start).limit(limitData.limit)
     return getBooksByName
 }
-
+async function countBooks(){
+    return await bookModel.countDocuments()
+}
 async function getCommentsByFieldName(bookData){
     const getComments = await bookCommentsModel.find(bookData)
     return getComments
 }
 
-
-module.exports = { addBook , searchBookByFieldName , getCommentsByFieldName}
+async function newComment(commentData) {
+    const newCommentModel = new bookCommentsModel(commentData)
+    await newCommentModel.save()
+    return newCommentModel
+}
+module.exports = { addBook , searchBookByFieldName , getCommentsByFieldName , newComment , countBooks}

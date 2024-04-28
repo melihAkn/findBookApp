@@ -1,12 +1,11 @@
-const { searchBookByFieldName , getCommentsByFieldName } = require('../repositories/booksRepository')
+const { searchBookByFieldName , getCommentsByFieldName , countBooks } = require('../repositories/booksRepository')
 const { getBookStoresByField, getBookStoresBookByField } = require('../repositories/bookStoreRepository')
 // bookstore ınfos
 async function searchedBookInfos(bookData) {
-    console.log(bookData)
     let books = []
-    
+    console.log(bookData)
     //const findAllBooks = await bookModel.find({ name : bookData.name })
-    const findAllBooksByName = await searchBookByFieldName({name : bookData.name })
+    const findAllBooksByName = await searchBookByFieldName({name : bookData.name },{start : bookData.skip , limit : bookData.limit})
     const findBookStoresInSearchedCity = await getBookStoresByField({ city : bookData.city })
     for (const bookStore of findBookStoresInSearchedCity) {
         //
@@ -54,15 +53,20 @@ async function searchedBookInfos(bookData) {
     }
     if(books.length == 0){
         books = findAllBooksByName
-        return { message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false }
+        return { message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false ,books}
     }else{
+        
         return {books , bookFound : true}
     }
     
 
 
 }
+async function getCountBooks(_) {
+    const bookC = await countBooks()
+    return bookC
 
+}
 async function getBookComments(bookData) {
     const getComments = await getCommentsByFieldName(bookData)
     return getComments
@@ -70,4 +74,4 @@ async function getBookComments(bookData) {
 
 
 
-module.exports = { searchedBookInfos , getBookComments }
+module.exports = { searchedBookInfos , getBookComments , getCountBooks}

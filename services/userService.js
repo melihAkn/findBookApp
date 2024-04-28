@@ -1,7 +1,8 @@
-const { addUser, getUsersByField, getUserById, updateUser, deleteUser } = require('../repositories/userRepository')
+const { addUser, getUsersByField, getUserById, updateUser, findUserCartForThisBook, deleteThisbookFromUserCart, findThisBookInWishList , addWishListThisBook, updateWishList } = require('../repositories/userRepository')
 const { addBookStore, getBookstoresById, getBookStoresByField } = require('../repositories/bookStoreRepository')
 const { hash , compare } = require('bcrypt')
 const {sign,verify} = require('jsonwebtoken')
+const { newComment } = require('../repositories/booksRepository')
 const userSecretKey = process.env.JWT_USER_SECRET_KEY
 
 //user funcs
@@ -61,6 +62,131 @@ async function loginUser(userData) {
         }
 }
 
+async function userInfos(userData) {
+  const getUser = await getUsersByField(userData)
+  console.log(getUser)
+  return getUser
+
+}
+
+async function updateUserInfos(userData) {
+  const userId = userData.userId
+
+  const findUser = await getUserById(userId)
+  
+
+  const compareUserPassword = compare(userData.body.password , findUser.password)
+  if(compareUserPassword){
+      //update
+      if(userData.body.newPassword){
+          userData.body.password = userData.body.newPassword
+          await hash(userData.body.password, 10).then(async function(hash) {
+              userData.body.password = hash
+          })
+          const updateData = {
+              name : userData.body.name,
+              username : userData.body.username,
+              password : userData.body.password,
+              email : userData.body.email,
+              phoneNumber : userData.body.phoneNumber,
+              physcialAddress : userData.body.physcialAddress
+          }
+          //update here
+          const updateUserInfos = await updateUser(userId,updateData)
+          
+      }else{
+          //direct update
+          const updateData = {
+              name : userData.body.name,
+              username : userData.body.username,
+              email : userData.body.email,
+              phoneNumber : userData.body.phoneNumber,
+              physcialAddress : userData.body.physcialAddress
+          }
+          //update here
+          const updateUserInfos = await updateUser(userId,updateData)
+      }
+      return {message : "Infos updated successfully" , updated : true}
+  }
+  else{
+    return {message : "wrong password" , updated : false}
+  }
+
+
+}
+
+async function buyLaterBook(userData) {
+  const cartData = {
+    bookName : userData.body.bookName,
+    bookStoreId : userData.body.bookStoreId,
+    bookPrice : userData.body.bookPrice,
+    quantity : userData.body.quantity,
+    userId : userData.id.tokenIsValid
+  }
+  findThisBook = await findUserCartForThisBook(cartData)
+  const buyLaterJSON = {
+      userId : userData.id.tokenIsValid,
+      quantity : findThisBook.quantity,
+      bookId : findThisBook.bookId
+
+  }
+  const userBuyLater = await addBuyLaterList(buyLaterJSON)
+  await deleteThisbookFromUserCart(findThisBook)
+  return {message : "this book added to your later list"}
+
+
+}
+
+async function addWishList(userData) {
+    const findWishlistBook = await findThisBookInWishList(userData.body)
+    if(findWishlistBook){
+        let thisIdIsInDatabase = false
+        for(let item in findWishlistBook.userIds){
+            if(findWishlistBook.userIds[item] == userData.id){
+                thisIdIsInDatabase = true
+            }
+        }
+        if(thisIdIsInDatabase){
+          return {message : "this book already in your wishlist"}
+        }else{
+            findWishlistBook.userIds.push(userData.id)
+            await updateWishList({id :findWishlistBook.id , update : findWishlistBook})
+        }
+       
+    }else{
+        const wishlistJSON = {
+            userIds : [userData.id],
+            quantity : userData.body.quantity,
+            bookId : userData.body.bookId,
+            bookName : userData.body.bookName
+        }
+        await addWishListThisBook(wishlistJSON)
+
+    }
+    return {message : "book was added to a wishlist if any bookstore was added this book, you get notification"}
+}
+
+async function addCommentToBooks(commentData) {
+  const findUser = await getUserById(commentData.id)
+  if(!findUser){
+    return {message : "please login add a comment for books"}
+  }else{
+      const comment = {
+          bookId : commentData.body.bookId,
+          commentOwnerId : findUser.id,
+          commentOwnerUsername : findUser.username,
+          commentText : commentData.body.commentText
+      }
+      const newComment = await newComment
+      return {message : "comment added succesfully"}
+  }
+
+}
+
+
+
+
+
 
 //bookstore funcs
 async function createBookStore(bookStoreData) {
@@ -117,4 +243,18 @@ async function loginBookStore(bookStoreData) {
 }
 
 
-module.exports = { createUser, loginUser ,loginBookStore, createBookStore }
+module.exports = { 
+  createUser,
+  loginUser,
+  loginBookStore,
+  createBookStore,
+  userInfos,
+  updateUserInfos,
+  buyLaterBook,
+  addWishList,
+  addCommentToBooks
+
+
+
+
+}

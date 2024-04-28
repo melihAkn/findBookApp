@@ -16,7 +16,6 @@ async function getBookStoresByField(bookStoreData){
 }
 
 async function getBookStoresBookByField(bookStoreData){
-    console.log(bookStoreData)
     const getBookStoreBooks = await bookStoresBookModel.find(bookStoreData)
     return getBookStoreBooks
 }
