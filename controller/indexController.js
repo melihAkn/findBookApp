@@ -54,7 +54,7 @@ const userLogin = async (req,res,next) => {
         res.status(401).send({message :"username or password wrong"})
     }else{
         res.cookie('userToken',userIsLoginned.cookie,{maxAge : 3600000,httpOnly: true, path: '/',secure : false})
-        res.status(200).send({message : "you are loginned redirected in 2 seconds"})
+        res.status(200).send({message : "you are loginned redirected in 2 seconds" , loginAttemp : true})
     }
 }
 
@@ -79,8 +79,8 @@ const bookStoresLogin = async (req,res,next) => {
     if(!userIsLoginned.loginAttemp){
         res.status(401).send({message :"username or password wrong"})
     }else{
-        res.cookie('bookStoreToken',userIsLoginned.cookie,{maxAge : 3600000,httpOnly: true, path: '/',secure : false})
-        res.status(200).send({message : "you are loginned redirected in 2 seconds"})
+        res.cookie('bookStoresToken',userIsLoginned.cookie,{maxAge : 3600000,httpOnly: true, path: '/',secure : false})
+        res.status(200).send({message : "you are loginned redirected in 2 seconds" , loginAttemp : true})
     }
 }
 
@@ -129,7 +129,6 @@ const performSearch = async (req,res,next) => {
         err.code = 400
         return next(err)
     }
-    console.log(req.body)
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
     const searchForBooks =  await searchedBookInfos({name : bookNameRegex , city : req.body.searchedCity ,skip : req.body.skip,limit : req.body.limit})
     res.status(200).send(searchForBooks)

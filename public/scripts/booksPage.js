@@ -365,7 +365,7 @@ async function addEventListenersForBooks (returnedData) {
   })
 }
 
-async function performSearch(city = citySelectOption.value,bookName = "" ,skip = 0 , limit = 20){
+async function performSearch(city = citySelectOption.value,bookName = "" ,skip = 0 , limit = 21){
   console.time()
   const searchParameters = {
     bookName,
@@ -382,7 +382,6 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,skip =
 })
 .then(response => response.json())
 .then(data => {
-  console.log(data)
   
   if(data.bookFound == false){
     alert(data.message)
@@ -448,13 +447,11 @@ async function placePagingButton(){
     document.getElementById('page1').classList.add('active')
     Array.from(placePagingButtons.children).forEach(pagingButton => {
       if(pagingButton.id == "prev" || pagingButton.id == "next"){
-
       }else{
         pagingButton.addEventListener('click', async  _ => {
           Array.from(placePagingButtons.children).forEach(btn => {
             btn.classList.remove("active")
         })
-
           await performSearch(undefined,undefined,pagingButton.id.replace("page","") * 20)
           pagingButton.classList.add("active")
         })
@@ -465,13 +462,10 @@ async function placePagingButton(){
 }
 searchButton.addEventListener('click', _ => {
     performSearch(citys.value,searchText.value)
-   
 })
 let pagingButtonsCount = 0
 document.addEventListener('DOMContentLoaded', async _ => {
   await getCitys()
-  
   await performSearch()
   await placePagingButton()
 })
-

@@ -7,7 +7,6 @@ const userProfilePageRender = (req,res) => {
 }
 const getUserInfos = async (req,res) => {
     const getUserInfos = await userInfos({_id : req.userId.tokenIsValid})
-    console.log(getUserInfos)
     res.status(200).send(getUserInfos[0])
 }
 const updateInfos = async (req,res) => {
@@ -24,7 +23,6 @@ const buyLaterThisBook = async (req,res) => {
 
 const addToWishList = async (req,res) => {
 
-    console.log(req.body)
     const addWishListFunc = await addWishList({id : req.userId.tokenIsValid , body : req.body})
     res.status(200).send(addWishListFunc)
 
@@ -44,12 +42,10 @@ const addComment = async (req,res) => {
 const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresBookModel} = require('../model/bookStores')
 //code replication in here 
 const userAndBookStoresAddToCart = async (req,res) => {
-    console.log(req.body)
     let userShoppingCardJSON
     try {
         if(req.userId.ownerOfToken === "user"){
             const findThisBook = await userCartModel.findOne({userId : req.userId.tokenIsValid,bookId : req.body.bookId ,bookStoreId : req.body.sellerBookStoreInfos.bookStoreId})
-            console.log(findThisBook)
             if(!findThisBook){
                  userShoppingCardJSON = {
                     userId : req.userId.tokenIsValid,
@@ -147,7 +143,6 @@ const userOrBookStoresGetCardDetails = async(req,res) => {
             }
             res.status(200).send(shoppingListJSON)
         }else if(req.userId.ownerOfToken == "bookStore"){
-           console.log("qwda")
         }
     } catch (error) {
         console.error(error)
@@ -164,7 +159,8 @@ const userOrBookStoresUpdateOrDeleteItem = async (req,res) => {
                 await userCartModel.findOneAndDelete({bookName : req.body[item].bookName , bookStoreId : req.body[item].bookStoreId , bookPrice : req.body[item].bookPrice , userId : req.userId.tokenIsValid})
             }else{
                 //if req.body book quantity is bigger than bookstores stock set the quantity bookstores book quantity
-                await userCartModel.findOneAndUpdate({bookName : req.body[item].bookName , bookStoreId : req.body[item].bookStoreId , bookPrice : req.body[item].bookPrice , userId : req.userId.tokenIsValid} , {$set : {quantity : parseInt(req.body[item].quantity)}}, { new: true })
+                const updateThis = await userCartModel.updateOne({bookName : req.body[item].bookName , userId : req.userId.tokenIsValid} , {$set : {quantity : parseInt(req.body[item].quantity), bookStoreId : req.body[item].bookStoreId,bookPrice : req.body[item].bookPrice}}, { new: true })
+                console.log(updateThis)
             }
 
         }
@@ -183,7 +179,6 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
     try {
         if(req.userId.ownerOfToken === "user"){
             findUser = await usersModel.findById(req.userId.tokenIsValid)
-            console.log(req.body)
             //get total Amount
             let totalAmount = 0
             for(const item in req.body){
@@ -204,7 +199,6 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
             }
             for (const item in req.body){
                 const findBook = await bookModel.findById(req.body[item].bookId)
-                console.log(findBook)
                 customerOrder.items.push({
                     bookName : req.body[item].bookName,
                     quantity : req.body[item].quantity,
@@ -213,10 +207,8 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
                 })
 
             }
-            console.log(customerOrder)
             const createOrder = new bookStoreOrdersModel(customerOrder)
             await createOrder.save()
-            //console.log(createOrder)
             const deleteUserShoppingCard = await userCartModel.deleteMany({userId : req.userId.tokenIsValid})
 
             res.status(200).send({message : "order created successfully you can show order infos profile page"})

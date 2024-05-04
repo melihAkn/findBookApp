@@ -296,15 +296,14 @@ body {
   display: table;
   clear: both;
 }
-  .pagingSection {
-    display: flex;
-    justify-content: center;
-    float : none;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
+.pagingSection {
+  display: flex;
+  justify-content: center;
+  float : none;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
   
-
 .pagingSection a {
   color: black;
   padding: 8px 16px;

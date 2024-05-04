@@ -12,7 +12,6 @@ async function addBook(bookData) {
 }
 
 async function searchBookByFieldName(bookData,limitData){
-    console.log(limitData)
     const getBooksByName = await bookModel.find(bookData).skip(limitData.start).limit(limitData.limit)
     return getBooksByName
 }

@@ -3,7 +3,6 @@ const { getBookStoresByField, getBookStoresBookByField } = require('../repositor
 // bookstore ınfos
 async function searchedBookInfos(bookData) {
     let books = []
-    console.log(bookData)
     //const findAllBooks = await bookModel.find({ name : bookData.name })
     const findAllBooksByName = await searchBookByFieldName({name : bookData.name },{start : bookData.skip , limit : bookData.limit})
     const findBookStoresInSearchedCity = await getBookStoresByField({ city : bookData.city })

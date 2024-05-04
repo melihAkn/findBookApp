@@ -4,8 +4,7 @@ const bookList = document.getElementById('bookList')
 const totalPricesElement = document.getElementById('totalPrices')
 const completeOrderButton = document.getElementById('completeOrder')
 const continueShoppingButton = document.getElementById('continueShopping')
-
-
+const updateCardButton = document.getElementById('updateCard')
 
 
 const getUsersOrBookStoresCardDetails = "/user/userOrBookStoresGetCardDetails"
@@ -27,10 +26,11 @@ fetch(getUsersOrBookStoresCardDetails)
         let totalPrices = 0
         let booksCount = data.length
         data.forEach((e , index)=> {
+            console.log(e.bookImages[0][0])
             products.innerHTML += `
             <div class="books">
-            <div>
-                <img class="book-IMG" src="${e.bookImages[0][0].path.replace('public/','../')}">
+            <div class = "allBooks">
+                <img class="book-IMG" src="${e.bookImages[0][0].replace('public/','../')}">
                 <p class="bookName">${e.bookName}</p>
                 <p class="bookStoreName">book store name : ${e.bookStoreName}</p>
              
@@ -43,7 +43,7 @@ fetch(getUsersOrBookStoresCardDetails)
             </div>
             </div>
         </div>
-    <br>
+     <br>
         
         `
         bookList.innerHTML += `
@@ -58,7 +58,7 @@ fetch(getUsersOrBookStoresCardDetails)
             data[index].otherBookStores.forEach(others => {
                 otherBookStores.innerHTML += `
                 <label for="otherBookStore${others.name}">${others.name} ${others.price},00 tl</label>
-                <input type="checkbox" class="otherBookStore" id="otherBookStore${index}_${count}">
+                <input type="checkbox" class="otherBookStore" name="bookStoresList" id="otherBookStore${index}_${count}">
                 `
                 count++
             })
@@ -70,26 +70,51 @@ fetch(getUsersOrBookStoresCardDetails)
         })
         totalPricesElement.textContent = "total book prices " + totalPrices + ",00 tl"
         booksCountP.textContent = "Books count : " + booksCount
-
-      const bookStoresGroup = document.querySelectorAll('.otherBookStore')
-      console.log(bookStoresGroup)
-      bookStoresGroup.forEach(checkbox => {
-        checkbox.addEventListener('change', e => {
+        const cards = document.querySelectorAll('.allBooks')
+        cards.forEach(card => {
+            const checkboxes = card.querySelectorAll('input[type="checkbox"][name="bookStoresList"]')
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                  checkboxes.forEach(cb => {
+                    if (cb !== this) {
+                      cb.checked = false;
+                    }
+                  })
+                })
+              })
+        })
         
+     
+      const bookStoresGroup = document.querySelectorAll('.otherBookStore')
+      
+      bookStoresGroup.forEach(checkbox => {
+        
+        checkbox.addEventListener('change', e => {
+            completeOrderButton.hidden = true
+            updateCardButton.hidden = false
+            const selectedBookStoreName = checkbox.parentElement.parentElement.children[2].textContent.replace("book store name : ","")
+            const selectedBookName = e.originalTarget.parentElement.parentElement.parentElement.children[0].children[1].textContent.trim()
+            for(let item in data){
 
+                if(data[item].bookName == selectedBookName  && data[item].bookStoreName == selectedBookStoreName ){
+                    const changedValue = e.target.previousElementSibling.textContent.split(" ")
+                    const bookStoreInfoForChange = data[item].otherBookStores.find(e => e.name == changedValue[0] && e.price == changedValue[1].split(",")[0])
+                    data[item].bookPrice = bookStoreInfoForChange.price.toString()
+                    data[item].bookStoreName = bookStoreInfoForChange.name
+                    data[item].bookStoreId = bookStoreInfoForChange._id
+                }
+            }
         })
       })
-        
-    
-
         return data
     })
     .then(data => {
         console.log(data)
         const booksQuantity = document.querySelectorAll('.bookQuantity')
-        const updateCardButton = document.getElementById('updateCard')
+        
         booksQuantity.forEach(inputs => {
             inputs.addEventListener('change', e => {
+                completeOrderButton.hidden = true
                 updateCardButton.hidden = false
               
                 for(let item in data){
@@ -120,6 +145,7 @@ fetch(getUsersOrBookStoresCardDetails)
                 if(!data.error){
                     alert(data.message)
                     setTimeout(() => {
+                        originalData = undefined
                     location.reload()
                     }, 1000)
                 }else{
