@@ -263,12 +263,11 @@ getOrdersButton.addEventListener('click', _ => {
           <p> user phone number : ${allInfos.userInfos.userPhoneNumber}</p>
           <p> user email : ${allInfos.userInfos.userEmail}</p>
         </div>
+        
         <div id="orderItems" class = "orderItems">
+        
         <p class="orderItemsTitle"> order items </p>
-          <p> book name : ${allInfos.orderItems.bookName} </p>
-          <p> book ISBN : ${allInfos.orderItems.bookISBN} </p>
-          <p> quantity : ${allInfos.orderItems.quantity} </p>
-          <p> price : ${allInfos.orderItems.price} </p>
+        
         </div>
         <div id = "orderDetails" class = "orderDetails"> 
         <p> order details </p>
@@ -293,13 +292,13 @@ getOrdersButton.addEventListener('click', _ => {
       const totalPriceP = document.getElementById('totalPrice')
       const orderItems = document.getElementById('orderItems')
       allInfos.orderItems.forEach(item => {
-        orderItems.innerHTML = `
+        orderItems.innerHTML += `
+        \n
         <p> book name : ${item.bookName} </p>
         <p> book ISBN : ${item.bookISBN} </p>
         <p> quantity : ${item.quantity} </p>
         <p> price : ${item.price} </p>
         <br>
-        
         `
         totalPrice += item.price
       })

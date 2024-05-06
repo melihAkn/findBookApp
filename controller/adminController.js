@@ -45,7 +45,7 @@ const prepareMockForBooks = async (req,res) => {
     "averageRating": (Math.random() * 5).toFixed(2),
     "author": bookAuthor,
     "ISBN" : bookISBN,
-    "images" : [bookImagesPath],
+    "images" : { path: "public/uploads/bookImages/dds/1.png", index: 1 },
     "isValidBook" : false,
     "publicationDate": `${Math.floor((Math.random() + 1) * 1050 )}-${Math.floor((Math.random() * 11) + 1 )}-${Math.floor((Math.random() * 27) + 1 )}`
   }

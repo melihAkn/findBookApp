@@ -10,6 +10,10 @@ const getUserInfos = async (req,res) => {
     res.status(200).send(getUserInfos[0])
 }
 const updateInfos = async (req,res) => {
+    console.log(req.body)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email) || !/^[a-zA-Z0-9]{3,}$/.test(req.body.username) || !/^[a-zA-Z]{3,}$/.test(req.body.name) || !/^[a-zA-Z]{3,}$/.test(req.body.surname) || !/^\+?\d{10,14}$/.test(req.body.phoneNumber) || req.body.password.length < 8 ) {
+        return res.status(400).json({ error: 'Invalid infos' })
+      }
     const update = await updateUserInfos({userId : req.userId.tokenIsValid , body : req.body})
     res.status(200).send(update)
 }

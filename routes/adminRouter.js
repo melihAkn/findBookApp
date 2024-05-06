@@ -4,9 +4,9 @@ const adminRouter = Router()
 const multer = require('multer')
 const fs = require('fs')
 
-//adminRouter.get('/prepareMockForBooks',controller.prepareMockForBooks)
-//adminRouter.get('/prepareMockForBookStores',controller.prepareMockForBookStores)
-//adminRouter.get('/prepareMockForBookStoresBooks',controller.prepareMockForBookStoresBooks)
+adminRouter.get('/prepareMockForBooks',controller.prepareMockForBooks)
+adminRouter.get('/prepareMockForBookStores',controller.prepareMockForBookStores)
+adminRouter.get('/prepareMockForBookStoresBooks',controller.prepareMockForBookStoresBooks)
 
 
 

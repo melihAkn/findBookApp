@@ -30,7 +30,7 @@ indexRouter.post('/performSearch',controller.performSearch,errorHandler)
 //get comments for books
 indexRouter.post('/getComments',controller.getComments)
 
-
+indexRouter.get('/getMostSelledBooks',controller.getMostSelledBooks)
 
 
 

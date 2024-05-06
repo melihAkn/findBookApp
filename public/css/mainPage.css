@@ -1,0 +1,125 @@
+/* 
+entire page container style start
+*/
+.container {
+    display: flex;
+}
+
+.firstSection {
+    width: 15%;
+    border: 1px solid #ccc;
+    margin-right: 0.25rem;
+    height: max-content;
+}
+
+.secondSection {
+    width: 70%;
+    border: 1px solid #ccc;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.thirdSection {
+    width: 15%;
+    margin-left: 0.25rem;
+    border: 1px solid #ccc;
+    display: inline-block;
+    height: max-content;
+}
+/* 
+entire page container style end
+*/
+
+/*
+div contents style start
+*/
+/* first section divs */
+.bookStoresOfThisMonth {
+    display: flex;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    overflow-x: auto;
+    
+}
+.bookIMG {
+    width: 120px;
+    height: 188px;
+}
+
+.popularAndRisingBooks {
+    border: 1px solid #ccc;
+    margin-top: 0.25rem;
+}
+
+/* second section divs */
+
+.mostSelledBooks {
+    display: flex;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    overflow-x: auto;
+}
+.mostSelledBooksCard {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.50rem;
+}
+
+
+.mostPopularCategoriesBooks {
+    display: flex;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.mostReliableBookStores {
+    display: flex;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.newlyAddedBooks {
+    display: flex;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* third section divs */
+
+.mostSelledBooksInAllCity {
+    display: flex;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    overflow-x: auto;
+}
+.popularCategories {
+    border: 1px solid #ccc;
+    margin-top: 0.25rem;
+}
+
+/*
+div contents style end
+*/
+
+/* 
+message box style start
+*/
+.messageBox {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 2;
+    width: 30px;
+    height: 20px;
+
+}
+/* 
+message box style end
+*/

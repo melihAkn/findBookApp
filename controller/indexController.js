@@ -1,6 +1,7 @@
 const contactModel = require('../model/contacts')
 const { createUser, loginUser, loginBookStore, createBookStore } = require('../services/userService')
-const { searchedBookInfos , getBookComments , getCountBooks } = require('../services/ProductService')
+const { searchedBookInfos , getBookComments , getCountBooks , MostSelledBooksByCity } = require('../services/ProductService')
+
 //page renders
 const mainPage = (req,res) => {
     res.render('./pages/indexPages/mainPage',{layout : req.layout})
@@ -41,13 +42,16 @@ const contactPost = async (req,res,next) => {
 }
 
 const userLogin = async (req,res,next) => {
-    console.log(req.body)
     if(req.body.username == undefined || req.body.password == undefined){
         const err = new Error("username or password not provided")
         err.code = 400
         return next(err)
     }
-    
+    //validate username and password
+    if(!/^[a-zA-Z0-9]{3,}$/.test(req.body.username) || req.body.password.length < 8) {
+        return res.status(400).send({ error: 'Invalid username or password' })
+      }
+
     const userIsLoginned = await loginUser(req.body)
     console.log(userIsLoginned)
     if(!userIsLoginned.loginAttemp){
@@ -59,6 +63,10 @@ const userLogin = async (req,res,next) => {
 }
 
 const userRegister = async (req,res,next) => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email) || !/^[a-zA-Z0-9]{3,}$/.test(req.body.username) || !/^[a-zA-Z]{3,}$/.test(req.body.name) || !/^[a-zA-Z]{3,}$/.test(req.body.surname) || !/^\+?\d{10,14}$/.test(req.body.phoneNumber) || req.body.password.length < 8 ) {
+        return res.status(400).json({ error: 'Invalid infos' })
+      }
+
     const registeredUser = await createUser(req.body)
     if(registeredUser.userCreated){
         res.status(200).send({message : "you are registered redirecting to login page", registered : true})
@@ -75,6 +83,9 @@ const bookStoresLogin = async (req,res,next) => {
         err.code = 400
         return next(err)
     }
+    if(!/^[a-zA-Z0-9]{3,}$/.test(req.body.username) || req.body.password.length < 8) {
+        return res.status(400).send({ error: 'Invalid username or password' })
+      }
     const userIsLoginned = await loginBookStore(req.body)
     if(!userIsLoginned.loginAttemp){
         res.status(401).send({message :"username or password wrong"})
@@ -86,6 +97,10 @@ const bookStoresLogin = async (req,res,next) => {
 
 
 const bookStoreRegister = async (req,res,next) => {
+    console.log(req.body)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email) || !/^[a-zA-Z0-9]{3,}$/.test(req.body.username) || !/^[a-zA-Z]{3,}$/.test(req.body.name) || !/^\+?\d{10,14}$/.test(req.body.phoneNumber) || req.body.password.length < 8 || !/^[a-zA-Z0-9\s]{3,}$/.test(req.body.physicalAddress) ) {
+        return res.status(400).json({ error: 'Invalid infos' })
+      }
     const registeredBookstore = await createBookStore(req.body)
     if(registeredBookstore.userCreated){
         res.status(200).send({message : "you are registered redirecting to login page", registered : true})
@@ -144,6 +159,25 @@ const getBooksCount = async (req,res,next) => {
     const getBc = await getCountBooks()
     res.status(200).send({bookC : getBc})
 }
+
+const getMostSelledBooks = async(req,res,next) => {
+
+    const getValue = await MostSelledBooksByCity({city : "Düzce"})
+    console.log(getValue)
+    res.status(200).send({getValue})
+
+}
+
+
+const booksByMostPopularCategory = async(req,res,next) => {
+
+
+}
+
+
+
+
+
 module.exports = {
     //page renders
     mainPage,
@@ -162,5 +196,6 @@ module.exports = {
     logout,
     performSearch,
     getComments,
-    getBooksCount
+    getBooksCount,
+    getMostSelledBooks
 }

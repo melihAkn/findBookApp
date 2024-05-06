@@ -1,4 +1,4 @@
-const { searchBookByFieldName , getCommentsByFieldName , countBooks } = require('../repositories/booksRepository')
+const { searchBookByFieldName , getCommentsByFieldName , countBooks, booksSellInfos } = require('../repositories/booksRepository')
 const { getBookStoresByField, getBookStoresBookByField } = require('../repositories/bookStoreRepository')
 // bookstore ınfos
 async function searchedBookInfos(bookData) {
@@ -71,6 +71,68 @@ async function getBookComments(bookData) {
     return getComments
 } 
 
+async function MostSelledBooksByCity(bookData) {
+    const getBooksSellInfos = await booksSellInfos({bookCity : bookData.city},25)
+    return getBooksSellInfos
 
 
-module.exports = { searchedBookInfos , getBookComments , getCountBooks}
+}
+
+async function MostSelledBooksInAllCity(bookData) {
+
+    const getBooksSellInfos = await booksSellInfos({bookCity : bookData.city},25)
+    
+
+}
+
+async function BooksByBasedMostPopularCategorys(bookData) {
+
+
+}
+
+async function mostReliableBookstores(bookStoreData) {
+
+
+
+}
+
+async function newlyAddedBooks(bookData) {
+
+
+}
+
+async function bookByBasedMostPopularCategories(bookData) {
+
+
+}
+
+async function monthOfBookstores(bookstoreData) {
+
+
+
+}
+
+async function popularAndRisingBookstores(bookstoreData) {
+
+}
+
+async function aiSuggestedThisBooks(bookData) {
+
+}
+
+module.exports = {
+    searchedBookInfos,
+    getBookComments,
+    getCountBooks,
+    MostSelledBooksByCity,
+    MostSelledBooksInAllCity,
+    BooksByBasedMostPopularCategorys,
+    mostReliableBookstores,
+    newlyAddedBooks,
+    bookByBasedMostPopularCategories,
+    monthOfBookstores,
+    popularAndRisingBookstores,
+    aiSuggestedThisBooks,
+    searchedBookInfos
+    
+    }

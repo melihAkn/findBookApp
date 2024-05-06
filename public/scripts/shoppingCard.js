@@ -30,7 +30,7 @@ fetch(getUsersOrBookStoresCardDetails)
             products.innerHTML += `
             <div class="books">
             <div class = "allBooks">
-                <img class="book-IMG" src="${e.bookImages[0][0].replace('public/','../')}">
+                <img class="book-IMG" src="${e.bookImages[0].path.replace('public/','../')}">
                 <p class="bookName">${e.bookName}</p>
                 <p class="bookStoreName">book store name : ${e.bookStoreName}</p>
              

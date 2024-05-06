@@ -3,6 +3,8 @@ const controller = require('../controller/userController')
 const tokenAuth = require('../middleware/tokenAuthForRoutes')
 const userRouter = Router()
 userRouter.use(tokenAuth)
+
+
 //page renders
 
 //get request

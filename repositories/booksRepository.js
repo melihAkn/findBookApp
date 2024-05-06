@@ -1,5 +1,5 @@
 const { userFavBooksModel,userCartModel,usersModel,userBuyLaterModel,userWishListModel } = require('../model/users')
-const { bookModel, bookCommentsModel } = require('../model/books')
+const { bookModel, bookCommentsModel ,bookSellInfosModel} = require('../model/books')
 async function addBook(bookData) {
     try {
         const user = new usersModel(userData)
@@ -28,4 +28,17 @@ async function newComment(commentData) {
     await newCommentModel.save()
     return newCommentModel
 }
-module.exports = { addBook , searchBookByFieldName , getCommentsByFieldName , newComment , countBooks}
+
+async function booksSellInfos(bookFilter,limit) {
+    console.log(bookFilter)
+    const books = await bookSellInfosModel.find(bookFilter).limit(limit).sort({ sellCount: -1 })
+    return books
+}
+module.exports = { 
+    addBook, 
+    searchBookByFieldName, 
+    getCommentsByFieldName, 
+    newComment, 
+    countBooks,
+    booksSellInfos
+}

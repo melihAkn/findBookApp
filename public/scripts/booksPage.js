@@ -13,7 +13,7 @@ async function placeDetailedBook(bookObject,returnedData) {
 <input type="button" value="go back to books page" class="goBackButton" id="goBackButton">
 <div class="container">
    <div id="imagesSlider">
-       <img src="${bookObject.images[0][0].replace('public/','../')}" width="350px" height="500px">
+       <img src="${bookObject.images[0].path.replace('public/','../')}" width="350px" height="500px">
    </div>
 
 
@@ -391,7 +391,7 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,skip =
       bookSection.innerHTML += `
 
       <div class="card">
-        <img src="${e.images[0][0].replace('public/','../')}" alt="book image">
+        <img src="${e.images[0].path.replace('public/','../')}" alt="book image">
         <p>${e.name} </p>
         <p>0.00 tl</p>
         <input type="button" class="add-to-wishlist-button" value = "add to wishList"  id = "addToWishlist">
@@ -407,7 +407,7 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,skip =
       bookSection.innerHTML += `
 
       <div class="card">
-        <img src="${e.images[0][0].replace('public/','../')}" alt="book image" class="bookIMG">
+        <img src="${e.images[0].path.replace('public/','../')}" alt="book image" class="bookIMG">
         <p class="bookName">${e.name} </p>
         <p>${e.bookStoreInfos[0].price}.00 tl</p>
         <input type="button" class="add-to-cart-button" value = "add to cart"  id = "addToCart">

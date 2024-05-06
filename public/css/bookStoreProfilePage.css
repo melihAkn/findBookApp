@@ -30,18 +30,18 @@
 
 .userInfos {
     width: 33%;
-    max-height: 300px;
+    max-height: 190px;
 }
 
 .orderItems {
     width: 33%;
     margin: auto;
     justify-content: center;
-    max-height: 300px;
+    max-height: 190px;
     overflow-y: scroll;
 }
 
 .orderDetails {
     width: 33%;
-    max-height: 300px;
+    max-height: 190px;
 }

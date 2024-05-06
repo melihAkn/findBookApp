@@ -38,7 +38,10 @@ userLoginFormButton.addEventListener('click', _ => {
             console.log(data)
             if(data.loginAttemp){
                 window.location.href = "/"
-            }else{
+            }else if(data.error){
+                alert(data.error)
+            }
+            else{
                 alert(data.message)
             }
         })
@@ -83,6 +86,8 @@ bookStoresLoginFormButton.addEventListener('click', _ => {
     .then(data => {
         if(data.loginAttemp){
             window.location.href = "/"
+        }else if(data.error){
+            alert(data.error)
         }else{
             alert(data.message)
         }

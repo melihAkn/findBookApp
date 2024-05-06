@@ -64,7 +64,7 @@ userRegisterFormButton.addEventListener('click', _ => {
         .then(data => {
             console.log(data)
             if(data.registered){
-                window.location.href = "/userLogin"
+                window.location.href = "/login"
             }else{
                 alert(data.error)
             }

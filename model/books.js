@@ -49,11 +49,11 @@ const books = new schema ({
         required : true,
         unique : true
     },
-    images : {
-        type : [Array],
-        required : false,
-        default : []
-    },
+    images : [{
+        path: String,
+        index: Number,
+        _id : false
+    }],
     isValidBook : {
         type : Boolean,
         required : true,
@@ -95,9 +95,34 @@ const bookComments = new schema ({
     },
 
 },{collection : 'bookComments' , timestamps : true})
+
+
+const bookSellInfos = new schema ({
+    bookId : {
+        type : String,
+        required : true
+    },
+    bookCity : {
+        type : String,
+        required : true
+    },
+    sellCount : {
+        type : Number,
+        required : false,
+        default : 0
+    },
+    bookCategory : {
+        type : String,
+        required : true
+    }
+
+},{collection : "bookSellInfos" , timestamps : true})
+
 const bookModel = mongoose.model('books', books,'books')
 const bookCommentsModel = mongoose.model('bookComments',bookComments,'bookComments')
+const bookSellInfosModel = mongoose.model('bookSellInfos',bookSellInfos,'bookSellInfos')
 module.exports = {
     bookModel,
-    bookCommentsModel
+    bookCommentsModel,
+    bookSellInfosModel
 }

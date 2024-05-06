@@ -88,12 +88,14 @@ const bookStoresOrder = new schema ({
         email: { type: String, required: true },
         phoneNumber : {type : String, required : true},
         address: { type: String, required: true },
+        _id : false
     },
     items: [{
         bookName: { type: String, required: true },
         quantity: { type: Number, required: true },
         price: { type: Number, required: true },
-        bookISBN: { type: String, required: true }
+        bookISBN: { type: String, required: true },
+        _id : false
     }],
     totalAmount: {
         type: Number,

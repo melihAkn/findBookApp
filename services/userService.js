@@ -7,9 +7,10 @@ const userSecretKey = process.env.JWT_USER_SECRET_KEY
 
 //user funcs
 async function createUser(userData) {
+  console.log(userData)
     const password = userData.password
     let userRegisterInfos = {
-      nameAndSurname : userData.nameAndSurname,
+      nameAndSurname : userData.name + " " + userData.surname,
       username : userData.username,
       email : userData.email,
       password : "",
