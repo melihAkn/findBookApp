@@ -1,6 +1,6 @@
 const contactModel = require('../model/contacts')
 const { createUser, loginUser, loginBookStore, createBookStore } = require('../services/userService')
-const { searchedBookInfos , getBookComments , getCountBooks , MostSelledBooksByCity } = require('../services/ProductService')
+const { searchedBookInfos , getBookComments , getCountBooks , mostSelledBooksByCity, mostPopularCategorys, MostSelledBooksInAllCity } = require('../services/ProductService')
 
 //page renders
 const mainPage = (req,res) => {
@@ -145,7 +145,7 @@ const performSearch = async (req,res,next) => {
         return next(err)
     }
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
-    const searchForBooks =  await searchedBookInfos({name : bookNameRegex , city : req.body.searchedCity ,skip : req.body.skip,limit : req.body.limit})
+    const searchForBooks =  await searchedBookInfos({name : bookNameRegex },{skip : req.body.skip,limit : req.body.limit, city : req.body.searchedCity })
     res.status(200).send(searchForBooks)
     
 }
@@ -160,21 +160,75 @@ const getBooksCount = async (req,res,next) => {
     res.status(200).send({bookC : getBc})
 }
 
-const getMostSelledBooks = async(req,res,next) => {
+const getMostSelledBooksByCity = async(req,res,next) => {
 
-    const getValue = await MostSelledBooksByCity({city : "Düzce"})
-    console.log(getValue)
-    res.status(200).send({getValue})
-
+    const mostSelledBooksByC = await mostSelledBooksByCity({city : "Düzce"})
+    const mostSelledBooksWithSellers = []
+    console.log(mostSelledBooksByC[0])
+    for(const item in mostSelledBooksByC){
+        const getBookSellers = await searchedBookInfos({_id : mostSelledBooksByC[item].bookId},{city : "Düzce",skip : 0, limit : 5})
+        for(book of getBookSellers.books){
+            mostSelledBooksWithSellers.push(book)
+        }
+    }
+    console.log(mostSelledBooksWithSellers)
+    res.status(200).send({mostSelledBooksWithSellers})
 }
 
 
-const booksByMostPopularCategory = async(req,res,next) => {
+const getBooksByMostPopularCategory = async(req,res,next) => {
+    const mostPopularCategories = await mostPopularCategorys({city : "Düzce"})
+    const mostPopularBooks = []
+    for(const item of mostPopularCategories){
+        const getBooksByCategory = await searchedBookInfos({category : item.bookCategory},{city : "Düzce",skip : 0, limit : 5})
+        if(getBooksByCategory.bookFound){
+            for(const book of getBooksByCategory.books){
+                mostPopularBooks.push(book)
+            }
+        }
+ }
+    console.log(mostPopularBooks)
+    res.status(200).send({books : mostPopularBooks})
+}
 
+const getNewlyAddedBooks = async(req,res,next) => {
+
+    const lastMonthDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000)
+    const newlyAddebBooks = await searchedBookInfos({ createdAt: { $gte: lastMonthDate } },{city : "Düzce",skip : 0, limit : 25})
+    res.status(200).send({books : newlyAddebBooks.books})
 
 }
 
+const getPopularCategorys = async(req,res,next) => {
+    const popularCategorys = await mostPopularCategorys({city : "Düzce"})
+    console.log(popularCategorys)
+    res.status(200).send({popularCategorys})
+}
+const getMostReliableBookStores = async(req,res,next) => {
+//in bookstore ratings model bookstorerating field if greater than 4
+// and order count higher than 100 or some number this is reliable bookstore in simple way of course
 
+}
+
+const getMonthOfBookStores = async(req,res,next) => {
+// I dont kow how to i create this data
+// i figured out
+// every month we created a new collection in database
+// and fill every order made by bookstores
+// end of the month selecting 10 document this case (highest order count and ratings greater than 4)
+
+}
+
+const getPopularAndRisinBookStores = async(req,res,next) => {
+// if new bookstore starting a sell book and first month order count greater than 50 or 100
+// and rating greater than 4 or close this is popular and rising bookstore i think
+
+}
+
+const getAiSuggestedBooks = async(req,res,next) => {
+
+
+}
 
 
 
@@ -197,5 +251,8 @@ module.exports = {
     performSearch,
     getComments,
     getBooksCount,
-    getMostSelledBooks
+    getMostSelledBooksByCity,
+    getBooksByMostPopularCategory,
+    getNewlyAddedBooks,
+    getPopularCategorys
 }

@@ -1,11 +1,11 @@
 const { searchBookByFieldName , getCommentsByFieldName , countBooks, booksSellInfos } = require('../repositories/booksRepository')
 const { getBookStoresByField, getBookStoresBookByField } = require('../repositories/bookStoreRepository')
 // bookstore ınfos
-async function searchedBookInfos(bookData) {
+async function searchedBookInfos(bookData,limitData) {
     let books = []
     //const findAllBooks = await bookModel.find({ name : bookData.name })
-    const findAllBooksByName = await searchBookByFieldName({name : bookData.name },{start : bookData.skip , limit : bookData.limit})
-    const findBookStoresInSearchedCity = await getBookStoresByField({ city : bookData.city })
+    const findAllBooksByName = await searchBookByFieldName(bookData,{start : limitData.skip , limit : limitData.limit})
+    const findBookStoresInSearchedCity = await getBookStoresByField({ city : limitData.city })
     for (const bookStore of findBookStoresInSearchedCity) {
         //
         const bookStoresBooks = await getBookStoresBookByField({ bookStoreId : bookStore._id})
@@ -71,41 +71,55 @@ async function getBookComments(bookData) {
     return getComments
 } 
 
-async function MostSelledBooksByCity(bookData) {
+async function mostSelledBooksByCity(bookData) {
     const getBooksSellInfos = await booksSellInfos({bookCity : bookData.city},25)
     return getBooksSellInfos
 
 
 }
 
-async function MostSelledBooksInAllCity(bookData) {
 
-    const getBooksSellInfos = await booksSellInfos({bookCity : bookData.city},25)
-    
-
+async function mostPopularCategorys(bookData) {
+    // getting most popular category from books sell infos table 
+    // and fill an array return the categorys
+    const categorys = require('../public/frontendStuff/bookCategories.json')
+    const getBooksSellInfos = await booksSellInfos({bookCity :bookData.city},25)
+    let mostPopularCategory = []
+    for(let i = 0; i < categorys.length; i++){
+        mostPopularCategory.push({bookCategory : categorys[i],count : 0})
+    }
+    for(const item of getBooksSellInfos){
+        for(let k = 0; k < mostPopularCategory.length; k++){
+            if(item.bookCategory == mostPopularCategory[k].bookCategory){
+                mostPopularCategory[k].count +=1
+            }
+        }
+    }
+    mostPopularCategory.sort((a,b) => b.count - a.count)
+    const firstFivePopularCategories = mostPopularCategory.slice(0,5) 
+    return firstFivePopularCategories
 }
 
-async function BooksByBasedMostPopularCategorys(bookData) {
 
-
-}
-
-async function mostReliableBookstores(bookStoreData) {
-
-
-
-}
 
 async function newlyAddedBooks(bookData) {
 
 
 }
 
-async function bookByBasedMostPopularCategories(bookData) {
 
+async function aiSuggestedThisBooks(bookData) {
 
 }
 
+
+
+
+async function mostReliableBookstores(bookStoreData) {
+
+
+
+}
 async function monthOfBookstores(bookstoreData) {
 
 
@@ -116,20 +130,16 @@ async function popularAndRisingBookstores(bookstoreData) {
 
 }
 
-async function aiSuggestedThisBooks(bookData) {
 
-}
 
 module.exports = {
     searchedBookInfos,
     getBookComments,
     getCountBooks,
-    MostSelledBooksByCity,
-    MostSelledBooksInAllCity,
-    BooksByBasedMostPopularCategorys,
+    mostSelledBooksByCity,
+    mostPopularCategorys,
     mostReliableBookstores,
     newlyAddedBooks,
-    bookByBasedMostPopularCategories,
     monthOfBookstores,
     popularAndRisingBookstores,
     aiSuggestedThisBooks,

@@ -30,7 +30,6 @@ async function newComment(commentData) {
 }
 
 async function booksSellInfos(bookFilter,limit) {
-    console.log(bookFilter)
     const books = await bookSellInfosModel.find(bookFilter).limit(limit).sort({ sellCount: -1 })
     return books
 }
