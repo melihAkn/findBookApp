@@ -1,5 +1,5 @@
 const { searchBookByFieldName , getCommentsByFieldName , countBooks, booksSellInfos } = require('../repositories/booksRepository')
-const { getBookStoresByField, getBookStoresBookByField } = require('../repositories/bookStoreRepository')
+const { getBookStoresByField, getBookStoresBookByField, addBookStoreRatings , findBookStoreRating } = require('../repositories/bookStoreRepository')
 // bookstore ınfos
 async function searchedBookInfos(bookData,limitData) {
     let books = []
@@ -102,10 +102,7 @@ async function mostPopularCategorys(bookData) {
 
 
 
-async function newlyAddedBooks(bookData) {
 
-
-}
 
 
 async function aiSuggestedThisBooks(bookData) {
@@ -115,8 +112,10 @@ async function aiSuggestedThisBooks(bookData) {
 
 
 
-async function mostReliableBookstores(bookStoreData) {
-
+async function mostReliableBookstores(bookStoreData,limitData) {
+    
+    const a = await findBookStoreRating(bookStoreData,limitData)
+    return a
 
 
 }
@@ -139,7 +138,6 @@ module.exports = {
     mostSelledBooksByCity,
     mostPopularCategorys,
     mostReliableBookstores,
-    newlyAddedBooks,
     monthOfBookstores,
     popularAndRisingBookstores,
     aiSuggestedThisBooks,

@@ -10,7 +10,7 @@ async function placeDetailedBook(bookObject,returnedData) {
   let bookSectionInnerHtmlBackup = bookSection.innerHTML
    bookSection.innerHTML = `
    
-<input type="button" value="go back to books page" class="goBackButton" id="goBackButton">
+<input type="button" value="kitaplar sayfasına geri dön" class="goBackButton" id="goBackButton">
 <div class="container">
    <div id="imagesSlider">
        <img src="${bookObject.images[0].path.replace('public/','../')}" width="350px" height="500px">
@@ -18,25 +18,25 @@ async function placeDetailedBook(bookObject,returnedData) {
 
 
    <div id="bookInfos" class="bookInfos">
-       <p>Book name : ${bookObject.name}</p>
-       <p>Book description : ${bookObject.description}</p>
+       <p>Kitap ismi : ${bookObject.name}</p>
+       <p>açıklama : ${bookObject.description}</p>
 
        <div id="otherBookInfos" class="otherBookInfos">
-           <p>page count : ${bookObject.pageCount}</p>
-           <p> author : ${bookObject.author}</p>
-           <p>book ISBN : ${bookObject.ISBN}</p>
+           <p>sayfa sayısı : ${bookObject.pageCount}</p>
+           <p> yazar : ${bookObject.author}</p>
+           <p>ISBN : ${bookObject.ISBN}</p>
        </div>
 
    </div>
 
    <div id="bookBuy" class="bookBuy">
-       <input type="button" value="Add to card" id="addToCart">
-       <input type="button" value="Add to favorite" id="addToFavorite">
+       <input type="button" value="sepete ekle" id="addToCart">
+       <input type="button" value="favorilere ekle" id="addToFavorite">
 
-       <p>lowest price : ${bookObject.bookStoreInfos[0].price}.00 tl</p>
-       <p> seller : ${bookObject.bookStoreInfos[0].bookStoreName} </p>
-       <p> stock : ${bookObject.bookStoreInfos[0].stockInfo} </p>
-       <p>other bookStores</p>
+       <p>en düşük fiyat : ${bookObject.bookStoreInfos[0].price}.00 tl</p>
+       <p> satıcı : ${bookObject.bookStoreInfos[0].bookStoreName} </p>
+       <p> stok : ${bookObject.bookStoreInfos[0].stockInfo} </p>
+       <p>diğer kitap mağazaları</p>
        <div id="otherBookStores" class = "otherBookStores">
       
        </div>
@@ -68,7 +68,7 @@ async function placeDetailedBook(bookObject,returnedData) {
    
       otherBookStores.innerHTML += `
       <label for="${bookStore.bookStoreId}">
-       <input type="checkbox" name="bookStoresList" id="${bookStore.bookStoreId}" value="${bookStore.bookStoreId}"> ${bookStore.bookStoreName} price : ${bookStore.price}.00 tl  <br>
+       <input type="checkbox" name="bookStoresList" id="${bookStore.bookStoreId}" value="${bookStore.bookStoreId}"> ${bookStore.bookStoreName} fiyat : ${bookStore.price}.00 tl  <br>
       </label>
       `
     
@@ -113,7 +113,7 @@ async function placeDetailedBook(bookObject,returnedData) {
          })
          .then(response => {
            if(response.redirected == true){
-             alert("please login you are redirected in 3 seconds")
+             alert("lutfen giriş yapın 3 saniye içinde giriş sayfasına yonlendirileceksiniz.")
              setTimeout(() => {
                window.location.href = "/login"
              }, 1500);
@@ -125,7 +125,7 @@ async function placeDetailedBook(bookObject,returnedData) {
            alert(data.message)
          }).catch(e => console.error(e))
         }else{
-          alert("selected book store not found try to buy another bookstore")
+          alert("seçili kitap mağazası bulunamadı.Diğer kitap mağazalarından almayı deneyin.")
         }
       }
     })
@@ -146,7 +146,7 @@ async function placeDetailedBook(bookObject,returnedData) {
          })
          .then(response => {
            if(response.redirected == true){
-             alert("please login you are redirected in 3 seconds")
+             alert("lutfen giriş yapın 3 saniye içinde giriş sayfasına yonlendirileceksiniz.")
              setTimeout(() => {
                window.location.href = "/login"
              }, 1500);
@@ -187,9 +187,9 @@ async function placeDetailedBook(bookObject,returnedData) {
           ${e.commentText}
       </p>
       <div class="commentİnteract">
-          <p>Do you agree with this comment?</p>
-          <button type="button" class="yesButton" id="yesButton">yes ${e.yesCount}</button>
-          <button type="button" class="noButton" id="noButton">no ${e.noCount}</button>
+          <p>bu yoruma katılıyor musun?</p>
+          <button type="button" class="yesButton" id="yesButton">evet ${e.yesCount}</button>
+          <button type="button" class="noButton" id="noButton">hayır ${e.noCount}</button>
       </div>
   </div>
       `
@@ -229,9 +229,9 @@ async function placeDetailedBook(bookObject,returnedData) {
                    ${data.newComment.commentText}
                </p>
                <div class="commentİnteract">
-                   <p>Do you agree with this comment?</p>
-                   <button type="button" class="yesButton" id="yesButton">yes ${data.newComment.yesCount}</button>
-                   <button type="button" class="noButton" id="noButton">no ${data.newComment.noCount}</button>
+                   <p>bu yoruma katılıyor musun?</p>
+                   <button type="button" class="yesButton" id="yesButton">evet ${data.newComment.yesCount}</button>
+                   <button type="button" class="noButton" id="noButton">hayır ${data.newComment.noCount}</button>
                </div>
            </div>
       `
@@ -311,7 +311,7 @@ async function addEventListenersForBooks (returnedData) {
           })
           .then(response => {
             if(response.redirected == true){
-              alert("please login you are redirected in 3 seconds")
+              alert("lutfen giriş yapın 3 saniye içinde giriş sayfasına yonlendirileceksiniz.")
               setTimeout(() => {
                 window.location.href = "/login"
               }, 1500);
@@ -348,7 +348,7 @@ async function addEventListenersForBooks (returnedData) {
           })
           .then(response => {
             if(response.redirected == true){
-              alert("please login you are redirected in 3 seconds")
+              alert("lutfen giriş yapın 3 saniye içinde giriş sayfasına yonlendirileceksiniz.")
               setTimeout(() => {
                 window.location.href = "/login"
               }, 3000);
@@ -394,7 +394,7 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,skip =
         <img src="${e.images[0].path.replace('public/','../')}" alt="book image">
         <p>${e.name} </p>
         <p>0.00 tl</p>
-        <input type="button" class="add-to-wishlist-button" value = "add to wishList"  id = "addToWishlist">
+        <input type="button" class="add-to-wishlist-button" value = "istek listesine ekle"  id = "addToWishlist">
       </div>
       
       `
@@ -410,7 +410,7 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,skip =
         <img src="${e.images[0].path.replace('public/','../')}" alt="book image" class="bookIMG">
         <p class="bookName">${e.name} </p>
         <p>${e.bookStoreInfos[0].price}.00 tl</p>
-        <input type="button" class="add-to-cart-button" value = "add to cart"  id = "addToCart">
+        <input type="button" class="add-to-cart-button" value = "sepete ekle"  id = "addToCart">
       </div>
 
       `

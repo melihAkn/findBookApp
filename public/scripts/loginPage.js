@@ -7,13 +7,13 @@ userLoginFormButton.addEventListener('click', _ => {
     loginForms.innerHTML = `
     <iframe name="noPageReload" style="display:none;"></iframe>
     <form target="noPageReload" id="userLoginForm">
-        <label for="name">username:</label>
+        <label for="name">kullanıcı adı:</label>
         <input type="text" id="username" name="username" required>
         <br>
-        <label for="password">user password:</label>
+        <label for="password">şifre:</label>
         <input type="password" id="password" name="password" required>
         <br>
-        <button type="submit">send</button>
+        <button type="submit">giriş yap</button>
     </form>
     
     `
@@ -54,13 +54,13 @@ bookStoresLoginFormButton.addEventListener('click', _ => {
     loginForms.innerHTML = `
     <iframe name="noPageReload" style="display:none;"></iframe>
     <form target="noPageReload" id="bookStoresLoginForm">
-        <label for="name">book store username:</label>
+        <label for="name">mağaza kullanıcı adı:</label>
         <input type="text" id="username" name="username" required>
         <br>
-        <label for="password">bookstore password:</label>
+        <label for="password">şifre:</label>
         <input type="password" id="password" name="password" required>
         <br>
-        <button type="submit">send</button>
+        <button type="submit">giriş yap</button>
     </form>
     
     `

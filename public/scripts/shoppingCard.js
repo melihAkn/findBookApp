@@ -14,7 +14,7 @@ fetch(getUsersOrBookStoresCardDetails)
         console.log(response)
         if(response.redirected == true){
 
-            alert("please login you are redirected in 3 seconds")
+            alert("lutfen giriş yapın. 3 saniye içinde giriş sayfasına yönlendiriliceksiniz.")
             setTimeout(() => {
                 window.location.href = "/login"
             }, 3000);
@@ -32,12 +32,12 @@ fetch(getUsersOrBookStoresCardDetails)
             <div class = "allBooks">
                 <img class="book-IMG" src="${e.bookImages[0].path.replace('public/','../')}">
                 <p class="bookName">${e.bookName}</p>
-                <p class="bookStoreName">book store name : ${e.bookStoreName}</p>
+                <p class="bookStoreName">mağaza ismi : ${e.bookStoreName}</p>
              
                 <div class="bookPriceAndCount">
                     <input type="number" class="bookQuantity" value="${e.quantity}" min="0" max="100">
                     <p class="bookPrice">${e.bookPrice},00</p>
-                    <input type="button" id="buyLater" value = "buy later">
+                    <input type="button" id="buyLater" value = "daha sonra al">
                 </div>
                 <div class = "otherBookStores${index} otherBookStoresGroup" id="otherBookStores${index}">
             </div>
@@ -47,7 +47,7 @@ fetch(getUsersOrBookStoresCardDetails)
         
         `
         bookList.innerHTML += `
-        <p>${e.bookName} quantity : ${e.quantity} price ${e.bookPrice * e.quantity},00 tl</p>
+        <p>${e.bookName} adet : ${e.quantity} fiyat : ${e.bookPrice * e.quantity},00 tl</p>
         `
         totalPrices += parseInt(e.bookPrice) * e.quantity
 
@@ -68,8 +68,8 @@ fetch(getUsersOrBookStoresCardDetails)
 
        
         })
-        totalPricesElement.textContent = "total book prices " + totalPrices + ",00 tl"
-        booksCountP.textContent = "Books count : " + booksCount
+        totalPricesElement.textContent = "toplam kitap fiyatı " + totalPrices + ",00 tl"
+        booksCountP.textContent = "kitap sayısı : " + booksCount
         const cards = document.querySelectorAll('.allBooks')
         cards.forEach(card => {
             const checkboxes = card.querySelectorAll('input[type="checkbox"][name="bookStoresList"]')
@@ -227,7 +227,7 @@ fetch(getUsersOrBookStoresCardDetails)
                     .catch(e => console.error(e))
 
                 }else{
-                    alert("You can only order books from one bookstore at a time.")
+                    alert("tek seferde sadece bir mağazadan kitap alabilirsiniz.")
                 }
         })
         continueShoppingButton.addEventListener('click', _ => {

@@ -59,7 +59,7 @@ div contents style start
     max-width: 100%;
     overflow-x: auto;
 }
-.mostSelledBooksCard {
+.booksCard {
     margin-left: 0.25rem;
     margin-right: 0.25rem;
     margin-top: 0.25rem;
@@ -74,6 +74,7 @@ div contents style start
     overflow-x: auto;
 }
 
+
 .mostReliableBookStores {
     display: flex;
     border: 1px solid #ccc;
@@ -81,12 +82,14 @@ div contents style start
     overflow-x: auto;
 }
 
+
 .newlyAddedBooks {
     display: flex;
     border: 1px solid #ccc;
     max-width: 100%;
     overflow-x: auto;
 }
+
 
 /* third section divs */
 
@@ -123,3 +126,4 @@ message box style start
 /* 
 message box style end
 */
+

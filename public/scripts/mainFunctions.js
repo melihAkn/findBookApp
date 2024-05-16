@@ -61,7 +61,6 @@ function logout(){
             if(data.tokenDeleted){
                 window.location.href = "/login"
             }else{
-                alert("you are not loginned redirecting to login page")
                 window.location.href = "/login"
             }
         })

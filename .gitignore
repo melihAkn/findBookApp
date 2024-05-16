@@ -4,6 +4,8 @@ systemAnalyzeAndDesignPattern.md
 uploads/
 /public/uploads/
 rest.http
+/public/images/icons
+
 # Logs
 logs
 *.log

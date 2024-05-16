@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const expHbs = require('express-handlebars')
 require('dotenv').config()
-const { createClient } = require('redis');
+//const { createClient } = require('redis');
 /*
 (async () => {
   const client = createClient()

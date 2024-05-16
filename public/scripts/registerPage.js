@@ -7,33 +7,33 @@ userRegisterFormButton.addEventListener('click', _ => {
     registerForms.innerHTML = `
     <iframe name="noPageReload" style="display:none;"></iframe>
     <form target="noPageReload" id="userRegisterForm">
-        <label for="name">name :</label>
+        <label for="name">ad :</label>
         <input type="text" id="name" name="name" required>
         <br>
-          <label for="surname">surname :</label>
+          <label for="surname">soyad :</label>
         <input type="text" id="surname" name="surname" required>
         <br>
-        <label for="username">username :</label>
+        <label for="username">kullanıcı adı :</label>
         <input type="text" id="username" name="username" required>
         <br>
           <label for="email">email :</label>
         <input type="email" id="email" name="email" required>
         <br>
-          <label for="password">password :</label>
+          <label for="password">şifre :</label>
         <input type="password" id="password" name="password" required>
         <br>
-          <label for="passwordAgain">password again :</label>
+          <label for="passwordAgain">tekrar şifre :</label>
         <input type="password" id="passwordAgain" name="passwordAgain" required>
         <br>
         <label for="city">city:</label>
         <select class="cityList" id="citys" name="city">
-            <option>select</option>
+            <option>seçiniz</option>
         </select>
         <br>
-        <label for="phoneNumber">phone number:</label>
+        <label for="phoneNumber">telefon numarası:</label>
         <input type="text" id="phoneNumber" name="phoneNumber" required>
         <br>
-        <button type="submit">send</button>
+        <button type="submit">kayıt ol</button>
     </form>
     
     `
@@ -78,33 +78,33 @@ bookStoresRegisterFormButton.addEventListener('click', _ => {
     registerForms.innerHTML = `
     <iframe name="noPageReload" style="display:none;"></iframe>
     <form target="noPageReload" id="bookStoresRegisterForm">
-        <label for="bookStoreName">bookStore name :</label>
+        <label for="bookStoreName">mağaza ismi :</label>
         <input type="text" id="bookStoreName" name="bookStoreName" required>
         <br>
-          <label for="username">username :</label>
+          <label for="username">kullanıcı adı :</label>
         <input type="text" id="username" name="username" required>
         <br>
           <label for="email">email :</label>
         <input type="email" id="email" name="email" required>
         <br>
-          <label for="password">password :</label>
+          <label for="password">şifre :</label>
         <input type="password" id="password" name="password" required>
         <br>
-          <label for="passwordAgain">password again :</label>
+          <label for="passwordAgain">tekrar şifre :</label>
         <input type="password" id="passwordAgain" name="passwordAgain" required>
         <br>
-        <label for="phoneNumber">phone number:</label>
+        <label for="phoneNumber">telefon numarası :</label>
         <input type="text" id="phoneNumber" name="phoneNumber" required>
         <br>
         <label for="city">city:</label>
         <select class="cityList" id="citys" name="city">
-            <option>select</option>
+            <option>seçiniz</option>
         </select>
         <br>
-        <label for="physcialAddress">physcial address:</label>
+        <label for="physcialAddress">fiziksel adres:</label>
         <input type="text" id="physcialAddress" name="physcialAddress">
         <br>
-        <button type="submit">send</button>
+        <button type="submit">kayıt ol</button>
     </form>
     
     `

@@ -1,6 +1,6 @@
 const contactModel = require('../model/contacts')
 const { createUser, loginUser, loginBookStore, createBookStore } = require('../services/userService')
-const { searchedBookInfos , getBookComments , getCountBooks , mostSelledBooksByCity, mostPopularCategorys, MostSelledBooksInAllCity } = require('../services/ProductService')
+const { searchedBookInfos , getBookComments , getCountBooks , mostSelledBooksByCity, mostPopularCategorys, mostReliableBookstores } = require('../services/ProductService')
 
 //page renders
 const mainPage = (req,res) => {
@@ -161,26 +161,24 @@ const getBooksCount = async (req,res,next) => {
 }
 
 const getMostSelledBooksByCity = async(req,res,next) => {
-
-    const mostSelledBooksByC = await mostSelledBooksByCity({city : "Düzce"})
+    console.log(req.body)
+    const mostSelledBooksByC = await mostSelledBooksByCity({city : req.body.city})
     const mostSelledBooksWithSellers = []
-    console.log(mostSelledBooksByC[0])
     for(const item in mostSelledBooksByC){
-        const getBookSellers = await searchedBookInfos({_id : mostSelledBooksByC[item].bookId},{city : "Düzce",skip : 0, limit : 5})
+        const getBookSellers = await searchedBookInfos({_id : mostSelledBooksByC[item].bookId},{city : req.body.city,skip : 0, limit : 5})
         for(book of getBookSellers.books){
             mostSelledBooksWithSellers.push(book)
         }
     }
-    console.log(mostSelledBooksWithSellers)
-    res.status(200).send({mostSelledBooksWithSellers})
+    res.status(200).send({mostSelledBooks : mostSelledBooksWithSellers})
 }
 
 
 const getBooksByMostPopularCategory = async(req,res,next) => {
-    const mostPopularCategories = await mostPopularCategorys({city : "Düzce"})
+    const mostPopularCategories = await mostPopularCategorys({city : req.body.city})
     const mostPopularBooks = []
     for(const item of mostPopularCategories){
-        const getBooksByCategory = await searchedBookInfos({category : item.bookCategory},{city : "Düzce",skip : 0, limit : 5})
+        const getBooksByCategory = await searchedBookInfos({category : item.bookCategory},{city : req.body.city,skip : 0, limit : 5})
         if(getBooksByCategory.bookFound){
             for(const book of getBooksByCategory.books){
                 mostPopularBooks.push(book)
@@ -193,26 +191,27 @@ const getBooksByMostPopularCategory = async(req,res,next) => {
 
 const getNewlyAddedBooks = async(req,res,next) => {
 
-    const lastMonthDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000)
-    const newlyAddebBooks = await searchedBookInfos({ createdAt: { $gte: lastMonthDate } },{city : "Düzce",skip : 0, limit : 25})
+    const lastMonthDate = new Date(new Date() - 30 * 24 * 60 * 60 * 1000)
+    const newlyAddebBooks = await searchedBookInfos({ createdAt: { $gte: lastMonthDate } },{city : req.body.city,skip : 0, limit : 25})
     res.status(200).send({books : newlyAddebBooks.books})
 
 }
 
 const getPopularCategorys = async(req,res,next) => {
-    const popularCategorys = await mostPopularCategorys({city : "Düzce"})
+    const popularCategorys = await mostPopularCategorys({city : req.body.city})
     console.log(popularCategorys)
     res.status(200).send({popularCategorys})
 }
 const getMostReliableBookStores = async(req,res,next) => {
-//in bookstore ratings model bookstorerating field if greater than 4
-// and order count higher than 100 or some number this is reliable bookstore in simple way of course
+    // in bookstore ratings model bookstorerating field if greater than 4
+    // and order count higher than 100 or some number this is reliable bookstore in simple way of course
+    const mostReliableBS = await mostReliableBookstores({bookStoreRating : {$gte : 4} ,orderCount : {$gte : 100}},{limit : 10 , skip : 0})
+    res.status(200).send({mostReliableBS})
+
 
 }
 
 const getMonthOfBookStores = async(req,res,next) => {
-// I dont kow how to i create this data
-// i figured out
 // every month we created a new collection in database
 // and fill every order made by bookstores
 // end of the month selecting 10 document this case (highest order count and ratings greater than 4)
@@ -220,13 +219,29 @@ const getMonthOfBookStores = async(req,res,next) => {
 }
 
 const getPopularAndRisinBookStores = async(req,res,next) => {
-// if new bookstore starting a sell book and first month order count greater than 50 or 100
+// if new bookstore starting a sell book and in the first month order count greater than 50 or 100
 // and rating greater than 4 or close this is popular and rising bookstore i think
 
 }
 
 const getAiSuggestedBooks = async(req,res,next) => {
+    //first of all i need a book data mock or something else 
+    //until i get it this will wait
+//getting a ai suggested books 
 
+/*
+    this should run montly period
+    used prompt 
+    mağazamızda ki kitap stoğumuz : 
+    {"name": "Labirent / Ölümcül Kaçışl","author": "James Dashner"}
+    bu kullanıcı ile aynı şehirde bulunan diğer kullanıcıların daha önce sipariş vermiş oldugu kitaplar :  
+    {"name": "Labirent / Ölümcül Kaçışl","author": "James Dashner"}
+sitemizi ziyaret eden yeni kullanıcılar için bu iki parametreye gore kitap önermeni istiyorum ama
+önereceğin kitap bizim stoğumuz da kesinlikle olmalı. eğer daha önce sipariş verilmediyse bu şehirde
+yine bizim stoğumuza bağlı kalarak istediğin kitabı önerebilirsin
+
+
+*/
 
 }
 
@@ -254,5 +269,6 @@ module.exports = {
     getMostSelledBooksByCity,
     getBooksByMostPopularCategory,
     getNewlyAddedBooks,
-    getPopularCategorys
+    getPopularCategorys,
+    getMostReliableBookStores
 }

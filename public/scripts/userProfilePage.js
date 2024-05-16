@@ -14,7 +14,7 @@ fetch(getUserInfosURL)
     if (response.status === 401) {
         window.location.href = '/login';
     } else {
-        console.error('Something went wrong:', response.statusText);
+        console.error('hata:', response.statusText);
     }
 } else {
     return response.json();
@@ -34,37 +34,37 @@ fetch(getUserInfosURL)
     </br>
     <input type="file" id="fileInput" accept="image/*">
     !-->
-    <label for="name"><p>name: </p></label>
+    <label for="name"><p>isim: </p></label>
     <input type="text" name="name" id="name" class="input" placeholder="bookstore name" value="${data.nameAndSurname}" required><br>
   
-    <label for="username"><p>username: </p></label>
+    <label for="username"><p>kullanıcı adı: </p></label>
     <input type="text" name="username" id="username" class="input" placeholder="username" value="${data.username}" required><br>
   
     <label for="email"><p>email: </p></label>
     <input type="email" name="email" id="email" class="input" placeholder="email" value="${data.email}" required><br>
               
-    <label for="currentPassword"><p>current password: * </p></label>
+    <label for="currentPassword"><p>şuan ki şifreniz: * </p></label>
     <input type="password" name="currentPassword" id="currentPassword" class="input" required><br>
-    <p> if dont want to update your password keep it blank</p>
+    <p>eğer şifrenizi güncellemek istemiyorsanız ikisini de boş bırakın.</p>
               
-    <label for="newPassword"><p>new password: </p></label>
+    <label for="newPassword"><p>yeni şifreniz: </p></label>
     <input type="password" name="newPassword" id="newPassword" class="input" ><br>
               
-    <label for="newPasswordAgain"><p>new password again: </p></label>
+    <label for="newPasswordAgain"><p>tekrar yeni şifreniz: </p></label>
     <input type="password" name="newPasswordAgain" id="newPasswordAgain" class="input" ><br>
   
-    <label for="phoneNumber"><p>phoneNumber: </p></label>
+    <label for="phoneNumber"><p>telefon numaranız: </p></label>
     <input type="text" name="phoneNumber" id="phoneNumber" class="input" placeholder="phone number" value="${data.phoneNumber}" required><br>
          
-    <label for="physcialAddress"><p>physcial address: </p></label>
+    <label for="physcialAddress"><p>fiziksel adres: </p></label>
     <input type="text" name="physcialAddress" id="physcialAddress" class="input" value="${data.physcialAddress}" required><br>
   
-    <label for="city">city:</label>
+    <label for="city">şehir:</label>
     <select class="cityList" id="citys" name="city">
-      <option>select</option>
+      <option>seçiniz</option>
     </select><br><br>
   
-    <button class="button" id="updateButton"> UPDATE INFOS</button>
+    <button class="button" id="updateButton">bilgileri güncelle</button>
         </form>
         `
         getCitys(data.city)
@@ -92,7 +92,7 @@ fetch(getUserInfosURL)
     const newPasswordAgainValue = newPasswordAgainInput.value;
 
     if (newPasswordValue !== newPasswordAgainValue) {
-        alert("passwords are not equal please enter again");
+        alert("şifreler birbirine eşit değil yeniden deneyin");
     } else {
 
         const updateUserInfosData = {
@@ -165,21 +165,21 @@ getUserOrdersButton.addEventListener('click' , _ => {
       userActionsResult.innerHTML = ""
       userActionsResult.innerHTML += `
       <div id="userOrders">
-      <p>seller bookstore name : ${e.bookstoreName}</p>
-      <p>bought items </p>
+      <p>seller mağaza ismi : ${e.bookstoreName}</p>
+      <p>satın alınan ürünler </p>
       <div id="itemsList">
       
       </div>
       
-      <p>order status : ${e.orderStatus}</p>
-      <p>total price : ${totalPrice}</p>
+      <p>sipariş durumu : ${e.orderStatus}</p>
+      <p>toplam fiyat : ${totalPrice}</p>
       </div>
       
       `
       const itemsList = document.getElementById('itemsList')
       for(let item in e.items){
         itemsList.innerHTML += `
-        <p> book name : ${e.items[item].bookName} price : ${e.items[item].price}</p>
+        <p> kitap ismi: ${e.items[item].bookName} fiyatı : ${e.items[item].price}</p>
         
         `
       }

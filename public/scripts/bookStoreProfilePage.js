@@ -13,7 +13,7 @@ fetch(getUserInfosURL)
     if (response.status === 401) {
         window.location.href = '/login';
     } else {
-        console.error('Something went wrong:', response.statusText);
+        console.error('hata:', response.statusText);
     }
 } else {
     return response.json();
@@ -25,45 +25,45 @@ fetch(getUserInfosURL)
         userActionsResult.innerHTML = `
         <iframe name="noPageReload" style="display:none;"></iframe>
     <form id="updateForm" target = "noPageReload">
-  
-    <!-- 
-      burada slider şeklinde olmali
-    <label for="userProfilePicture"><p>profile picture: </p></label>
+      
+    <!--
+    bookstores profile picture added soon as posible now is it not necessary 
+    <label for="userProfilePicture"><p>profil resmi: </p></label>
     <img id="userProfilePicture" name = "userProfilePicture" class="userProfilePicture"  src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
     </br>
     <input type="file" id="fileInput" accept="image/*">
     !-->
-    <label for="name"><p>name: </p></label>
-    <input type="text" name="name" id="name" class="input" placeholder="bookstore name" value="${data.getBookStoreInfos.name}" required><br>
+    <label for="name"><p>mağaza ismi: </p></label>
+    <input type="text" name="name" id="name" class="input" placeholder="mağaza isminiz" value="${data.getBookStoreInfos.name}" required><br>
   
-    <label for="username"><p>username: </p></label>
-    <input type="text" name="username" id="username" class="input" placeholder="username" value="${data.getBookStoreInfos.username}" required><br>
+    <label for="username"><p>kullanıcı adı: </p></label>
+    <input type="text" name="username" id="username" class="input" placeholder="kullanıcı adınız" value="${data.getBookStoreInfos.username}" required><br>
   
     <label for="email"><p>email: </p></label>
     <input type="email" name="email" id="email" class="input" placeholder="email" value="${data.getBookStoreInfos.email}" required><br>
               
-    <label for="currentPassword"><p>current password: * </p></label>
+    <label for="currentPassword"><p>şuanki şifreniz: * </p></label>
     <input type="password" name="currentPassword" id="currentPassword" class="input" required><br>
-    <p> if dont want to update your password keep it blank</p>
+    <p>şifrenizi güncellemek istemiyorsanız alttaki iki alanıda boş bırakın</p>
               
-    <label for="newPassword"><p>new password: </p></label>
+    <label for="newPassword"><p>yeni şifrenizi girin: </p></label>
     <input type="password" name="newPassword" id="newPassword" class="input" ><br>
               
-    <label for="newPasswordAgain"><p>new password again: </p></label>
+    <label for="newPasswordAgain"><p>yeni şifrenizi tekrar girin: </p></label>
     <input type="password" name="newPasswordAgain" id="newPasswordAgain" class="input" ><br>
   
-    <label for="phoneNumber"><p>phoneNumber: </p></label>
-    <input type="text" name="phoneNumber" id="phoneNumber" class="input" placeholder="phone number" value="${data.getBookStoreInfos.phoneNumber}" required><br>
+    <label for="phoneNumber"><p>telefon numaranız: </p></label>
+    <input type="text" name="phoneNumber" id="phoneNumber" class="input" placeholder="telefon numaranız" value="${data.getBookStoreInfos.phoneNumber}" required><br>
          
-    <label for="physcialAddress"><p>physcial address: </p></label>
+    <label for="physcialAddress"><p>fiziksel adresiniz: </p></label>
     <input type="text" name="physcialAddress" id="physcialAddress" class="input" value="${data.getBookStoreInfos.physcialAddress}" required><br>
   
     <label for="city">city:</label>
-    <select class="cityList" id="citys" name="city">
+    <select class="cityList" id="citys" name="şehir">
       <option>select</option>
     </select><br><br>
   
-    <button class="button" id="updateButton"> UPDATE INFOS</button>
+    <button class="button" id="updateButton"> bilgileri guncelle</button>
         </form>
         `
         getCitys(data.city)
@@ -91,7 +91,7 @@ fetch(getUserInfosURL)
     const newPasswordAgainValue = newPasswordAgainInput.value;
 
     if (newPasswordValue !== newPasswordAgainValue) {
-        alert("passwords are not equal please enter again");
+        alert("şifreler eşleşmiyor");
     } else {
 
         const updateBookStoreInfosData = {
@@ -144,36 +144,36 @@ addBooksButton.addEventListener('click', _ => {
 
   <input type="file" name="images" multiple accept="image/*">
 
-  <label for="bookname"><p>book name: </p></label>
-  <input type="text" name="bookName" id="bookName" class="input" placeholder="book name"      value="deneme123"  required ><br>
+  <label for="bookname"><p>kitabın ismi: </p></label>
+  <input type="text" name="bookName" id="bookName" class="input" placeholder="kitap ismi"        required ><br>
 
-  <label for="bookDescription"><p>book description: </p></label>
-  <input type="text" name="bookDescription" id="bookDescription" class="input" placeholder="book description"      value="deneme123" required><br>
+  <label for="bookDescription"><p>açıklama: </p></label>
+  <input type="text" name="bookDescription" id="bookDescription" class="input" placeholder="açıklama"       required><br>
             
-  <label for="book page count"><p>book page count: * </p></label>
-  <input type="text" name="bookPageCount" id="bookPageCount" class="input"     value="544" required><br>
+  <label for="bookPageCount"><p>sayfa sayısı: * </p></label>
+  <input type="text" name="bookPageCount" id="bookPageCount" class="input"      required><br>
             <br>
   <select class="categoryList" id="categoryList" name="category">
-    <option>select</option>
+    <option>seçiniz</option>
   </select><br><br>
 
-  <label for="bookAverageRating"><p>book average rating: </p></label>
-  <input type="text" name="bookAverageRating" id="bookAverageRating"    value="5" class="input" ><br>
+  <label for="bookAverageRating"><p>ortala puan: </p></label>
+  <input type="text" name="bookAverageRating" id="bookAverageRating" class="input" ><br>
 
-  <label for="bookPublicationDate"><p>book publication date: </p></label>
+  <label for="bookPublicationDate"><p>yayınlanma tarihi: </p></label>
   <input type="date" name="bookPublicationDate" id="bookPublicationDate" class="input"  required><br>
        
-  <label for="bookAuthor"><p>book author: </p></label>
-  <input type="text" name="bookAuthor" id="bookAuthor" class="input"  value="deneme123"  required><br>
+  <label for="bookAuthor"><p>yazar: </p></label>
+  <input type="text" name="bookAuthor" id="bookAuthor" class="input"   required><br>
 
-  <label for="bookISBN"><p>book ISBN: </p></label>
-  <input type="text" name="bookISBN" id="bookISBN" class="input" value="12345678912"  required><br>
+  <label for="bookISBN"><p>ISBN: </p></label>
+  <input type="text" name="bookISBN" id="bookISBN" class="input"   required><br>
 
-  <label for="stockInfo"><p>stock info: </p></label>
-  <input type="text" name="stockInfo" id="stockInfo" class="input" value="2"  required><br>
+  <label for="stockInfo"><p>stock bilgisi: </p></label>
+  <input type="text" name="stockInfo" id="stockInfo" class="input"  required><br>
 
-  <label for="price"><p>price: </p></label>
-  <input type="text" name="price" id="price" class="input" value="252"  required><br>
+  <label for="price"><p>fiyat: </p></label>
+  <input type="text" name="price" id="price" class="input"   required><br>
   <button class="button" id="updateButton"> UPDATE INFOS</button>
       </form>
   
@@ -221,7 +221,7 @@ addBooksButton.addEventListener('click', _ => {
 
 
     }else{
-      alert('you can upload only image files')
+      alert('sadece resim dosyaları yukleyebilirsiniz.')
     }
 
 
@@ -236,7 +236,7 @@ getBooksButton.addEventListener('click', _ => {
     <img src="../uploads/deneme123/1.jpeg" alt="Ürün Resmi">
     <p>book name </p>
     <p>Price: $50</p>
-    <input type="button" class="add-to-cart-button" value = "add to cart" >
+    <input type="button" class="add-to-cart-button" value = "sepete ekle" >
 </div>
 
 
@@ -257,31 +257,31 @@ getOrdersButton.addEventListener('click', _ => {
       <div id="orders" class = "orders"> 
       
         <div id="userInfos">
-        <p> user infos </p>
-          <p> user full name : ${allInfos.userInfos.userFullName}</p>
-          <p> deliver adress : ${allInfos.userInfos.deliverAddress}</p>
-          <p> user phone number : ${allInfos.userInfos.userPhoneNumber}</p>
-          <p> user email : ${allInfos.userInfos.userEmail}</p>
+        <p> kullanıcı bilgileri </p>
+          <p> tam adı : ${allInfos.userInfos.userFullName}</p>
+          <p> teslimat adresi : ${allInfos.userInfos.deliverAddress}</p>
+          <p> telefon numarası : ${allInfos.userInfos.userPhoneNumber}</p>
+          <p> email : ${allInfos.userInfos.userEmail}</p>
         </div>
         
         <div id="orderItems" class = "orderItems">
         
-        <p class="orderItemsTitle"> order items </p>
+        <p class="orderItemsTitle"> sipariş edilen ürünler </p>
         
         </div>
         <div id = "orderDetails" class = "orderDetails"> 
-        <p> order details </p>
-          <p> payment : ${allInfos.orderDetails.paymentMethod} </p>
-          <p> total amount : ${allInfos.orderDetails.totalAmount} </p>
+        <p> sipariş detayları </p>
+          <p> ödeme yöntemi : ${allInfos.orderDetails.paymentMethod} </p>
+          <p> toplam adet : ${allInfos.orderDetails.totalAmount} </p>
           <p id="totalPrice"> ${allInfos.orderDetails.totalPrice} </p>
           <p id="orderId" hidden = "true"> ${allInfos.orderDetails.orderId} </p>
           <select id="orderStatus" >
-            <option> Pending </option>
-            <option> Preparing </option>
-            <option> On delivery </option>
-            <option> Delivered to user </option>
+            <option> beklemede </option>
+            <option> hazırlanıyor </option>
+            <option> teslimatta </option>
+            <option> teslim edildi to user </option>
           </select>
-          <input type = "button" id="updateOrderStatus" value = "update order" hidden ="true">
+          <input type = "button" id="updateOrderStatus" value = "siparişi güncelle" hidden ="true">
        </div>
       
       </div>
@@ -294,15 +294,15 @@ getOrdersButton.addEventListener('click', _ => {
       allInfos.orderItems.forEach(item => {
         orderItems.innerHTML += `
         \n
-        <p> book name : ${item.bookName} </p>
-        <p> book ISBN : ${item.bookISBN} </p>
-        <p> quantity : ${item.quantity} </p>
-        <p> price : ${item.price} </p>
+        <p> kitap ismi : ${item.bookName} </p>
+        <p> ISBN : ${item.bookISBN} </p>
+        <p> adet : ${item.quantity} </p>
+        <p> fiyat : ${item.price} </p>
         <br>
         `
         totalPrice += item.price
       })
-      totalPriceP.textContent = "total price : " + totalPrice
+      totalPriceP.textContent = "toplam fiyat : " + totalPrice
       const orderStatusSelect = document.getElementById('orderStatus')
       const orderStatusOptions = orderStatusSelect.querySelectorAll('option')
       let count = 0

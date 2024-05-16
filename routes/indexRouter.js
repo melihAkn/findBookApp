@@ -30,9 +30,11 @@ indexRouter.post('/performSearch',controller.performSearch,errorHandler)
 //get comments for books
 indexRouter.post('/getComments',controller.getComments)
 
-indexRouter.get('/getMostSelledBooksByCity',controller.getMostSelledBooksByCity)
-indexRouter.get('/getBooksByMostPopularCategory',controller.getBooksByMostPopularCategory)
-indexRouter.get('/getNewlyAddedBooks',controller.getNewlyAddedBooks)
-indexRouter.get('/getPopularCategorys',controller.getPopularCategorys)
-
+//for mainpage data
+indexRouter.post('/getMostSelledBooksByCity',controller.getMostSelledBooksByCity)
+indexRouter.post('/getBooksByMostPopularCategory',controller.getBooksByMostPopularCategory)
+indexRouter.post('/getNewlyAddedBooks',controller.getNewlyAddedBooks)
+indexRouter.post('/getPopularCategorys',controller.getPopularCategorys)
+indexRouter.post('/getMostReliableBookStores',controller.getMostReliableBookStores)
 module.exports = indexRouter
+
