@@ -1,11 +1,12 @@
 const { searchBookByFieldName , getCommentsByFieldName , countBooks, booksSellInfos } = require('../repositories/booksRepository')
-const { getBookStoresByField, getBookStoresBookByField, addBookStoreRatings , findBookStoreRating } = require('../repositories/bookStoreRepository')
-// bookstore ınfos
+const { getBookStoresByField, getBookStoresBookByField, addBookStoreRatings , findBookStoreRating, findMonthOfBookstores } = require('../repositories/bookStoreRepository')
+// bookstore infos
 async function searchedBookInfos(bookData,limitData) {
     let books = []
     //const findAllBooks = await bookModel.find({ name : bookData.name })
     const findAllBooksByName = await searchBookByFieldName(bookData,{start : limitData.skip , limit : limitData.limit})
     const findBookStoresInSearchedCity = await getBookStoresByField({ city : limitData.city })
+
     for (const bookStore of findBookStoresInSearchedCity) {
         //
         const bookStoresBooks = await getBookStoresBookByField({ bookStoreId : bookStore._id})
@@ -79,6 +80,8 @@ async function mostSelledBooksByCity(bookData) {
 }
 
 
+
+
 async function mostPopularCategorys(bookData) {
     // getting most popular category from books sell infos table 
     // and fill an array return the categorys
@@ -113,20 +116,38 @@ async function aiSuggestedThisBooks(bookData) {
 
 
 async function mostReliableBookstores(bookStoreData,limitData) {
-    
-    const a = await findBookStoreRating(bookStoreData,limitData)
-    return a
+    const getBookstoreRatings = await findBookStoreRating(bookStoreData,limitData)
+    return getBookstoreRatings
 
 
 }
-async function monthOfBookstores(bookstoreData) {
-
+async function monthOfBookstores(bookStoreData) {
+    const getMonthOfBookStores = await findMonthOfBookstores(bookStoreData,{limit : 10})
+    return getMonthOfBookStores
 
 
 }
 
-async function popularAndRisingBookstores(bookstoreData) {
+async function popularAndRisingBookstores(bookStoreData) {
+    let popularAndRisingBs = []
+    const getMonthOfBookStores = await findMonthOfBookstores(bookStoreData,{limit : 10})
+    for (const item of getMonthOfBookStores) {
+        const findBookStore = await getBookStoresByField({ _id: item.bookStoreId, city: item.bookStoreCity })
 
+        if (findBookStore.length > 0 && findBookStore[0].createdAt) {
+            const createdAtDate = new Date(findBookStore[0].createdAt)
+            const currentDate = new Date()
+            //convert miliseconds to day
+            const differenceInDays = (currentDate - createdAtDate) / (1000 * 60 * 60 * 24)
+
+            if (differenceInDays <= 30) {
+                console.log("Bu kitapçı son 30 gün içinde oluşturuldu!")
+                popularAndRisingBs.push(item)
+            }
+        }
+    }
+
+    return popularAndRisingBs
 }
 
 

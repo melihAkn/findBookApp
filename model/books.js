@@ -11,7 +11,7 @@ const books = new schema ({
     description : {
         type : String,
         required : true,
-        maxLength : 256,
+        maxLength : 2048,
         minLength : 1
     },
     pageCount : {

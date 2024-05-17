@@ -3,6 +3,7 @@
 const searchButton = document.getElementById('performSearch')
 const searchText = document.getElementById('searchInput')
 const citySelectOption = document.getElementById('citys')
+const categorySelectOption = document.getElementById('categoryList')
 const bookSection = document.getElementById('booksSection')
 const searchContainer = document.getElementById('searchContainer')
 const placePagingButtons = document.getElementById('paging')
@@ -365,11 +366,13 @@ async function addEventListenersForBooks (returnedData) {
   })
 }
 
-async function performSearch(city = citySelectOption.value,bookName = "" ,skip = 0 , limit = 21){
+async function performSearch(city = citySelectOption.value,bookName = "" ,category = categorySelectOption.value,skip = 0 , limit = 21){
   console.time()
+  console.log(skip + " " + limit)
   const searchParameters = {
     bookName,
     searchedCity : city,
+    category,
     skip,
     limit
 }
@@ -421,6 +424,7 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,skip =
 
 
     console.timeEnd()
+    console.log(data)
     return data
 })
 .then(async returnedData => {
@@ -437,6 +441,7 @@ async function placePagingButton(){
   fetch(getBooksCount)
   .then(response => response.json())
   .then(data => {
+    console.log(data.bookC)
     const pageCount = data.bookC / 20
     placePagingButtons.innerHTML = `<a href="#" id="prev" class="prev">&laquo; previous</a>`
     for (let i = 1; i <= pageCount; i++) {
@@ -452,7 +457,7 @@ async function placePagingButton(){
           Array.from(placePagingButtons.children).forEach(btn => {
             btn.classList.remove("active")
         })
-          await performSearch(undefined,undefined,pagingButton.id.replace("page","") * 20)
+          await performSearch(undefined,undefined,undefined,pagingButton.id.replace("page","") * 20)
           pagingButton.classList.add("active")
         })
       }
@@ -461,11 +466,11 @@ async function placePagingButton(){
   .catch(e => console.error(e))
 }
 searchButton.addEventListener('click', _ => {
-    performSearch(citys.value,searchText.value)
+    performSearch(citySelectOption.value,searchText.value,categorySelectOption.value)
 })
-let pagingButtonsCount = 0
 document.addEventListener('DOMContentLoaded', async _ => {
   await getCitys()
+  await getBookCategories()
   await performSearch()
   await placePagingButton()
 })

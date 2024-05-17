@@ -3,7 +3,6 @@ async function getUserLocation(){
     //geolocaiton api is slow 
     //try alternative and fast
     const getUserCityFromLocalStorage = localStorage.getItem('city')
-    console.log(getUserCityFromLocalStorage)
     if(getUserCityFromLocalStorage){
 
         userCity = getUserCityFromLocalStorage
@@ -11,7 +10,6 @@ async function getUserLocation(){
         fetch("https://ipapi.co/json/")
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             localStorage.setItem("city",data.city)
             userCity = data.city
         })
@@ -53,6 +51,41 @@ async function getMostSelledBooks(userCity = "Istanbul"){
    })
    .catch(e => console.error(e)) 
 }
+/*
+async function getMostSelledBooksInAllCity(){
+    const mostSelledBooksInAllCity = document.getElementById('mostSelledBooksInAllCity')
+   const getMostSelledBooksInAllCityURL = "/getMostSelledBooksByCity"
+   const datamostSelledBooksInAllCity = {
+    city : undefined
+   }
+   fetch(getMostSelledBooksInAllCityURL,{
+    method : "POST",
+    headers : {
+        "Content-Type": "application/json"
+    },
+    body : JSON.stringify(datamostSelledBooksInAllCity)
+   })
+   .then(response => response.json())
+   .then(data => {
+    data.mostSelledBooks.forEach(e => {
+        mostSelledBooksInAllCity.innerHTML += `
+
+    <div class="booksCard">
+        <img src="../${e.images[0].path.replace("public","")}" class="bookIMG">
+        <p>${e.name}</p>
+        <p>${e.bookStoreInfos[0].price},00 tl</p>
+        <div class="buttonGroup">
+            <input type="button" value="sepete ekle" id="addToCart">
+            <input type="button" value="favoriye ekle" id="favorite">
+        </div>
+    </div>
+    
+    `
+    })
+   })
+   .catch(e => console.error(e)) 
+}
+*/
 
 async function getBooksByMostPopularCategory(userCity = "Istanbul"){
     const booksByMostPopularCategoryCard = document.getElementById('booksByMostPopularCategory')
@@ -106,9 +139,6 @@ async function getNewlyAddedBooks(userCity = "Istanbul"){
     .then(response => response.json())
     .then(data => {
         
-        console.log("most")
-        console.log(data)
-        console.log("most")
      //html insert
      data.books.forEach(e => {
         newlyAddedBooksCard.innerHTML += `
@@ -146,7 +176,6 @@ async function getPopularCategorys(userCity = "Istanbul"){
     .then(data => {
 
       data.popularCategorys.forEach(e => {
-        console.log(e.bookCategory)
         getPopularCategorysCard.innerHTML += `
 
         <p>${e.bookCategory}</p>
@@ -160,7 +189,61 @@ async function getPopularCategorys(userCity = "Istanbul"){
 async function getMostReliableBookStores(userCity = "Istanbul"){
     const getMostSelledBooksURL = "/getMostReliableBookStores"
     const dataForMostReliableBookStores = {
-     city : userCity
+     city : userCity,
+    }
+    fetch(getMostSelledBooksURL,{
+     method : "POST",
+     headers : {
+         "Content-Type": "application/json"
+     },
+     body : JSON.stringify(dataForMostReliableBookStores)
+    })
+    .then(response => response.json())
+    .then(data => {
+     console.log(data)
+     //html insert
+    })
+    .catch(e => console.error(e)) 
+}
+
+async function getMonthOfBookStores(userCity = "Istanbul"){
+    const getMostSelledBooksURL = "/getMonthOfBookStores"
+
+    const orderDate = new Date()
+    const year = orderDate.getFullYear();
+    const month = (orderDate.getMonth() + 1).toString().padStart(2, '0')
+    const yearMonth = `${year}-${month}`
+    console.log(yearMonth)
+    const dataForMostReliableBookStores = {
+     city : userCity,
+     date : yearMonth
+    }
+    fetch(getMostSelledBooksURL,{
+     method : "POST",
+     headers : {
+         "Content-Type": "application/json"
+     },
+     body : JSON.stringify(dataForMostReliableBookStores)
+    })
+    .then(response => response.json())
+    .then(data => {
+     console.log(data)
+     //html insert
+    })
+    .catch(e => console.error(e)) 
+}
+
+async function getPopularAndRisingBookStores(userCity = "Istanbul"){
+    const getMostSelledBooksURL = "/popularAndRisingBookstores"
+
+    const orderDate = new Date()
+    const year = orderDate.getFullYear();
+    const month = (orderDate.getMonth() + 1).toString().padStart(2, '0')
+    const yearMonth = `${year}-${month}`
+    console.log(yearMonth)
+    const dataForMostReliableBookStores = {
+     city : userCity,
+     date : yearMonth
     }
     fetch(getMostSelledBooksURL,{
      method : "POST",
@@ -184,5 +267,7 @@ document.addEventListener('DOMContentLoaded',async  _ =>{
     await getNewlyAddedBooks(userLocation)
     await getPopularCategorys(userLocation)
     await getMostReliableBookStores(userLocation)
+    await getMonthOfBookStores(userLocation)
+    await getPopularAndRisingBookStores(userLocation)
 })
 

@@ -1,6 +1,15 @@
 const contactModel = require('../model/contacts')
 const { createUser, loginUser, loginBookStore, createBookStore } = require('../services/userService')
-const { searchedBookInfos , getBookComments , getCountBooks , mostSelledBooksByCity, mostPopularCategorys, mostReliableBookstores } = require('../services/ProductService')
+const {
+    searchedBookInfos,
+    getBookComments,
+    getCountBooks,
+    mostSelledBooksByCity,
+    mostPopularCategorys,
+    mostReliableBookstores,
+    monthOfBookstores,
+    popularAndRisingBookstores
+} = require('../services/ProductService')
 
 //page renders
 const mainPage = (req,res) => {
@@ -53,7 +62,6 @@ const userLogin = async (req,res,next) => {
       }
 
     const userIsLoginned = await loginUser(req.body)
-    console.log(userIsLoginned)
     if(!userIsLoginned.loginAttemp){
         res.status(401).send({message :"username or password wrong"})
     }else{
@@ -77,7 +85,6 @@ const userRegister = async (req,res,next) => {
 
 
 const bookStoresLogin = async (req,res,next) => {
-    console.log(req.body)
     if(req.body.username == undefined || req.body.password == undefined){
         const err = new Error("username or password not provided")
         err.code = 400
@@ -97,7 +104,6 @@ const bookStoresLogin = async (req,res,next) => {
 
 
 const bookStoreRegister = async (req,res,next) => {
-    console.log(req.body)
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email) || !/^[a-zA-Z0-9]{3,}$/.test(req.body.username) || !/^[a-zA-Z]{3,}$/.test(req.body.name) || !/^\+?\d{10,14}$/.test(req.body.phoneNumber) || req.body.password.length < 8 || !/^[a-zA-Z0-9\s]{3,}$/.test(req.body.physicalAddress) ) {
         return res.status(400).json({ error: 'Invalid infos' })
       }
@@ -138,14 +144,18 @@ const performSearch = async (req,res,next) => {
     // using a regular expression created from the 'bookName' value in the request body.
     // If 'bookName' is not empty, a case-insensitive regular expression is created to match 'bookName' value.
     // If 'bookName' is empty, the regular expression '/./' is used to match any character.
-
-    if(req.body.bookName == null || req.body.bookName == undefined || req.body.searchedCity == null || req.body.searchedCity == undefined || req.body.searchedCity == ""){
-        const err = new Error("bookname or searched city not provided")
+    //
+    if(req.body.category == null  || req.body.category == undefined || req.body.bookName == null || req.body.bookName == undefined || req.body.searchedCity == null || req.body.searchedCity == undefined || req.body.searchedCity == ""){
+        const err = new Error("kitap ismi veya category veya aranan şehir girilmedi")
         err.code = 400
         return next(err)
     }
     const bookNameRegex = req.body.bookName.length > 0 ? new RegExp(req.body.bookName, 'i') : /./
-    const searchForBooks =  await searchedBookInfos({name : bookNameRegex },{skip : req.body.skip,limit : req.body.limit, city : req.body.searchedCity })
+    if(req.body.category == "seçiniz"){
+        req.body.category = /./
+    }
+    // 
+    const searchForBooks =  await searchedBookInfos({name : bookNameRegex,category : req.body.category },{skip : req.body.skip,limit : req.body.limit, city : req.body.searchedCity })
     res.status(200).send(searchForBooks)
     
 }
@@ -161,7 +171,6 @@ const getBooksCount = async (req,res,next) => {
 }
 
 const getMostSelledBooksByCity = async(req,res,next) => {
-    console.log(req.body)
     const mostSelledBooksByC = await mostSelledBooksByCity({city : req.body.city})
     const mostSelledBooksWithSellers = []
     for(const item in mostSelledBooksByC){
@@ -185,7 +194,6 @@ const getBooksByMostPopularCategory = async(req,res,next) => {
             }
         }
  }
-    console.log(mostPopularBooks)
     res.status(200).send({books : mostPopularBooks})
 }
 
@@ -199,7 +207,6 @@ const getNewlyAddedBooks = async(req,res,next) => {
 
 const getPopularCategorys = async(req,res,next) => {
     const popularCategorys = await mostPopularCategorys({city : req.body.city})
-    console.log(popularCategorys)
     res.status(200).send({popularCategorys})
 }
 const getMostReliableBookStores = async(req,res,next) => {
@@ -212,20 +219,23 @@ const getMostReliableBookStores = async(req,res,next) => {
 }
 
 const getMonthOfBookStores = async(req,res,next) => {
-// every month we created a new collection in database
+// every month add a field to this colllection monthOfBookstore
 // and fill every order made by bookstores
 // end of the month selecting 10 document this case (highest order count and ratings greater than 4)
-
+    const getMonthOfBs = await monthOfBookstores({city : req.body.city,date : req.body.date,bookStoreRating : {$gte : 4}})
+    res.send(getMonthOfBs)
 }
 
 const getPopularAndRisinBookStores = async(req,res,next) => {
 // if new bookstore starting a sell book and in the first month order count greater than 50 or 100
 // and rating greater than 4 or close this is popular and rising bookstore i think
-
+    console.log(req.body)
+    const getPopularAndRisingBookStores = await popularAndRisingBookstores({city : req.body.city,date : req.body.date,bookStoreRating : {$gte : 4}})
+    res.status(200).send(getPopularAndRisingBookStores)
 }
 
 const getAiSuggestedBooks = async(req,res,next) => {
-    //first of all i need a book data mock or something else 
+    //first of all i need a real book data 
     //until i get it this will wait
 //getting a ai suggested books 
 
@@ -270,5 +280,7 @@ module.exports = {
     getBooksByMostPopularCategory,
     getNewlyAddedBooks,
     getPopularCategorys,
-    getMostReliableBookStores
+    getMostReliableBookStores,
+    getMonthOfBookStores,
+    getPopularAndRisinBookStores
 }

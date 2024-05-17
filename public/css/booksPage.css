@@ -19,7 +19,9 @@
 .cityList{
     width: 100px;
 }
-
+.categoryList {
+  width: 100px;
+}
 body {
     font-family: Arial, sans-serif;
     font-size: 16px;

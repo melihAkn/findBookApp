@@ -1,4 +1,12 @@
-const { bookStoresBookModel,bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresRatingsModel } = require('../model/bookStores')
+const {
+    bookStoresBookModel,
+    bookStoresModel,
+    bookStoreOrdersModel,
+    bookStoreCartModel,
+    bookStoresRatingsModel,
+    monthOfBookstoreModel
+
+} = require('../model/bookStores')
 async function addBookStore(userData) {
     try {
         const bookStore = new bookStoresModel(userData)
@@ -29,4 +37,17 @@ async function findBookStoreRating(bookStoreData,limitData){
     const findBookstoreRating = await bookStoresRatingsModel.find(bookStoreData).skip(limitData.skip).limit(limitData.limit)
     return findBookstoreRating
 }
-module.exports = { addBookStore, getBookStoresByField, getBookStoresBookByField ,addBookStoreRatings ,findBookStoreRating}
+
+async function findMonthOfBookstores(bookStoreData,limitData){
+    const findMonthOfBookStore = await monthOfBookstoreModel.find({bookStoreCity : bookStoreData.city , date : bookStoreData.date}).limit(limitData.limit)
+    return findMonthOfBookStore
+}
+module.exports = {
+    addBookStore,
+    getBookStoresByField,
+    getBookStoresBookByField,
+    addBookStoreRatings,
+    findBookStoreRating,
+    findMonthOfBookstores
+
+}

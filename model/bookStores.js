@@ -186,17 +186,51 @@ const bookStoresRatings = new schema({
 },{collection : "bookStoresRatings",timestamps : true})
 //bookstore rating is defined this way
 // order count / sum of order
+// date orderCount bookStoreId bookStoreRating sumOfOrderRatings
+const monthOfBookstore = new schema({
+    date : {
+        type : String,
+        required : true
+    },
+    orderCount : {
+        type : Number,
+        required : false,
+        default : 0
+    },
+    bookStoreId : {
+        type : String,
+        required :true,
+        unique : false
+    },
+    bookStoreRatings : {
+        type : Number,
+        required : false,
+        default : 0
+    },
+    sumOfOrderRatings : {
+        type : Number,
+        required : false,
+        default : 0
+    },
+    bookStoreCity : {
+        type : String,
+        required : true,
+        
+    }
 
+})
 
 const bookStoresBookModel = mongoose.model('bookStoresBook', bookStoresBook,'bookStoresBook')
 const bookStoresModel = mongoose.model('bookStores', bookStore,'bookStores')
 const bookStoreOrdersModel = mongoose.model('bookStoresOrder',bookStoresOrder,'bookStoresOrder')
 const bookStoreCartModel = mongoose.model('bookStoresCart',bookStoreCart,'bookStoreCart')
 const bookStoresRatingsModel = mongoose.model('bookStoresRatings',bookStoresRatings,'bookStoresRatings')
+const monthOfBookstoreModel = mongoose.model('monthOfBookstore',monthOfBookstore,'monthOfBookstore')
 module.exports = {
     bookStoresBookModel,
     bookStoresModel,
     bookStoreOrdersModel,
     bookStoreCartModel,
-    bookStoresRatingsModel
+    bookStoresRatingsModel,
+    monthOfBookstoreModel
 }

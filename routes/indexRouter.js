@@ -36,5 +36,7 @@ indexRouter.post('/getBooksByMostPopularCategory',controller.getBooksByMostPopul
 indexRouter.post('/getNewlyAddedBooks',controller.getNewlyAddedBooks)
 indexRouter.post('/getPopularCategorys',controller.getPopularCategorys)
 indexRouter.post('/getMostReliableBookStores',controller.getMostReliableBookStores)
+indexRouter.post('/getMonthOfBookStores',controller.getMonthOfBookStores)
+indexRouter.post('/popularAndRisingBookstores',controller.getPopularAndRisinBookStores)
 module.exports = indexRouter
 

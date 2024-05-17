@@ -43,7 +43,7 @@ const addComment = async (req,res) => {
 }
 
 // I think this is not belong here so bookstores variables should be defined here
-const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresBookModel} = require('../model/bookStores')
+const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresBookModel ,monthOfBookstoreModel , bookStoresRatingsModel} = require('../model/bookStores')
 //code replication in here 
 const userAndBookStoresAddToCart = async (req,res) => {
     let userShoppingCardJSON
@@ -175,9 +175,6 @@ const userOrBookStoresUpdateOrDeleteItem = async (req,res) => {
    
 }
 
-
-
-
 const userAndBookStoresCopmleteOrder = async (req,res) => {
     let findUser
     try {
@@ -214,8 +211,46 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
             const createOrder = new bookStoreOrdersModel(customerOrder)
             await createOrder.save()
             const deleteUserShoppingCard = await userCartModel.deleteMany({userId : req.userId.tokenIsValid})
+            //creating bookstore order and month of bookstore collections
+            const orderDate = new Date()
+            const year = orderDate.getFullYear();
+            const month = (orderDate.getMonth() + 1).toString().padStart(2, '0')
+            const yearMonth = `${year}-${month}`
 
-            res.status(200).send({message : "order created successfully you can show order infos profile page"})
+            const findThisBookStoreRating = await bookStoresRatingsModel.find({bookStoreId : req.body[0].bookStoreId})
+            const findThisMonthOfbookStore = await monthOfBookstoreModel.find({bookStoreId : req.body[0].bookStoreId , date : yearMonth})
+            if(findThisBookStoreRating.length > 0){
+                findThisBookStoreRating[0].orderCount += customerOrder.totalAmount
+                await findThisBookStoreRating[0].save()
+
+            }else{
+                const bookStoresRatings = {
+                    bookStoreId : req.body[0].bookStoreId,
+                    orderCount : customerOrder.totalAmount,
+                    sumOfOrderRatings : 0,
+                    bookStoreRating : 0
+                }
+                const newBookStoreRatingModel = new bookStoresRatingsModel(bookStoresRatings)
+                await newBookStoreRatingModel.save()
+            }
+            if(findThisMonthOfbookStore.length > 0){
+                findThisMonthOfbookStore[0].orderCount += customerOrder.totalAmount
+                await findThisMonthOfbookStore[0].save()
+            }else{
+                const findBookStoreCity = await bookStoresModel.findById(req.body[0].bookStoreId)
+                const monthOfBookstoreData = {
+                    date : yearMonth,
+                    orderCount : customerOrder.totalAmount,
+                    bookStoreId : req.body[item].bookStoreId,
+                    bookSotreRating : 0,
+                    suomOfOrderRatings : 0,
+                    bookStoreCity : findBookStoreCity.city
+                }
+                const newMonthOfBookstoreModel = new monthOfBookstoreModel(monthOfBookstoreData)
+                await newMonthOfBookstoreModel.save()
+            }
+          
+            res.status(200).send({message : "sipariş başarılı bir şekilde oluşturuldu. siparişinizi profil sayfaında görebilirsiniz"})
     
         }else if(req.userId.ownerOfToken === "bookStore"){
             findUser = await bookStoresModel.findById(req.userId.tokenIsValid)
