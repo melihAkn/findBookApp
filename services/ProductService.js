@@ -109,7 +109,6 @@ async function mostPopularCategorys(bookData) {
 
 
 async function aiSuggestedThisBooks(bookData) {
-
 }
 
 
@@ -141,12 +140,10 @@ async function popularAndRisingBookstores(bookStoreData) {
             const differenceInDays = (currentDate - createdAtDate) / (1000 * 60 * 60 * 24)
 
             if (differenceInDays <= 30) {
-                console.log("Bu kitapçı son 30 gün içinde oluşturuldu!")
                 popularAndRisingBs.push(item)
             }
         }
     }
-
     return popularAndRisingBs
 }
 

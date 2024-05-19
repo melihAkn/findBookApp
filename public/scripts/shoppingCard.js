@@ -57,8 +57,8 @@ fetch(getUsersOrBookStoresCardDetails)
         if(data[index].otherBookStores.length > 0){
             data[index].otherBookStores.forEach(others => {
                 otherBookStores.innerHTML += `
-                <label for="otherBookStore${others.name}">${others.name} ${others.price},00 tl</label>
-                <input type="checkbox" class="otherBookStore" name="bookStoresList" id="otherBookStore${index}_${count}">
+                <label for="otherBookStore${others.name}_${index}_${count}">${others.name} : ${others.price},00 tl</label>
+                <input type="checkbox" class="otherBookStore" name="bookStoresList" id="otherBookStore${others.name}_${index}_${count}">
                 `
                 count++
             })
@@ -92,16 +92,16 @@ fetch(getUsersOrBookStoresCardDetails)
         checkbox.addEventListener('change', e => {
             completeOrderButton.hidden = true
             updateCardButton.hidden = false
-            const selectedBookStoreName = checkbox.parentElement.parentElement.children[2].textContent.replace("book store name : ","")
+            const selectedBookStoreName = checkbox.parentElement.parentElement.children[2].textContent.replace("mağaza ismi : ","").trim()
             const selectedBookName = e.originalTarget.parentElement.parentElement.parentElement.children[0].children[1].textContent.trim()
             for(let item in data){
-
                 if(data[item].bookName == selectedBookName  && data[item].bookStoreName == selectedBookStoreName ){
-                    const changedValue = e.target.previousElementSibling.textContent.split(" ")
-                    const bookStoreInfoForChange = data[item].otherBookStores.find(e => e.name == changedValue[0] && e.price == changedValue[1].split(",")[0])
+                    const changedValue = e.target.previousElementSibling.textContent.split(":")
+                    const bookStoreInfoForChange = data[item].otherBookStores.find(e => e.name == changedValue[0].trimEnd() && e.price == changedValue[1].split(",")[0])
                     data[item].bookPrice = bookStoreInfoForChange.price.toString()
                     data[item].bookStoreName = bookStoreInfoForChange.name
                     data[item].bookStoreId = bookStoreInfoForChange._id
+                }else{
                 }
             }
         })
@@ -141,13 +141,10 @@ fetch(getUsersOrBookStoresCardDetails)
                 body : JSON.stringify(data)
             })
             .then(response => response.json())
-            .then(data => {
+            .then(async data => {
                 if(!data.error){
                     alert(data.message)
-                    setTimeout(() => {
-                        originalData = undefined
-                    location.reload()
-                    }, 1000)
+                    location.href = "/"
                 }else{
                     alert(data.error)
                 }

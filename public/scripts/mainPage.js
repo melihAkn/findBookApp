@@ -138,7 +138,9 @@ async function getNewlyAddedBooks(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-        
+        console.log("yeni eklendi bunlar")
+        console.log(data)
+        console.log("yeni eklendi bunlar")
      //html insert
      data.books.forEach(e => {
         newlyAddedBooksCard.innerHTML += `
@@ -200,7 +202,10 @@ async function getMostReliableBookStores(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-     console.log(data)
+        console.log("en guvenilir bunlar")
+        console.log(data)
+        console.log("en guvenilir bunlar")
+     
      //html insert
     })
     .catch(e => console.error(e)) 
@@ -227,7 +232,9 @@ async function getMonthOfBookStores(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-     console.log(data)
+        console.log("ayın kırtasiyeleri")
+        console.log(data)
+        console.log("ayın kırtasiyeleri")
      //html insert
     })
     .catch(e => console.error(e)) 
@@ -254,7 +261,9 @@ async function getPopularAndRisingBookStores(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-     console.log(data)
+        console.log("populer ve yukselenler bunlar")
+        console.log(data)
+        console.log("populer ve yukselenler bunlar")
      //html insert
     })
     .catch(e => console.error(e)) 

@@ -280,11 +280,11 @@ const prepareMockForBookStoresBooks = async (req,res) => {
   const findbooks = await bookModel.find({})
   const findBookstores = await bookStoresModel.find({})
   for(const bookstoreIndex in findBookstores){
-    //every bookstore must have 5 books
-    for(let i = 0; i < 5; i++ ){
+    //every bookstore must have 15 books
+    for(let i = 0; i < 15; i++ ){
       const newBookStoresBook = {
-        "bookStoreId" : findBookstores[bookstoreIndex].id,
-        "bookId" : findbooks[Math.floor(Math.random() * findbooks.length)].id,
+        "bookStoreId" : findBookstores[bookstoreIndex]._id,
+        "bookId" : findbooks[Math.floor(Math.random() * findbooks.length)]._id,
         "stockInfo" : Math.floor((Math.random() * 100) + 1),
         "price" : Math.floor((Math.random() * 2500) + 1)
       }

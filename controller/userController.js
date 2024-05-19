@@ -1,5 +1,5 @@
 const { usersModel,userCartModel,userFavBooksModel,userBuyLaterModel,userWishListModel } = require('../model/users')
-const { bookModel,bookCommentsModel } = require('../model/books')
+const { bookModel,bookCommentsModel,bookSellInfosModel } = require('../model/books')
 const { hash,compare } = require('bcrypt')
 const { userInfos , updateUserInfos, buyLaterBook, addWishList, addCommentToBooks } = require('../services/userService')
 const userProfilePageRender = (req,res) => {
@@ -122,26 +122,30 @@ const userOrBookStoresGetCardDetails = async(req,res) => {
                 const findBookStore = await bookStoresModel.findById(userShoppingList[item].bookStoreId)
                 shoppingListJSON.push(
                     {
-                        bookId : findBook.id,
+                        bookId : findBook._id,
                         bookName : findBook.name,
                         bookStoreName : findBookStore.name,
-                        bookStoreId : findBookStore.id,
+                        bookStoreId : findBookStore._id,
                         quantity : userShoppingList[item].quantity,
                         bookImages : findBook.images,
                         bookPrice : userShoppingList[item].bookPrice,
                         otherBookStores : []
                     }
                 )
-                    const findOtherSellersOfThisBook = await bookStoresBookModel.find({bookId : findBook.id })
+                    const findOtherSellersOfThisBook = await bookStoresBookModel.find({bookId : findBook._id })
                     for(let index in findOtherSellersOfThisBook){
                         const findOtherBookStores = await bookStoresModel.findOne({_id : findOtherSellersOfThisBook[index].bookStoreId , city : findUser.city})
-                        if(findOtherBookStores.id != findBookStore.id && !shoppingListJSON[item].otherBookStores.find(store => store.id === findOtherBookStores.id && store.id == findBookStore.id)) {
-                            const findBookstoresBookPrice = await bookStoresBookModel.findOne({bookStoreId : findOtherBookStores.id , bookId : findBook.id})
-                            const newStore = {
-                                ...findOtherBookStores.toObject(),
-                                price: findBookstoresBookPrice.price
-                              }
-                            shoppingListJSON[item].otherBookStores.push(newStore)
+                        if(findOtherBookStores != null){
+                            if(findOtherBookStores._id != findBookStore._id && !shoppingListJSON[item].otherBookStores.find(store => store.id === findOtherBookStores.id && store.id == findBookStore.id)) {
+                                const findBookstoresBookPrice = await bookStoresBookModel.findOne({bookStoreId : findOtherBookStores.id , bookId : findBook.id})
+                                const newStore = {
+                                    ...findOtherBookStores.toObject(),
+                                    price: findBookstoresBookPrice.price
+                                }
+                                shoppingListJSON[item].otherBookStores.push(newStore)
+                            }else{
+
+                            }
                         }
                     }
             }
@@ -219,6 +223,7 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
 
             const findThisBookStoreRating = await bookStoresRatingsModel.find({bookStoreId : req.body[0].bookStoreId})
             const findThisMonthOfbookStore = await monthOfBookstoreModel.find({bookStoreId : req.body[0].bookStoreId , date : yearMonth})
+            const findBookStoreCity = await bookStoresModel.findById(req.body[0].bookStoreId)
             if(findThisBookStoreRating.length > 0){
                 findThisBookStoreRating[0].orderCount += customerOrder.totalAmount
                 await findThisBookStoreRating[0].save()
@@ -237,7 +242,7 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
                 findThisMonthOfbookStore[0].orderCount += customerOrder.totalAmount
                 await findThisMonthOfbookStore[0].save()
             }else{
-                const findBookStoreCity = await bookStoresModel.findById(req.body[0].bookStoreId)
+                
                 const monthOfBookstoreData = {
                     date : yearMonth,
                     orderCount : customerOrder.totalAmount,
@@ -249,8 +254,42 @@ const userAndBookStoresCopmleteOrder = async (req,res) => {
                 const newMonthOfBookstoreModel = new monthOfBookstoreModel(monthOfBookstoreData)
                 await newMonthOfBookstoreModel.save()
             }
-          
-            res.status(200).send({message : "sipariş başarılı bir şekilde oluşturuldu. siparişinizi profil sayfaında görebilirsiniz"})
+            //creating a bookSellInfos model
+           
+            /* customer order json
+   customerOrder.items.push({
+                    bookName : req.body[item].bookName,
+                    quantity : req.body[item].quantity,
+                    price : req.body[item].bookPrice,
+                    bookISBN : findBook.ISBN               
+                })
+            */
+            for(const item of customerOrder.items){
+                const findThisBookInfos = await bookModel.findOne({ISBN : item.bookISBN})
+                const findThisBookSellInfos = await bookSellInfosModel.find({bookId : findThisBookInfos._id , bookCity : findBookStoreCity.city })
+                if(findThisBookSellInfos.length > 0){
+                    const bookSellInfos = {
+                        bookCity : findBookStoreCity.city,
+                        sellCount : item.quantity,
+                        bookCategory : findThisBookInfos.category
+                    }
+                    findThisBookSellInfos[0].sellCount += item.quantity
+                    await findThisBookSellInfos[0].save()
+
+                }else{
+                    const bookSellInfos = {
+                        bookId : findThisBookInfos._id,
+                        bookCity : findBookStoreCity.city,
+                        sellCount : item.quantity,
+                        bookCategory : findThisBookInfos.category
+                    }
+                    const newBookSellInfosModel = new bookSellInfosModel(bookSellInfos)
+                    await newBookSellInfosModel.save()
+
+                }
+            }
+
+            res.status(200).send({message : "sipariş başarılı bir şekilde oluşturuldu. siparişinizi profil sayfanızda görebilirsiniz"})
     
         }else if(req.userId.ownerOfToken === "bookStore"){
             findUser = await bookStoresModel.findById(req.userId.tokenIsValid)

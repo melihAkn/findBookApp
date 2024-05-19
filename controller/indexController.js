@@ -173,6 +173,7 @@ const getBooksCount = async (req,res,next) => {
 const getMostSelledBooksByCity = async(req,res,next) => {
     const mostSelledBooksByC = await mostSelledBooksByCity({city : req.body.city})
     const mostSelledBooksWithSellers = []
+    console.log(mostSelledBooksByC)
     for(const item in mostSelledBooksByC){
         const getBookSellers = await searchedBookInfos({_id : mostSelledBooksByC[item].bookId},{city : req.body.city,skip : 0, limit : 5})
         for(book of getBookSellers.books){
@@ -200,7 +201,9 @@ const getBooksByMostPopularCategory = async(req,res,next) => {
 const getNewlyAddedBooks = async(req,res,next) => {
 
     const lastMonthDate = new Date(new Date() - 30 * 24 * 60 * 60 * 1000)
+    console.log(lastMonthDate)
     const newlyAddebBooks = await searchedBookInfos({ createdAt: { $gte: lastMonthDate } },{city : req.body.city,skip : 0, limit : 25})
+    console.log(newlyAddebBooks)
     res.status(200).send({books : newlyAddebBooks.books})
 
 }
