@@ -36,14 +36,23 @@ div contents style start
 /* first section divs */
 .bookStoresOfThisMonth {
     display: flex;
+    flex-direction: column;
     border: 1px solid #ccc;
     max-width: 100%;
-    overflow-x: auto;
-    
 }
+.bookStoresOfThisMonth p {
+    margin: 0.25rem;
+    display: inline-block;
+    word-break: break-word;
+}
+
 .bookIMG {
     width: 120px;
     height: 188px;
+}
+.bookStoreIMG {
+    width: 80px;
+     height: 80px;
 }
 
 .popularAndRisingBooks {

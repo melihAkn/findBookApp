@@ -5,7 +5,9 @@ uploads/
 /public/uploads/
 rest.http
 /public/images/icons
-
+stockInCity.csv
+previousOrders.csv
+/dataForAi
 # Logs
 logs
 *.log

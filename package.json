@@ -13,6 +13,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
+    "csv-stringify": "^6.5.0",
     "dotenv": "^16.4.4",
     "express": "^4.19.2",
     "express-handlebars": "^7.1.2",

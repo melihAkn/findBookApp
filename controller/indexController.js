@@ -173,7 +173,6 @@ const getBooksCount = async (req,res,next) => {
 const getMostSelledBooksByCity = async(req,res,next) => {
     const mostSelledBooksByC = await mostSelledBooksByCity({city : req.body.city})
     const mostSelledBooksWithSellers = []
-    console.log(mostSelledBooksByC)
     for(const item in mostSelledBooksByC){
         const getBookSellers = await searchedBookInfos({_id : mostSelledBooksByC[item].bookId},{city : req.body.city,skip : 0, limit : 5})
         for(book of getBookSellers.books){
@@ -201,9 +200,7 @@ const getBooksByMostPopularCategory = async(req,res,next) => {
 const getNewlyAddedBooks = async(req,res,next) => {
 
     const lastMonthDate = new Date(new Date() - 30 * 24 * 60 * 60 * 1000)
-    console.log(lastMonthDate)
     const newlyAddebBooks = await searchedBookInfos({ createdAt: { $gte: lastMonthDate } },{city : req.body.city,skip : 0, limit : 25})
-    console.log(newlyAddebBooks)
     res.status(200).send({books : newlyAddebBooks.books})
 
 }
@@ -226,13 +223,12 @@ const getMonthOfBookStores = async(req,res,next) => {
 // and fill every order made by bookstores
 // end of the month selecting 10 document this case (highest order count and ratings greater than 4)
     const getMonthOfBs = await monthOfBookstores({city : req.body.city,date : req.body.date,bookStoreRating : {$gte : 4}})
-    res.send(getMonthOfBs)
+    res.status(200).send(getMonthOfBs)
 }
 
 const getPopularAndRisinBookStores = async(req,res,next) => {
 // if new bookstore starting a sell book and in the first month order count greater than 50 or 100
 // and rating greater than 4 or close this is popular and rising bookstore i think
-    console.log(req.body)
     const getPopularAndRisingBookStores = await popularAndRisingBookstores({city : req.body.city,date : req.body.date,bookStoreRating : {$gte : 4}})
     res.status(200).send(getPopularAndRisingBookStores)
 }

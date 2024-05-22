@@ -2,7 +2,8 @@ const {bookCommentsModel,bookModel} = require('../model/books')
 const {bookStoreCartModel,bookStoreOrdersModel,bookStoresModel,bookStoresBookModel} = require('../model/bookStores')
 const {userBuyLaterModel,userCartModel,userWishListModel,userFavBooksModel,usersModel} = require('../model/users')
 const {contactsModel} = require('../model/contacts')
-
+const fs = require('fs')
+const { searchedBookInfos } = require('../services/ProductService')
 
 //for mock data prep
 const capitalAndNonCapital = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -292,68 +293,108 @@ const prepareMockForBookStoresBooks = async (req,res) => {
       await addbookToBookstoresBook.save()
     }
   }
-
-
-/*
-  {
-    "bookStoreId" : "65faec61f6e1bcfe6bb2d61f",
-    "bookId" : "65faec87f6e1bcfe6bb2d625",
-    "stockInfo" : 2,
-    "price" : 356
-  }
-bookStoreId
-
-bookId
-
-stockInfo
-2
-price
-32
-
-
-
-{
-  "_id": {
-    "$oid": "65faec87f6e1bcfe6bb2d625"
-  },
-  "name": "deneme123",
-  "description": "deneme123",
-  "pageCount": 544,
-  "category": "Sanat",
-  "averageRating": 5,
-  "publicationDate": "2024-03-15",
-  "author": "deneme123",
-  "ISBN": "12345678912",
-  "images": [
-    [
-      {
-        "index": 1,
-        "path": "public/uploads/bookImages/deneme123/1.png"
-      }
-    ],
-    [
-      {
-        "index": 2,
-        "path": "public/uploads/bookImages/deneme123/2.png"
-      }
-    ]
-  ],
-  "isValidBook": false,
-  "createdAt": {
-    "$date": "2024-03-20T14:02:47.415Z"
-  },
-  "updatedAt": {
-    "$date": "2024-03-20T14:02:47.415Z"
-  },
-  "__v": 0
-}
-*/
   
     res.send()
   }
-module.exports = {
-    prepareMockForBooks,
-    prepareMockForBookStores,
-    prepareMockForBookStoresBooks
 
+
+//this is for new users
+const prepareDataForAiSuggestedBooks = async (req,res) => {
+  let searchedCity = "Düzce"
+  let previousOrdersInThisCityISBN = []
+  let bookIds
+  const findBookStoreOrders = await bookStoreOrdersModel.find({})
+  for(const item of findBookStoreOrders){
+  
+    const thisIsInSearchedCity = await bookStoresModel.findById(item.bookStoreId)
+    if(thisIsInSearchedCity.city == searchedCity){
+      for(const item2 of item.items){
+        previousOrdersInThisCityISBN.push(item2.bookISBN)
+        
+      }
+    
+
+    }
+  }
+  const getThis = await searchedBookInfos({name : /./},{limit : 99999,skip : 0,city : searchedCity})
+  
+  let previousOrders = []
+  let stockInCity = []
+  for(let i = 0; i < previousOrdersInThisCityISBN.length; i++){
+    const findThisBook = await bookModel.findOne({ISBN : previousOrdersInThisCityISBN[i]})
+    previousOrders.push({
+      bookName : findThisBook.name,
+      bookDescription : findThisBook.description,
+      bookCategory : findThisBook.category,
+      bookPageCount : findThisBook.pageCount,
+      bookAuthor : findThisBook.author,
+      bookId : findThisBook._id
+    })
+  }
+  
+  for(let k = 0; k < getThis.books.length;k++){
+
+    stockInCity.push({
+      bookName : getThis.books[k].name,
+      bookDescription : getThis.books[k].description,
+      bookCategory : getThis.books[k].category,
+      bookPageCount : getThis.books[k].pageCount,
+      bookAuthor : getThis.books[k].author,
+      bookId : getThis.books[k]._id
+    })
+  }
+  console.log(previousOrders.length)
+  console.log(stockInCity.length)
+  //write previous orders
+    const { stringify } = require('csv-stringify')
+    const columns = [
+      'bookName', 'bookDescription', 'bookCategory', 'bookPageCount', 'bookAuthor','bookId'
+    ]
+    const stockInCityStringifier = stringify({ header: true, columns: columns })
+    const previousOrderStringifier = stringify({ header: true, columns: columns })
+    
+    // Dosya akışlarını oluşturun
+    const stockInCityWritableStream = fs.createWriteStream('/home/gavin/findBookApp/dataForAi/stockInCity.csv')
+    const previousOrderWritableStream = fs.createWriteStream('/home/gavin/findBookApp/dataForAi/previousOrders.csv')
+    
+    // CSV dönüştürücüleri akışlara bağlayın
+    stockInCityStringifier.pipe(stockInCityWritableStream)
+    previousOrderStringifier.pipe(previousOrderWritableStream)
+    
+    // Verileri CSV'ye dönüştürün ve yazın
+    for (const book of stockInCity) {
+      stockInCityStringifier.write(book)
+    }
+    for (const order of previousOrders) {
+      previousOrderStringifier.write(order)
+    }
+    
+    // CSV dönüştürücüleri kapatın
+    stockInCityStringifier.end()
+    previousOrderStringifier.end()
+    
+/*
+prompt
+
+previous_orders.csv: Kullanıcıların daha önce satın aldığı kitapları içerir (sütunlar: bookName, bookDescription, bookCategory, bookPageCount, bookAuthor,bookId).
+
+stock_in_city.csv: Şehrinizdeki mevcut kitap stoğunu içerir (sütunlar: bookName, bookDescription, bookCategory, bookPageCount, bookAuthor,bookId).
+
+Bu iki dosyayı kullanarak, kullanıcıların geçmiş siparişlerine ve stok durumuna göre kişiselleştirilmiş kitap önerileri oluşturmanı istiyorum. Önerdiğin kitaplar, stoktaki kitaplarla sınırlı olmalı. Lütfen 10 kitap öner ve önerileri bir csv dosyası olarak sunar mısın? (sütunlar: bookName, bookAuthor, bookCategory,bookId)
+
+//direk olarak api üzerinden dosya yuklemesi desteklenmiyormuş
+text olarak atmam gerekecek
+
+*/
+
+
+
+  res.send()
+}
+module.exports = {
+
+  prepareMockForBooks,
+  prepareMockForBookStores,
+  prepareMockForBookStoresBooks,
+  prepareDataForAiSuggestedBooks
 }

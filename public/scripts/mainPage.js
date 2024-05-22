@@ -138,9 +138,7 @@ async function getNewlyAddedBooks(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-        console.log("yeni eklendi bunlar")
-        console.log(data)
-        console.log("yeni eklendi bunlar")
+
      //html insert
      data.books.forEach(e => {
         newlyAddedBooksCard.innerHTML += `
@@ -160,7 +158,6 @@ async function getNewlyAddedBooks(userCity = "Istanbul"){
     })
     .catch(e => console.error(e)) 
 }
-
 async function getPopularCategorys(userCity = "Istanbul"){
     const getPopularCategorysCard = document.getElementById('popularCategories')
     const getMostSelledBooksURL = "/getPopularCategorys"
@@ -189,11 +186,13 @@ async function getPopularCategorys(userCity = "Istanbul"){
 }
 
 async function getMostReliableBookStores(userCity = "Istanbul"){
-    const getMostSelledBooksURL = "/getMostReliableBookStores"
+    const getMostReliableBookStoresURL = "/getMostReliableBookStores"
+    const newlyAddedBooksCard = document.getElementById('mostReliableBookStores')
+
     const dataForMostReliableBookStores = {
      city : userCity,
     }
-    fetch(getMostSelledBooksURL,{
+    fetch(getMostReliableBookStoresURL,{
      method : "POST",
      headers : {
          "Content-Type": "application/json"
@@ -202,28 +201,34 @@ async function getMostReliableBookStores(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-        console.log("en guvenilir bunlar")
-        console.log(data)
-        console.log("en guvenilir bunlar")
-     
-     //html insert
+        
+     data.mostReliableBS.forEach(e => {
+        newlyAddedBooksCard.innerHTML += `
+        <br>
+    <div class="booksCard">
+        <img src="../${e.bookStoreImages[0].path.replace("public","")}" class="bookIMG">
+        <p>${e.bookStoreName}</p>
+        <p>${e.physcialAdress}
+    </div>
+    <br>
+    `
+     })
     })
     .catch(e => console.error(e)) 
 }
 
 async function getMonthOfBookStores(userCity = "Istanbul"){
-    const getMostSelledBooksURL = "/getMonthOfBookStores"
+    const getMonthOffBookStoresURL = "/getMonthOfBookStores"
 
     const orderDate = new Date()
     const year = orderDate.getFullYear();
     const month = (orderDate.getMonth() + 1).toString().padStart(2, '0')
     const yearMonth = `${year}-${month}`
-    console.log(yearMonth)
     const dataForMostReliableBookStores = {
      city : userCity,
      date : yearMonth
     }
-    fetch(getMostSelledBooksURL,{
+    fetch(getMonthOffBookStoresURL,{
      method : "POST",
      headers : {
          "Content-Type": "application/json"
@@ -232,14 +237,22 @@ async function getMonthOfBookStores(userCity = "Istanbul"){
     })
     .then(response => response.json())
     .then(data => {
-        console.log("ayın kırtasiyeleri")
-        console.log(data)
-        console.log("ayın kırtasiyeleri")
-     //html insert
+        const monthOfBookStoresCard = document.getElementById('monthOfBookStores')
+        data.forEach(e => {
+            monthOfBookStoresCard.innerHTML += `
+            <div class="bookStoresOfThisMonth">
+                <img class="bookStoreIMG" src="../${e.bookStoreImages[0].path.replace("public","")}">
+                <p> ${e.bookStoreName}</p>
+                <p>${e.city} </p>
+                <p>${e.physcialAdress}</p>
+            </div>
+            
+            `
+        })
     })
     .catch(e => console.error(e)) 
 }
-
+/*
 async function getPopularAndRisingBookStores(userCity = "Istanbul"){
     const getMostSelledBooksURL = "/popularAndRisingBookstores"
 
@@ -247,7 +260,6 @@ async function getPopularAndRisingBookStores(userCity = "Istanbul"){
     const year = orderDate.getFullYear();
     const month = (orderDate.getMonth() + 1).toString().padStart(2, '0')
     const yearMonth = `${year}-${month}`
-    console.log(yearMonth)
     const dataForMostReliableBookStores = {
      city : userCity,
      date : yearMonth
@@ -268,7 +280,7 @@ async function getPopularAndRisingBookStores(userCity = "Istanbul"){
     })
     .catch(e => console.error(e)) 
 }
-
+*/
 document.addEventListener('DOMContentLoaded',async  _ =>{
     const userLocation = await getUserLocation()
     await getMostSelledBooks(userLocation)
@@ -277,6 +289,6 @@ document.addEventListener('DOMContentLoaded',async  _ =>{
     await getPopularCategorys(userLocation)
     await getMostReliableBookStores(userLocation)
     await getMonthOfBookStores(userLocation)
-    await getPopularAndRisingBookStores(userLocation)
+    //await getPopularAndRisingBookStores(userLocation)
 })
 

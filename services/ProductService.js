@@ -116,13 +116,42 @@ async function aiSuggestedThisBooks(bookData) {
 
 async function mostReliableBookstores(bookStoreData,limitData) {
     const getBookstoreRatings = await findBookStoreRating(bookStoreData,limitData)
-    return getBookstoreRatings
+    let mostReliableBs = []
+    for(const item of getBookstoreRatings){
+        const detailedBookStoreInfos = await getBookStoresByField({_id : item.bookStoreId })
+        mostReliableBs.push({
+            _id : item.bookStoreId,
+            bookStoreName : detailedBookStoreInfos[0].name,
+            city : detailedBookStoreInfos[0].city,
+            physcialAdress : detailedBookStoreInfos[0].physcialAddress,
+            bookStoreImages : detailedBookStoreInfos[0].bookStoreImages,
+            orderCount : item.orderCount,
+            bookStoreRating : item.bookStoreRating
+        })
+    }
+    return mostReliableBs
 
 
 }
 async function monthOfBookstores(bookStoreData) {
     const getMonthOfBookStores = await findMonthOfBookstores(bookStoreData,{limit : 10})
-    return getMonthOfBookStores
+   let monthOfBookStoresArray = []
+    for(const item of getMonthOfBookStores){
+        const detailedBookStoreInfos = await getBookStoresByField({_id : item.bookStoreId})
+        console.log(detailedBookStoreInfos)
+        monthOfBookStoresArray.push({
+            _id : item.bookStoreId,
+            bookStoreName : detailedBookStoreInfos[0].name,
+            city : item.bookStoreCity,
+            physcialAdress : detailedBookStoreInfos[0].physcialAddress,
+            bookStoreImages : detailedBookStoreInfos[0].bookStoreImages,
+            orderCount : item.orderCount,
+            bookStoreRating : item.bookStoreRatings,
+            date : item.date
+        })
+    }
+    console.log(monthOfBookStoresArray)
+    return monthOfBookStoresArray
 
 
 }

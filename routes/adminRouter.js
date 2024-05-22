@@ -7,7 +7,7 @@ const fs = require('fs')
 adminRouter.get('/prepareMockForBooks',controller.prepareMockForBooks)
 adminRouter.get('/prepareMockForBookStores',controller.prepareMockForBookStores)
 adminRouter.get('/prepareMockForBookStoresBooks',controller.prepareMockForBookStoresBooks)
-
+adminRouter.get('/prepareDataForAiSuggestedBooks',controller.prepareDataForAiSuggestedBooks)
 
 
 
