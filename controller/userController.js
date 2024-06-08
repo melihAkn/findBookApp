@@ -42,6 +42,7 @@ const addComment = async (req,res) => {
         }
 }
 
+
 // I think this is not belong here so bookstores variables should be defined here
 const {bookStoresModel,bookStoreOrdersModel,bookStoreCartModel, bookStoresBookModel ,monthOfBookstoreModel , bookStoresRatingsModel} = require('../model/bookStores')
 //code replication in here 
