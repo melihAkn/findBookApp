@@ -241,9 +241,9 @@ const prepareMockForBooks = async (req,res) => {
     "Düzce"
 ]
 const prepareMockForBookStores = async (req,res) => {
-  for(let g = 0; g < 50; g++){
+  for(let g = 0; g < 100; g++){
 
-    bookStoreName = bookStoreNames[Math.floor(Math.random() * bookStoreNames.length)]
+    bookStoreName = bookStoreNames[g]
     bookstoreUsername = bookStoreName + numbers[Math.floor(Math.random() * numbers.length)].toString() + numbers[Math.floor(Math.random() * numbers.length)].toString()
   //phone number
   for(let k = 0; k < 10; k++){
@@ -260,7 +260,9 @@ const prepareMockForBookStores = async (req,res) => {
     "phoneNumber" : bookStorePhoneNumber,
     "password" : bookStorePassword.replace(" ",""),
     "city" : citys[Math.floor(Math.random() * citys.length)],
-    "physcialAddress" : bookstoreAdresses
+    "physcialAddress" : bookstoreAdresses,
+    "bookStoreImages" : {"path" : "uploads/bookStoreImages/default_Images_For_BookStores/bookStores-default-cover.jpg"}
+
   }
   //citys[Math.floor(Math.random() * citys.length)]
   const newBookStore = new bookStoresModel(bookStore)
@@ -287,7 +289,8 @@ const prepareMockForBookStoresBooks = async (req,res) => {
         "bookStoreId" : findBookstores[bookstoreIndex]._id,
         "bookId" : findbooks[Math.floor(Math.random() * findbooks.length)]._id,
         "stockInfo" : Math.floor((Math.random() * 100) + 1),
-        "price" : Math.floor((Math.random() * 2500) + 1)
+        "price" : Math.floor((Math.random() * 2500) + 1),
+        "bookStoreCity" : findBookstores[bookstoreIndex].city
       }
       const addbookToBookstoresBook = new bookStoresBookModel(newBookStoresBook)
       await addbookToBookstoresBook.save()

@@ -146,7 +146,7 @@ const performSearch = async (req,res,next) => {
     // If 'bookName' is empty, the regular expression '/./' is used to match any character.
     //
     if(req.body.category == null  || req.body.category == undefined || req.body.bookName == null || req.body.bookName == undefined || req.body.searchedCity == null || req.body.searchedCity == undefined || req.body.searchedCity == ""){
-        const err = new Error("kitap ismi veya category veya aranan şehir girilmedi")
+        const err = new Error("kitap ismi veya kategori veya aranan şehir sağlanmadı")
         err.code = 400
         return next(err)
     }
@@ -166,7 +166,7 @@ const getComments = async (req,res,next) => {
 }
 
 const getBooksCount = async (req,res,next) => {
-    const getBc = await getCountBooks()
+    const getBc = await getCountBooks({userCity : req.body.userCity})
     res.status(200).send({bookC : getBc})
 }
 

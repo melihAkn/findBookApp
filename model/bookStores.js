@@ -66,6 +66,12 @@ const bookStoresBook = new schema ({
     price : {
         type : Number,
         default : 0.00
+    },
+    bookStoreCity : {
+        type : String,
+        default : "",
+        required : true,
+        unique : false
     }
 
     

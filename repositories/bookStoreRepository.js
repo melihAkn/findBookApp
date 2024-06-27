@@ -23,8 +23,8 @@ async function getBookStoresByField(bookStoreData){
     return findBookStoreByFieldName
 }
 
-async function getBookStoresBookByField(bookStoreData){
-    const getBookStoreBooks = await bookStoresBookModel.find(bookStoreData)
+async function getBookStoresBookByField(limitData){
+    const getBookStoreBooks = await bookStoresBookModel.find({bookStoreCity : limitData.city}).skip(limitData.skip).limit(limitData.limit)
     return getBookStoreBooks
 }
 
@@ -42,12 +42,16 @@ async function findMonthOfBookstores(bookStoreData,limitData){
     const findMonthOfBookStore = await monthOfBookstoreModel.find({bookStoreCity : bookStoreData.city , date : bookStoreData.date}).limit(limitData.limit)
     return findMonthOfBookStore
 }
+async function getBookStoresById(bookStoreData){
+    return await bookStoresModel.findById(bookStoreData.id)
+}
 module.exports = {
     addBookStore,
     getBookStoresByField,
     getBookStoresBookByField,
     addBookStoreRatings,
     findBookStoreRating,
-    findMonthOfBookstores
+    findMonthOfBookstores,
+    getBookStoresById
 
 }

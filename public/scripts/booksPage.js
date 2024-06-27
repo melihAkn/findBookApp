@@ -438,35 +438,46 @@ async function performSearch(city = citySelectOption.value,bookName = "" ,catego
 async function placePagingButton(){
   
   const getBooksCount = "/getBooksCountForPaging"
-  fetch(getBooksCount)
+  fetch(getBooksCount,{
+    method : "POST",
+    headers : {
+      "Content-Type": "application/json"
+    },
+    body : JSON.stringify({userCity :citySelectOption.value})
+  })
   .then(response => response.json())
   .then(data => {
     console.log(data.bookC)
-    const pageCount = data.bookC / 20
-    placePagingButtons.innerHTML = `<a href="#" id="prev" class="prev">&laquo; previous</a>`
-    for (let i = 1; i <= pageCount; i++) {
-        placePagingButtons.innerHTML += `<a href="#" class="page" id="page${i}">${i}</a>`
-  }
-    placePagingButtons.innerHTML += `<a href="#" id="next" class="next">last &raquo;</a>`
-    //first page add active class
-    document.getElementById('page1').classList.add('active')
-    Array.from(placePagingButtons.children).forEach(pagingButton => {
-      if(pagingButton.id == "prev" || pagingButton.id == "next"){
-      }else{
-        pagingButton.addEventListener('click', async  _ => {
-          Array.from(placePagingButtons.children).forEach(btn => {
-            btn.classList.remove("active")
-        })
-          await performSearch(undefined,undefined,undefined,pagingButton.id.replace("page","") * 20)
-          pagingButton.classList.add("active")
-        })
-      }
-    })
+    if(data.bookC < 20){
+
+    }else{
+      const pageCount = data.bookC / 20
+      placePagingButtons.innerHTML = `<a href="#" id="prev" class="prev">&laquo; previous</a>`
+      for (let i = 1; i <= pageCount; i++) {
+          placePagingButtons.innerHTML += `<a href="#" class="page" id="page${i}">${i}</a>`
+    }
+      placePagingButtons.innerHTML += `<a href="#" id="next" class="next">last &raquo;</a>`
+      //first page add active class
+      document.getElementById('page1').classList.add('active')
+      Array.from(placePagingButtons.children).forEach(pagingButton => {
+        if(pagingButton.id == "prev" || pagingButton.id == "next"){
+        }else{
+          pagingButton.addEventListener('click', async  _ => {
+            Array.from(placePagingButtons.children).forEach(btn => {
+              btn.classList.remove("active")
+          })
+            await performSearch(undefined,undefined,undefined,(pagingButton.id.replace("page","") * 20) - 20)
+            pagingButton.classList.add("active")
+          })
+        }
+      })
+    }
   })
   .catch(e => console.error(e))
 }
-searchButton.addEventListener('click', _ => {
-    performSearch(citySelectOption.value,searchText.value,categorySelectOption.value)
+searchButton.addEventListener('click',async _ => {
+    await performSearch(citySelectOption.value,searchText.value,categorySelectOption.value)
+    await placePagingButton()
 })
 document.addEventListener('DOMContentLoaded', async _ => {
   await getCitys()

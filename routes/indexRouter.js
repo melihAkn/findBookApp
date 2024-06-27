@@ -14,7 +14,7 @@ indexRouter.get('/register',controller.registerPage)
 indexRouter.get('/shoppingCard',controller.shoppingCardPageRender)
 //get requests
 indexRouter.get('/logout',controller.logout)
-indexRouter.get('/getBooksCountForPaging',controller.getBooksCount)
+indexRouter.post('/getBooksCountForPaging',controller.getBooksCount)
 //post requests
 //contact form
 indexRouter.post('/contact',controller.contactPost)

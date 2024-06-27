@@ -1,12 +1,65 @@
-const { searchBookByFieldName , getCommentsByFieldName , countBooks, booksSellInfos } = require('../repositories/booksRepository')
-const { getBookStoresByField, getBookStoresBookByField, addBookStoreRatings , findBookStoreRating, findMonthOfBookstores } = require('../repositories/bookStoreRepository')
+const { searchBookByFieldName , getCommentsByFieldName , countBooks, booksSellInfos, getBookById } = require('../repositories/booksRepository')
+const { getBookStoresByField, getBookStoresBookByField, addBookStoreRatings , findBookStoreRating, findMonthOfBookstores, getBookStoresById } = require('../repositories/bookStoreRepository')
 // bookstore infos
 async function searchedBookInfos(bookData,limitData) {
-    let books = []
-    //const findAllBooks = await bookModel.find({ name : bookData.name })
+    console.time("elapsed Time")
+    let searchedBooks = []
+    //getting all the data once
+    let bookStores = await getBookStoresByField()
+    let books = await searchBookByFieldName({},{start : 0 , limit : null})
+    const findBookStoresBooksByGivenCity = await getBookStoresBookByField(limitData)
+    for(const bookStoresBook of findBookStoresBooksByGivenCity){
+        //finding index in bookStoresBooks by bookId and bookStoreId
+       const findThisBook = books.findIndex(books => books._id.toString() === bookStoresBook.bookId.toString())
+       const findThisBookStore = bookStores.findIndex(bookStore => bookStore._id.toString() === bookStoresBook.bookStoreId.toString())
+       const findBookIndex = searchedBooks.findIndex(book => book._id.toString() === bookStoresBook.bookId.toString())
+       //if index is not found do nothing just continue(I dont know why isnt find an index)
+       if(findThisBook !== -1 || findThisBookStore !== -1){
+
+       if(findBookIndex !== -1){
+        //if book already in array just add a new seller and sort it by price
+        searchedBooks[findBookIndex].bookStoreInfos.push({
+            bookStoreId: bookStores[findThisBookStore]._id,
+            bookStoreName : bookStores[findThisBookStore].name,
+            stockInfo: bookStoresBook.stockInfo,
+            price: bookStoresBook.price
+        })
+        searchedBooks[findBookIndex].bookStoreInfos.sort((a,b) => a.price - b.price)
+       }else{
+        //if books doesnt find create a new book infos
+        searchedBooks.push({
+            _id: books[findThisBook]._id,
+            name: books[findThisBook].name,
+            description: books[findThisBook].description,
+            pageCount: books[findThisBook].pageCount,
+            category: books[findThisBook].category,
+            averageRating: books[findThisBook].averageRating,
+            publicationDate: books[findThisBook].publicationDate,
+            author: books[findThisBook].author,
+            ISBN: books[findThisBook].ISBN,
+            images: books[findThisBook].images,
+            isValidBook: books[findThisBook].isValidBook,
+            bookStoreInfos: [{
+                bookStoreId: bookStores[findThisBookStore]._id,
+                bookStoreName : bookStores[findThisBookStore].name,
+                stockInfo: bookStoresBook.stockInfo,
+                price: bookStoresBook.price
+            }]
+           })
+       }
+    }
+    }
+    console.timeEnd("elapsed Time")
+    //if array is emtpty there is no bookstore so we return this
+    if(searchedBooks.length == 0){
+        return {books, message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false ,books}
+    }else{
+        return {books : searchedBooks , bookFound : true}
+    }
+    //this is the old one i dont want to delete it
+   /*
     const findAllBooksByName = await searchBookByFieldName(bookData,{start : limitData.skip , limit : limitData.limit})
     const findBookStoresInSearchedCity = await getBookStoresByField({ city : limitData.city })
-
     for (const bookStore of findBookStoresInSearchedCity) {
         //
         const bookStoresBooks = await getBookStoresBookByField({ bookStoreId : bookStore._id})
@@ -51,6 +104,7 @@ async function searchedBookInfos(bookData,limitData) {
             books[index].bookStoreInfos.sort((a,b) => a.price - b.price)
         }
     }
+    console.timeEnd()
     if(books.length == 0){
         books = findAllBooksByName
         return { message : "There are no bookstores selling the searched book or books in the city. you can add to wishlist searched books ",bookFound : false ,books}
@@ -58,12 +112,10 @@ async function searchedBookInfos(bookData,limitData) {
         
         return {books , bookFound : true}
     }
-    
-
-
+        */
 }
-async function getCountBooks(_) {
-    const bookC = await countBooks()
+async function getCountBooks(bookData) {
+    const bookC = await countBooks({userCity : bookData.userCity})
     return bookC
 
 }

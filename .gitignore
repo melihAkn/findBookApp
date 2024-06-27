@@ -3,11 +3,11 @@ todo.md
 systemAnalyzeAndDesignPattern.md
 uploads/
 /public/uploads/
-rest.http
 /public/images/icons
 stockInCity.csv
 previousOrders.csv
 /dataForAi
+/mockData
 # Logs
 logs
 *.log

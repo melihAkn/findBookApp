@@ -1,0 +1,134 @@
+@BASE_URL = http://localhost:3000
+//user islemleri
+###
+GET {{BASE_URL}}
+###
+
+POST {{BASE_URL}}/performSearch
+Content-Type: application/json
+
+{
+      "bookName" : "",
+      "searchedCity" : "Düzce"
+}
+
+###
+POST {{BASE_URL}}/userRegister
+Content-Type: application/json
+
+ {
+          "nameAndSurname" : "w",
+          "username" : "w",
+          "email" : "melihiakn@gmail.com",
+          "password" : "wdsawdsa",
+          "city" : "Düzce",
+          "physcialAddress" : "duzce merkez nd",
+          "phoneNumber" : "213213232"
+ }
+
+###
+ POST {{BASE_URL}}/userLogin
+Content-Type: application/json
+
+ {
+       "username" : "mehmut",
+       "password" : "mehmut123"
+ }
+
+
+ 
+
+###
+ POST {{BASE_URL}}/bookStoresLogin
+Content-Type: application/json
+
+ {
+       "username" : "uhtan",
+       "password" : "uhtan123"
+ }
+
+###
+POST {{BASE_URL}}/bookStoreRegister
+Content-Type: application/json
+
+ {
+      "name" : "ddddwdww",
+      "username" : "wwwwwwwwwwww",
+      "email" : "ddedd@gmail.com",
+      "password" : "wddwdwdawdsawdsa",
+      "phoneNumber" : "2323121232",
+      "city" : "Düzce",
+      "physcialAddress": "dwwdd dwdwwss sdwds"
+ }
+
+###
+GET {{BASE_URL}}/admin/prepareMockForBooks
+Content-Type: application/json
+
+{
+
+}
+
+###
+GET {{BASE_URL}}/admin/prepareMockForBookStores
+Content-Type: application/json
+
+{
+
+}
+
+###
+GET {{BASE_URL}}/admin/prepareMockForBookStoresBooks
+Content-Type: application/json
+
+{
+
+}
+
+
+###
+GET {{BASE_URL}}/getMostSelledBooksByCity
+
+###
+GET {{BASE_URL}}/getBooksByMostPopularCategory
+
+###
+GET {{BASE_URL}}/getNewlyAddedBooks
+
+
+###
+GET {{BASE_URL}}/getPopularCategorys
+
+
+###
+
+GET {{BASE_URL}}/getMostReliableBookStores7
+
+
+
+
+//mobile routes test
+
+###
+ POST {{BASE_URL}}/mobile/userLogin
+Content-Type: application/json
+
+ {
+       "username" : "findme",
+       "password" : "findme123"
+ }
+
+###
+ POST {{BASE_URL}}/mobile/deneme
+ Content-Type: application/json
+ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.NjYzOGIwMDQ1ZGIxODM3NWRjMDE2YWZh.M7VlU5tFp8s_xFD4WEVq17Nd44Jk6fvxdOfmGTzF8kw
+
+ {
+       "username" : "findme",
+       "password" : "findme123"
+ }
+
+
+
+
+
